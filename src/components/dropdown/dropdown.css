@@ -1,0 +1,52 @@
+.user-info-dropdown {
+    border-radius: 5px;
+    height: auto !important;
+
+}
+
+.user-info-dropdown li {
+    padding: .5rem 1rem !important;
+}
+
+.user-info-dropdown .divider {
+    padding: 0 !important;
+}
+
+.user-info-dropdown .user-name {
+    font-weight: bold;
+}
+
+.user-info-dropdown .user-role {
+   font-weight: normal; 
+   font-size: .9rem;
+   padding: .2rem !important;
+}
+
+.user-info-dropdown .logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-info-dropdown .lang-header {
+    font-size: .9rem;
+    padding-left: 0!important;
+}
+
+.lang-container:hover {
+    background-color: #fff !important;
+    cursor:auto;
+}
+
+.lang {
+    padding-left: 0 !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lang:hover {
+    cursor: pointer;
+    color: dodgerblue !important;
+}
+

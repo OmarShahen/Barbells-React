@@ -1,0 +1,101 @@
+.stat-card {
+    border-radius: .25rem !important;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    background-color: #FFF !important;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.stat-number {
+    color: #495057;
+    font-size: 2rem;
+
+}
+
+.stat-title {
+    color: #6c757d;
+
+}
+
+.stat-icon span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: .5rem;
+    opacity: .8;
+    background-color: #e0eafc;
+    color: dodgerblue;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+}
+
+.card-header {
+    font-weight: normal;
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.app-card-body {
+    font-size: 3rem;
+    font-weight: lighter;
+}
+
+.app-card-footer {
+    width: 50%;
+    margin: auto;
+    height: 1px;
+}
+
+.personal-info-card-header {
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.personal-info-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.personal-info-card-body .info-wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0 .5rem 0;
+}
+
+.club-card-container {
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.club-card-header {
+    padding: 0 0 .5rem 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-line {
+    width: 40%;
+    height: 1px;
+    background-color: dodgerblue;
+}
+
+.club-card-body-graph {
+    margin: 1rem 0;
+}
+
+.club-card-body-info {
+    padding: 1rem 0;
+}
+
+.club-card-body-info div {
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0;
+}
+
+

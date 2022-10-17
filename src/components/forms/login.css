@@ -1,0 +1,39 @@
+.login-form-container {
+}
+
+.login-form-header h4 {
+    font-weight: 500;
+    line-height: 1.2;
+    color: #495057;
+}
+
+.login-form-header span {
+    font-weight: 300;
+}
+
+.login-form-wrapper {
+    padding: 2rem;
+    width: 40rem;
+    margin: 0 auto;
+}
+
+.login-submit-btn {
+    width: 100%;
+}
+
+.login-form-header {
+    padding-bottom: 3rem;
+}
+
+.login-form-btn-container {
+    margin: 2rem 0 0 0;
+}
+
+@media screen and (max-width: 700px) {
+    
+    .login-form-wrapper {
+        padding: 2rem;
+        width: auto;
+        margin: auto;
+    }
+}

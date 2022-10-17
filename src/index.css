@@ -1,0 +1,275 @@
+body {
+    background-color: #F5F5F5;
+    box-sizing: border-box;
+}
+
+.page-body {
+    background-color: #F5F5F5;
+}   
+
+.page {
+    margin-left: 17vw;
+}
+
+.page-main {
+    margin: 1rem 1rem;
+}
+
+.remove-left-margin {
+    margin-left: 0 !important;
+}
+
+/*.row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}*/
+
+.page-body-header {
+    color: #495057;
+    padding: 1rem 0 1rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-icon-container {
+    display: flex;
+    align-items: center;
+}
+
+.header-icon-container div {
+    margin-left: 1rem;
+}
+
+.chart-table-container {
+    max-height: 17rem;
+    overflow:auto;
+}
+
+.basic-color {
+    background-color: #293042;
+    color: #ADB5BD;
+}
+
+.reload-icon {
+    background-color: dodgerblue;
+    color: #FFF;
+    border-radius: .25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .3rem;
+}
+
+.reload-icon:hover {
+    cursor: pointer;
+}
+
+.graph-container {
+    padding: 1rem;
+    height: 20rem;
+}
+
+.remove-margin {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.stats-charts-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stats-charts-container div {
+    flex: 1;
+    
+}
+
+/*.chart-graph-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.pie-chart-graph-container .graph-container {
+    height: 20rem;
+}*/
+
+.limit-chart-container-height {
+    height: 5rem;
+}
+
+.main-flex {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+}
+
+.main-flex div {
+    flex: 1;
+}
+
+.chart-container {
+    max-width: 100%;
+}
+
+@media screen and (max-width: 800px) {
+
+    .page {
+        margin-left: 10vw;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    .page {
+        margin-left: 0;
+    }
+
+    .page-main {
+        margin: 1rem;
+    }
+}
+
+.selected span{
+    color: dodgerblue;
+}
+
+::-webkit-scrollbar {
+width: 20px;
+}
+
+::-webkit-scrollbar-track {
+background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+background-color: #a8bbbf;
+border-radius: 20px;
+border: 6px solid transparent;
+background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background-color: #a8bbbf;
+}
+
+
+.pie-chart-percentages {
+    min-height: 20rem !important;
+}
+
+.percentage-row {
+    display: flex;
+    justify-content: space-between;
+    color: dodgerblue;
+
+}
+
+.tables-switches-header {
+    font-weight: bold;
+    padding: 1rem 0;
+}
+
+.tables-switches-header svg {
+    font-size: 1.5rem;
+}
+
+.table-container {
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+
+}
+
+.icon-header-container {
+    display: flex;
+    align-items: center;
+}
+
+.icon-header-container span {
+    padding-left: .5rem;
+}
+
+.tables-switches-body {
+    padding: 1rem 0 0 0;
+}
+
+.tables-switches-body div {
+    padding: .5rem 0;
+}
+
+.input-fields-container {
+    padding-top: 2rem;
+}
+
+.header-icon {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: .5rem;
+
+}
+
+.app-badge {
+    padding: .2rem .5rem;
+    border-radius: .25rem;
+    font-weight: normal;
+}
+
+.app-options-icon {
+    color: #000;
+}
+
+.app-options-icon:hover {
+    cursor: pointer;
+    color: dodgerblue;
+}
+
+/*.app-table input {
+    border: none !important;
+    padding: 0 !important; 
+    margin: 0 !important;
+}
+
+.MuiInputBase-input .MuiInput-input .MuiInputBase-inputAdornedStart .MuiInputBase-inputAdornedEnd input:focus {
+    border-bottom: none !important;
+}*/
+
+.app-table-stats-icon i {
+    border-radius: 5px;
+}
+
+.app-table-stats-icon:hover {
+    cursor: pointer;
+}
+
+.table-container th, .table-container h6 {
+    font-family: 'Noto Sans', 'Cairo', sans-serif !important;
+}
+
+.graph-title {
+    font-family: 'Noto Sans', 'Cairo', sans-serif !important;
+}
+
+.table-container input[type="text"],
+.table-container input[type="text"]:focus
+{
+    border-bottom: 0px solid #FFF !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+.card-effect {
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    border-radius: .25rem;
+}
+
+.my-container {
+    padding: .5rem;
+    margin: 1rem 0;
+}
+
+.character-counter {
+    display: none !important;
+}

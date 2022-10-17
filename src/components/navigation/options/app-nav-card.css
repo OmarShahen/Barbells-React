@@ -1,0 +1,11 @@
+.app-nav-card-container .app-nav-card-tab {
+    display: flex;
+    padding: .8rem 2rem;
+    border-bottom: 1px solid transparent;
+}
+
+.app-nav-card-container .app-nav-card-tab:hover {
+    background-color: #eceff1;
+    cursor: pointer;
+    border-bottom: 1px solid dodgerblue;
+}

@@ -45,7 +45,8 @@ const MainClubPaymentsPage = () => {
 
             const data = response.data
             setTotalPayments(data.totalEarnings)
-            setPayments(data.staffPayments)    
+            setPayments(data.staffPayments) 
+            
         })
         .catch(errorResponse => {
             setIsLoading(false)
@@ -72,6 +73,8 @@ const MainClubPaymentsPage = () => {
                                 <div className="col s12">
                                     <ClubPaymentsTable 
                                     data={payments} 
+                                    statsQuery={statQuery}
+                                    currency={'EGP'}
                                     totalPayments={totalPayments} 
                                     isRegistrationAdded={true}
                                     reload={reload}

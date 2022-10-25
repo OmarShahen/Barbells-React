@@ -86,9 +86,22 @@
     z-index: 100;
     width: 100vw;
     height: 100vh;
-    padding: 1rem;
+    padding: .5rem;
     animation-name: menu;
-    animation-duration: 1s;
+    animation-duration: .7s;
+}
+
+.app-responsive-menu {
+    overflow: scroll;
+}
+
+.app-responsive-menu-list a {
+    padding: .2rem 0;
+}
+
+.drag-down {
+    animation-name: dragDown;
+    animation-duration: .7s;
 }
 
 .app-responsive-menu a {
@@ -96,7 +109,7 @@
 }
 
 .app-responsive-menu li {
-    padding: .5rem 0;
+    padding: .25rem 0;
 }
 
 .app-responsive-menu li a {
@@ -110,10 +123,6 @@
 
 .app-responsive-menu .nested-stats-navbar {
     padding-left: 4rem;
-}
-
-.app-responsive-menu i, .app-responsive-menu svg {
-    color: dodgerblue;
 }
 
 .app-responsive-menu li a:hover {
@@ -162,7 +171,16 @@
     }
   }
 
-@media screen and (max-width: 600px) {
+  @keyframes dragDown {
+    from {
+        height: 0
+    }
+    to {
+        height: auto;
+    }
+  }
+
+@media screen and (max-width: 800px) {
     .club-admin-responsive-menu {
         display: flex;
         align-items: center;

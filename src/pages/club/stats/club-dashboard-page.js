@@ -159,7 +159,7 @@ const ClubDashboardPage = () => {
                                 </div>
                             </div>
                             <div className="white my-container card-effect">
-                                    <h5 className="center">
+                                    <h5 className="left">
                                     {translation[lang]['Registrations Growth']}
                                     </h5>
                                     <div className="row">

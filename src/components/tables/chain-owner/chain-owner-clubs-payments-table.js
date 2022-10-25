@@ -8,9 +8,11 @@ import PaymentIcon from '@mui/icons-material/Payment'
 import translations from '../../../i18n'
 
 
-const ChainOwnersClubsPaymentsTable = ({ data, totalPayments, isRefreshAdded, isLoading, reload, setReload }) => {
+const ChainOwnersClubsPaymentsTable = ({ data, currency, totalPayments, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const [clubPayments, setClubPayments] = useState(trimClubPayments(data))
+
+    const [filter, setFilter] = useState(false)
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
@@ -20,7 +22,7 @@ const ChainOwnersClubsPaymentsTable = ({ data, totalPayments, isRefreshAdded, is
     const columns = () => {
 
             return [
-                { title: translations[lang]['Payments'], field: '', render: rowData => {
+                { title: translations[lang]['Payments'], filtering: false, grouping: false, field: '', render: rowData => {
                     return <div><PaymentIcon /></div>
                 } },
                 { title: translations[lang]['Branch'], field: 'club.clubCode', editable: 'never' },
@@ -43,13 +45,30 @@ const ChainOwnersClubsPaymentsTable = ({ data, totalPayments, isRefreshAdded, is
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`Total: ${totalPayments}`}
+                title={<div><strong>{totalPayments}</strong> <span>{currency}</span></div>}
                 isLoading={isLoading}
                 columns={columns()}
                 data={clubPayments}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true }}
+                options={{ 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: clubPayments.length }], 
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Clubs-Payments'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -60,6 +79,49 @@ const ChainOwnersClubsPaymentsTable = ({ data, totalPayments, isRefreshAdded, is
                     :
                     null
                 ]}
+
+                localization={ lang === 'ar' ? {
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
+                    },
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
+                }
+                 : {}
+                }
             
             />
         </div>

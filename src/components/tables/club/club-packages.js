@@ -22,6 +22,8 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
     const [packages, setPackages] = useState(data)
     const [updatedPackages, setUpdatedPackages] = useState([])
 
+    const [filter, setFilter] = useState(false)
+
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
@@ -139,7 +141,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                 { title: translations[lang]['Price'], field: 'price' },
                 { title: translations[lang]['Duration'], field: 'expiresIn' },
                 {
-                    title: translations[lang]['Statistics'], render: rowData => {
+                    title: translations[lang]['Statistics'], grouping: false, filtering: false, render: rowData => {
                         return <div className="app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/packages/${rowData._id}/stats`)}>
                             <i className="material-icons blue white-text"
                             >equalizer
@@ -147,7 +149,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                         </div>
                     }
                 },
-                { title: translations[lang]['Package Status'], field: 'isOpen', editable: 'never', render: rowData => {
+                { title: translations[lang]['Package Status'], grouping: false, filtering: false, field: 'isOpen', editable: 'never', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isOpen
@@ -170,7 +172,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                 { title: translations[lang]['Price'], field: 'price' },
                 { title: translations[lang]['Duration'], field: 'expiresIn' },
                 {
-                    title: translations[lang]['Statistics'], render: rowData => {
+                    title: translations[lang]['Statistics'], grouping: false, filtering: false, render: rowData => {
                         return <div className="app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/packages/${rowData._id}/stats`)}>
                             <i className="material-icons blue white-text"
                             >equalizer
@@ -178,7 +180,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                         </div>
                     }
                 },
-                { title: translations[lang]['Package Status'], field: 'isOpen', editable: 'never', render: rowData => {
+                { title: translations[lang]['Package Status'], grouping: false, filtering: false, field: 'isOpen', editable: 'never', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isOpen
@@ -204,15 +206,22 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         <div className="table-container">
             <Toaster />
             <MaterialTable 
-                title={`${translations[lang]['Packages']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={packages}
                 icons={TableIcons}
                 options={{ 
-                    pageSize: 10, 
-                    exportButton: true, 
-                    actionsColumnIndex: -1, 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: packages.length }],
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Packages'],
+                    grouping: true,
+                    filtering: filter
                 }}
                 editable={{
                     onRowUpdate: updatePackage,
@@ -227,26 +236,40 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                         onClick: e => setReload(reload + 1)
                     }
                     :
-                    null
+                    null,
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                 ]}
 
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

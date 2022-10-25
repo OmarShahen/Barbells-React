@@ -10,12 +10,15 @@ import { TrendingUpRounded } from '@material-ui/icons'
 import PaymentIcon from '@mui/icons-material/Payment'
 import RegistrationTable from './club-registrations'
 import translations from '../../../i18n'
+import PaymentsDetaisTable from '../payments-details-table'
 
 
 
-const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoading, reload, setReload }) => {
+const ClubPaymentsTable = ({ data, statsQuery, isClub, totalPayments, currency, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const [staffPayments, setStaffPayments] = useState(trimStaffPayments(data))
+
+    const [filter, setFilter] = useState(false)
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
@@ -28,10 +31,10 @@ const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoad
         if(isClub) {
 
             return [
-                { title: '', field: '', render: rowData => {
+                { title: translations[lang]['payments'], field: '', render: rowData => {
                     return <div className="center"><PaymentIcon color="primary" /></div>
                 } },
-                { title: translations[lang]['Received'], field: 'count' },
+                { title: translations[lang]['Received'], field: 'count', render: rowData => <span>{`${rowData.count} EGP`}</span> },
                 { title: translations[lang]['Name'], field: 'staff.name' },
                 { title: translations[lang]['Phone Code'], field: 'staff.countryCode', render: rowData => <div className="">{rowData.staff.countryCode}</div> },
                 { title: translations[lang]['Phone'], field: 'staff.phone' },
@@ -45,10 +48,10 @@ const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoad
         } else {
 
             return [
-                { title: '', field: '', render: rowData => {
+                { title: translations[lang]['payments'], field: '', render: rowData => {
                     return <div className="center"><PaymentIcon color="primary" /></div>
                 } },
-                { title: translations[lang]['Received'], field: 'count' },
+                { title: translations[lang]['Received'], field: 'count', render: rowData => <span>{`${rowData.count} EGP`}</span> },
                 { title: translations[lang]['Name'], field: 'staff.name' },
                 { title: translations[lang]['Phone Code'], field: 'staff.countryCode', render: rowData => <div className="">{rowData.staff.countryCode}</div> },
                 { title: translations[lang]['Phone'], field: 'staff.phone' },
@@ -69,13 +72,30 @@ const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoad
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`${totalPayments} ${club.currency}`}
+                title={<div><strong>{totalPayments}</strong> <span>{currency}</span></div>}
                 isLoading={isLoading}
                 columns={columns()}
                 data={staffPayments}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true }}
+                options={{ 
+                    pageSize: 15, 
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: staffPayments.length }],
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Payments'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -87,23 +107,35 @@ const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoad
                     null
                 ]}
 
+                detailPanel={rowData => { return <div style={{ display: 'flex', justifyContent: 'center'}}>                    
+                    <PaymentsDetaisTable staffId={rowData._id} statsQuery={statsQuery} currency={'EGP'} />
+                </div>}}
+
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',
@@ -119,7 +151,7 @@ const ClubPaymentsTable = ({ data, isClub, totalPayments, isRefreshAdded, isLoad
                     }
 
                 }
-                 : {}
+                : {}
                 }
             
             />

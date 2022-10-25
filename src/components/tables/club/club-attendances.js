@@ -13,6 +13,8 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
     
     const [attendances, setAttendances] = useState(trimAttendances(data))
 
+    const [filter, setFilter] = useState(false)
+
     const lang = localStorage.getItem('lang')
 
     const pagePath = window.location.pathname
@@ -25,23 +27,23 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
 
         if(isClub) {
             return [
-                { title: '', field: 'isNew', editable: 'never', render: rowData => {
+                { title: 'New', field: 'isNew', editable: 'never', render: rowData => {
                     return rowData.isNew ?
                     <span className="app-badge blue white-text">new</span>
                     :
                     <span className="app-badge grey white-text">old</span>
                 } },
+                { title: translations[lang]['Branch'], field: 'club.clubCode' },
                 { title: translations[lang]['Member'], field: 'member.name' },
                 { title: translations[lang]['Package'], field: 'package.title' },
                 { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
                 { title: translations[lang]['Attendance Time'], field: 'attendanceTime' },
                 { title: translations[lang]['Attendance Date'], field: 'registrationDate' },
         
             ]
         } else {
             return [
-                { title: translations[lang][''], field: 'isNew', editable: 'never', render: rowData => {
+                { title: translations[lang]['New'], field: 'isNew', editable: 'never', render: rowData => {
                     return rowData.isNew ?
                     <span className="app-badge blue white-text">{translations[lang]['new']}</span>
                     :
@@ -65,12 +67,23 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`${translations[lang]['Attendances']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={attendances}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true }}
+                options={{ 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: attendances.length }], 
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Attendances'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
                     isRefreshAdded ? 
                     {
@@ -82,6 +95,12 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
                     :
                     null
                     ,
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     {
                         icon: TableIcons.Cancel,
                         tooltip: translations[lang]['cancelled attendances'],
@@ -98,20 +117,28 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

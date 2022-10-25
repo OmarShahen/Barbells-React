@@ -15,6 +15,8 @@ const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading
 
     const [cancelledAttendances, setCancelledAttendances] = useState(trimCancelledAttendances(data))
 
+    const [filter, setFilter] = useState(false)
+
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
@@ -54,13 +56,30 @@ const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`${translations[lang]['Cancelled Attendances']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={cancelledAttendances}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true }}
+                options={{ 
+                    pageSize: 15, 
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: cancelledAttendances.length }],
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Cancelled-Attendances'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -76,20 +95,28 @@ const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

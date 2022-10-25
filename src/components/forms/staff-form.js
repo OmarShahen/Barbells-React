@@ -22,7 +22,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
     const [name, setName] = useState()
     const [email, setEmail] = useState()
     const [phone, setPhone] = useState()
-    const [countryCode, setCountryCode] = useState()
+    const [countryCode, setCountryCode] = useState(20)
     const [password, setPassword] = useState()
     const [confirmPassword, setConfirmPassword] = useState()
     const [targetClub, setTargetClub] = useState(

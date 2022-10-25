@@ -30,6 +30,16 @@ export const trimAttendances = (attendances) => {
     return attendances
 }
 
+export const trimPaymentsDetails = (payments) => {
+
+    payments.forEach(payment => {
+        payment.registrationDate = format(new Date(payment.createdAt), 'dd MMM yyyy')
+        payment.registrationTime = format(new Date(payment.createdAt), 'HH:mm:ss')
+    })
+
+    return payments
+}
+
 export const trimStaffs = (staffs) => {
 
     staffs.forEach(staff => {
@@ -140,6 +150,8 @@ export const trimRegistrations = (registrations) => {
             registration.isNew = false
         }
 
+        registration.status = registration.isActive ? translations[lang]['Active'] : translations[lang]['Expired']
+
         
     })
 
@@ -172,6 +184,9 @@ export const trimMembers = (members) => {
         } else {
             member.isNew = false
         }
+
+        member.entrance = member.isBlocked ? translations[lang]['Blocked'] : translations[lang]['Allowed']
+        member.security = member.canAuthenticate ? translations[lang]['Secure'] : translations[lang]['Insecure']
     })
 
     return members
@@ -206,9 +221,9 @@ export const trimClubs = (clubs) => {
     
     clubs.forEach(club => {
         lang === 'en' ? 
-        club.createdAt = format(new Date(club.createdAt), 'dd MMM yyyy')
+        club.registrationDate = format(new Date(club.createdAt), 'dd MMM yyyy')
         :
-        club.createdAt = format(new Date(club.createdAt), 'dd-MM-yyyy')
+        club.registrationDate = format(new Date(club.createdAt), 'dd-MM-yyyy')
     })
 
     return clubs

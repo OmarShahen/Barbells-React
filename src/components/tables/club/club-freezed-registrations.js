@@ -14,6 +14,9 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
+    const [filter, setFilter] = useState(false)
+
+
     const lang = localStorage.getItem('lang')
     
 
@@ -30,7 +33,7 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 /*{ title: 'Image', field: 'imageURL', render: rowData => {
                     return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
                 } },*/
-                { title: translations[lang]['Freezing Status'], field: 'isFreezed', render: rowData => {
+                { title: translations[lang]['Freezing Status'], grouping: false, filtering: false, field: 'isFreezed', render: rowData => {
                     return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
                 } },
                 { title: translations[lang]['Branch'], field: 'club.clubCode' },
@@ -51,7 +54,7 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 /*{ title: 'Image', field: 'imageURL', render: rowData => {
                     return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
                 } },*/
-                { title: translations[lang]['Freezing Status'], field: 'isFreezed', render: rowData => {
+                { title: translations[lang]['Freezing Status'], grouping: false, filtering: false, field: 'isFreezed', render: rowData => {
                     return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
                 } },
                 { title: translations[lang]['Member'], field: 'member.name' },
@@ -71,13 +74,30 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`${translations[lang]['Freezed Registrations']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={freezedRegistrations}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true }}
+                options={{ 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: freezedRegistrations.length }], 
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Freezed-Registrations'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -92,20 +112,28 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

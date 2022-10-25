@@ -18,6 +18,8 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
     const [staffs, setStaffs] = useState(trimStaffs(data))
     const [updatedStaffs, setUpdatedStaffs] = useState([])
 
+    const [filter, setFilter] = useState(false)
+
     const lang = localStorage.getItem('lang')
 
     const pagePath = window.location.pathname
@@ -28,7 +30,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         if(isClub) {
 
             return [
-                { title: '', field: 'imageURL', editable: 'never', render: rowData => {
+                { title: translations[lang]['Image'], grouping: false, filtering: false, field: 'imageURL', editable: 'never', render: rowData => {
                     return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Name'], field: 'name' },
@@ -37,7 +39,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
                 { title: translations[lang]['Mail'], field: 'email' },
                 { title: translations[lang]['Branch'], field: 'club.clubCode', editable: 'never' },
                 //{ title: translations[lang]['Role'], field: 'role', editable: 'never' },
-                { title: translations[lang]['Account Status'], field: 'isAccountActive', editable: 'never', render: rowData => {
+                { title: translations[lang]['Account Status'], grouping: false, filtering: false, field: 'isAccountActive', editable: 'never', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isAccountActive
@@ -56,7 +58,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         
         } else {
             return [
-                { title: '', field: 'imageURL', editable: 'never', render: rowData => {
+                { title: translations[lang]['Image'], field: 'imageURL', grouping: false, filtering: false, editable: 'never', render: rowData => {
                     return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Name'], field: 'name' },
@@ -64,7 +66,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
                 { title: translations[lang]['Phone'], field: 'phone' },
                 { title: translations[lang]['Mail'], field: 'email' },
                 //{ title: translations[lang]['Role'], field: 'role', editable: 'never' },
-                { title: translations[lang]['Account Status'], field: 'isAccountActive', editable: 'never', render: rowData => {
+                { title: translations[lang]['Account Status'], grouping: false, filtering: false, field: 'isAccountActive', editable: 'never', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isAccountActive
@@ -175,20 +177,34 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
     return (
         <div className="table-container">
             <MaterialTable 
-                title={translations[lang][title] || `${translations[lang]['Staffs']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={staffs}
                 icons={TableIcons}
-                options={{ pageSize: 10,
-                     exportButton: true, 
-                     actionsColumnIndex: -1,
-                    }}
+                options={{ 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: staffs.length }], 
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang][title] || translations[lang]['Staffs'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 editable={{
                     onRowUpdate: updateStaff,
                     onRowDelete: deleteStaff
                 }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -203,20 +219,28 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

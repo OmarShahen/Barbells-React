@@ -189,7 +189,7 @@ const ClubRegistrationsPage = () => {
                             <div className="white my-container card-effect">
                                     <div className="row">
                                         <div className="col s12">
-                                        <h5 className="center">
+                                        <h5 className="left">
                                         {translations[lang]['Registrations Growth']}
                                     </h5>
                                     <a className="modal-trigger" href="#month-line-chart-modal">

@@ -82,7 +82,8 @@ const NavBar = ({ pageName, statsQuery }) => {
                     <div className="user-pic">
                         <div>
                             <span className="name">{user.name}</span>
-                            <span className="role grey-text">{translations[lang][user.role]}</span>
+                            <span className="role grey-text">{club.name}</span>
+                            {/*<span className="role grey-text">{translations[lang][user.role]}</span>*/}
                         </div>
                         <img src={`https://avatars.dicebear.com/api/initials/${user.name}.svg`} alt="user avatar" />
                     </div>

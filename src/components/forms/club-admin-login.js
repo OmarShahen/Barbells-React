@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect  } from 'react'
 import './login.css'
 import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
+
 
 const LoginForm = () => {
 
@@ -11,11 +12,10 @@ const LoginForm = () => {
 
     const lang = localStorage.getItem('lang') || 'en'
 
-    const [countryCode, setCountryCode] = useState()
+    const [countryCode, setCountryCode] = useState('20')
     const [phone, setPhone] = useState()
     const [password, setPassword] = useState()
 
-    const [countryCodeError, setCountryCodeError] = useState()
     const [phoneError, setPhoneError] = useState()
     const [passwordError, setPasswordError] = useState()
 
@@ -26,10 +26,6 @@ const LoginForm = () => {
 
         e.preventDefault()
 
-        if(!countryCode) {
-            return setCountryCodeError(translations[lang]['Country code is required'])
-        }
-
         if(!phone) {
             return setPhoneError(translations[lang]['Phone is required'])
         }
@@ -38,7 +34,15 @@ const LoginForm = () => {
             return setPasswordError(translations[lang]['Password is required'])
         }
 
-        const loginData = { countryCode, phone, password }
+        let cleanPhone = phone
+        if(phone[0] === '0') {
+            cleanPhone = ''
+            for(let i=1;i<phone.length;i++) {
+                cleanPhone += phone[i]
+            }
+        }
+
+        const loginData = { countryCode, phone: cleanPhone, password }
 
         const clubsAdminsURL = `/auth/clubs-admins/login`
 
@@ -64,18 +68,8 @@ const LoginForm = () => {
 
         })
         .catch(error => {
-
-            console.log(error)
-
             setIsLoading(false)
-
             const errorData = error.response.data
-
-            console.log(errorData)
-
-            if(errorData.field === 'countryCode') {
-                return setCountryCodeError(errorData.message)
-            }
 
             if(errorData.field === 'phone') {
                 return setPhoneError(errorData.message)
@@ -97,25 +91,7 @@ const LoginForm = () => {
                     </div>
                 <div className="login-form-wrapper white card-effect">
                     <form className="row" onSubmit={submit}>
-                    <div className="input-field input-field-container col s5 m4">
-                            <input 
-                            type="text" 
-                            onChange={ e => setCountryCode(e.target.value)}
-                            onClick={ e => {
-                                setCountryCodeError()
-                            }}
-                            style={countryCodeError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
-                            id="login-country-code" 
-                            value={countryCode} 
-                            />
-
-                            { countryCodeError ? 
-                            <label for="login-country-code" style={{ color: '#f44336' }}>{countryCodeError}</label> 
-                            : 
-                            <label for="login-country-code">{translations[lang]['Country Code']}</label>
-                            }
-                        </div>
-                        <div className="input-field input-field-container col s7 m8">
+                        <div className="input-field input-field-container col s12">
                             <input 
                             type="text" 
                             onChange={ e => setPhone(e.target.value)}
@@ -161,7 +137,7 @@ const LoginForm = () => {
                         </div>
                         <div className="col s12">
                                <div className="left">
-                               <span>{translations[lang]['Forgot Password']}?</span>
+                               <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
                         

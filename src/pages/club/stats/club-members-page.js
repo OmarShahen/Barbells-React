@@ -18,7 +18,6 @@ import { iconPicker } from '../../../utils/icon-finder'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 
-
 const ClubMembersPage = () => {
 
     const headers = { 'x-access-token': localStorage.getItem('access-token') }
@@ -167,7 +166,7 @@ const ClubMembersPage = () => {
                                     </div>
                             </div>
                             <div className="white my-container card-effect">
-                                    <h5 className="center">
+                                    <h5 className="left">
                                         {translations[lang]['Members Growth']}
                                     </h5>
                                     <div className="row">

@@ -17,6 +17,8 @@ import { format } from 'date-fns'
 import { config } from '../../../config/config'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import CachedIcon from '@mui/icons-material/Cached'
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import DataDateShower from '../../../components/data-date-shower'
 
 const ChainOwnersDashboardPage = () => {
 

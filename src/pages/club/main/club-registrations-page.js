@@ -42,6 +42,8 @@ const MainClubRegistrationsPage = () => {
 
             setIsLoading(false)
 
+            console.log(errorResponse)
+
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
         })
     
@@ -62,6 +64,7 @@ const MainClubRegistrationsPage = () => {
                             <div className="row">
                                 <div className="col s12">
                                     <ClubRegistrationsTable 
+                                    isAttendance={true}
                                     data={registrations} 
                                     reload={reload}
                                     setReload={setReload}

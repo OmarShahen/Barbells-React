@@ -159,7 +159,7 @@ const ClubsAttendancesPage = () => {
                                     </div>
                             </div>
                             <div className="white my-container card-effect">
-                                    <h5 className="center">
+                                    <h5 className="left">
                                         {translations[lang]['Attendances Growth']}
                                     </h5>
                                     <a className="modal-trigger" href="#month-line-chart-modal">

@@ -26,7 +26,7 @@ import MainClubFreezedRegistrationsPage from "./pages/club/main/club-freezed-reg
 import MainClubPaymentsPagePage from "./pages/club/main/club-payments-page"
 import MainClubAdminsPage from "./pages/club/main/club-admins-page"
 import ChainOwnerClubsPage from "./pages/chain-owners/main/chain-owner-clubs-page"
-import Modal from './components/modals/modal'
+import MainClubRegistrationAttendancesPage from './pages/club/main/club-registration-attendances'
 
 import MainChainOwnersStaffsPage from './pages/chain-owners/main/chain-owners-staffs-page'
 import MainChainOwnersClubsPaymentsPage from "./pages/chain-owners/main/chain-owners-clubs-payments-page"
@@ -47,6 +47,8 @@ import ChainOwnersMembersPage from "./pages/chain-owners/stats/chain-owners-memb
 
 import LoginForm from "./components/forms/club-admin-login"
 import ChainOwnerLoginForm from "./components/forms/chain-owner-login"
+import ForgotPasswordForm from './components/forms/forgot-password'
+import ResetPasswordForm from './components/forms/reset-password-form'
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
@@ -88,6 +90,7 @@ const App = () => {
         <Route path="/app/clubs/:clubId/freezed-registrations/main" element={<MainClubFreezedRegistrationsPage />} />
         <Route path="/app/clubs/:clubId/clubs-admins/main" element={<MainClubAdminsPage />} />
         <Route path="/app/clubs/:clubId/payments/main" element={<MainClubPaymentsPagePage />} />
+        <Route path="/app/clubs/:clubId/registrations/:registrationId/attendances/main" element={<MainClubRegistrationAttendancesPage />} />
 
         {/** Main Chain Owners Pages Section */}
         <Route path="/app/chain-owners/:ownerId/clubs/main" element={<ChainOwnerClubsPage />} />
@@ -110,6 +113,8 @@ const App = () => {
 
         <Route path="/clubs-admins/login" element={<LoginForm />}/>
         <Route path="/chains-owners/login" element={<ChainOwnerLoginForm />}/>
+        <Route path="/forgot-password" element={<ForgotPasswordForm />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordForm />} />
         
       </Routes>
     </Router>

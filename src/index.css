@@ -115,6 +115,20 @@ body {
     max-width: 100%;
 }
 
+.table-attendances-icon {
+    display: flex;
+    justify-content: center;
+    color: #000 !important;
+}
+
+.table-attendances-icon:hover {
+    color: dodgerblue !important;
+}
+
+button:focus {
+    background-color: #FFF;
+}
+
 @media screen and (max-width: 800px) {
 
     .page {
@@ -123,7 +137,7 @@ body {
 }
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 800px) {
     .page {
         margin-left: 0;
     }
@@ -253,7 +267,9 @@ background-color: #a8bbbf;
 }
 
 .table-container input[type="text"],
-.table-container input[type="text"]:focus
+.table-container input[type="text"]:focus,
+.table-container input[type="search"],
+.table-container input[type="search"]:focus
 {
     border-bottom: 0px solid #FFF !important;
     box-shadow: none !important;

@@ -4,6 +4,7 @@ import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
+import Logo from '../../images/form-img.png'
 
 const ChainOwnerLoginForm = () => {
 
@@ -11,11 +12,10 @@ const ChainOwnerLoginForm = () => {
 
     const lang = localStorage.getItem('lang')
 
-    const [countryCode, setCountryCode] = useState()
+    const [countryCode, setCountryCode] = useState('20')
     const [phone, setPhone] = useState()
     const [password, setPassword] = useState()
 
-    const [countryCodeError, setCountryCodeError] = useState()
     const [phoneError, setPhoneError] = useState()
     const [passwordError, setPasswordError] = useState()
 
@@ -26,10 +26,6 @@ const ChainOwnerLoginForm = () => {
 
         e.preventDefault()
 
-        if(!countryCode) {
-            return setCountryCodeError(translations[lang]['Country code is required'])
-        }
-
         if(!phone) {
             return setPhoneError(translations[lang]['Phone is required'])
         }
@@ -38,7 +34,15 @@ const ChainOwnerLoginForm = () => {
             return setPasswordError(translations[lang]['Password is required'])
         }
 
-        const loginData = { countryCode, phone, password }
+        let cleanPhone = phone
+        if(phone[0] === '0') {
+            cleanPhone = ''
+            for(let i=1;i<phone.length;i++) {
+                cleanPhone += phone[i]
+            }
+        }
+
+        const loginData = { countryCode, phone: cleanPhone, password }
 
         const clubsAdminsURL = `/auth/chains-owners/login`
 
@@ -66,15 +70,10 @@ const ChainOwnerLoginForm = () => {
         .catch(error => {
 
             console.log(error)
-            console.log('here')
 
             setIsLoading(false)
 
             const errorData = error.response.data
-
-            if(errorData.field === 'countryCode') {
-                return setCountryCodeError(errorData.message)
-            }
 
             if(errorData.field === 'phone') {
                 return setPhoneError(errorData.message)
@@ -91,30 +90,19 @@ const ChainOwnerLoginForm = () => {
         <>
             <div className="login-form-container container center">
             <div className="center login-form-header">
+            {/*<img 
+                src={Logo} 
+                style={{ width: '10rem', height: '8rem', borderRadius: '.25rem' }} 
+                alt="club avatar" 
+                />*/}
                         <h4>{translations[lang]['Welcome Back']}</h4>
                         <span>{translations[lang]['Sign in to your account as chain owner']}</span>
                     </div>
                 <div className="login-form-wrapper white card-effect">
+                    <div className="center">
+                    </div>
                     <form className="row" onSubmit={submit}>
-                    <div className="input-field input-field-container col s5 m4">
-                            <input 
-                            type="text" 
-                            onChange={ e => setCountryCode(e.target.value)}
-                            onClick={ e => {
-                                setCountryCodeError()
-                            }}
-                            style={countryCodeError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
-                            id="login-country-code" 
-                            value={countryCode} 
-                            />
-
-                            { countryCodeError ? 
-                            <label for="login-country-code" style={{ color: '#f44336' }}>{countryCodeError}</label> 
-                            : 
-                            <label for="login-country-code">{translations[lang]['Country Code']}</label>
-                            }
-                        </div>
-                        <div className="input-field input-field-container col s7 m8">
+                        <div className="input-field input-field-container col s12">
                             <input 
                             type="text" 
                             onChange={ e => setPhone(e.target.value)}
@@ -160,7 +148,7 @@ const ChainOwnerLoginForm = () => {
                         </div>
                         <div className="col s12">
                                <div className="left">
-                               <span>{translations[lang]['Forgot Password']}?</span>
+                               <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=OWNER')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
                         

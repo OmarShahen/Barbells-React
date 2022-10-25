@@ -19,6 +19,8 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
     const [clubs, setClubs] = useState(trimClubs(data))
     const [updatedClubs, setUpdatedClubs] = useState([])
 
+    const [filter, setFilter] = useState(false)
+
     useEffect(() => setClubs(data), [data])
 
     useEffect(() => {
@@ -103,16 +105,16 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
 
 
     const columns = [
-        { title: 'Image', field: 'imageURL', editable: 'never', render: rowData => {
+        { title: translations[lang]['Image'], field: 'imageURL', filtering: false, grouping: false, editable: 'never', render: rowData => {
             return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
         } },
-        { title: 'Name', field: 'name', editable: 'never' },
-        { title: 'Branch Code', field: 'clubCode', editable: 'never' },
-        { title: 'Description', field: 'description' },
-        { title: 'Phone', field: 'phone' },
-        { title: 'Country', field: 'location.country', editable: 'never' },
-        { title: 'City', field: 'location.city', editable: 'never' },
-        { title: 'Club Status', field: 'isActive', editable: 'never', render: rowData => {
+        { title: translations[lang]['Name'], field: 'name', editable: 'never' },
+        { title: translations[lang]['Branch'], field: 'clubCode', editable: 'never' },
+        { title: translations[lang]['Description'], field: 'description' },
+        { title: translations[lang]['Phone'], field: 'phone' },
+        { title: translations[lang]['Country'], field: 'location.country', editable: 'never' },
+        { title: translations[lang]['City'], field: 'location.city', editable: 'never' },
+        { title: translations[lang]['Club Status'], filtering: false, grouping: false, field: 'isActive', editable: 'never', render: rowData => {
             return <div className="switch">
             <label>
               { rowData.isActive
@@ -125,7 +127,7 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
             </label>
           </div>
         } },
-        { title: 'Registration Date', field: 'createdAt', editable: 'never' },
+        { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
 
 
     ]
@@ -138,12 +140,29 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
                 columns={columns}
                 data={clubs}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true, actionsColumnIndex: -1 }}
+                options={{ 
+                    pageSize: 15,
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: clubs.length }], 
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Clubs'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 editable={{
                     onRowDelete: deleteClub,
                     onRowUpdate: updateClub
                 }}
                 actions={[
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
@@ -154,6 +173,49 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
                     :
                     null
                 ]}
+
+                localization={ lang === 'ar' ? {
+                    body: {
+                        emptyDataSourceMessage: 'لا يوجد سجلات',
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
+                    },
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
+                    },
+                    header: {
+                        actions: ''
+                    },
+                    toolbar: {
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
+                        searchTooltip: 'بحث',
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
+                    },
+                    pagination: {
+                        labelRowsSelect: 'سجلات',
+                        labelRowsPerPage: 'سجل للصفحة',
+                        firstAriaLabel: 'الصفحة الاولة',
+                        firstTooltip: 'الصفحة الاولة',
+                        previousAriaLabel: 'الصفحة السابقة',
+                        previousTooltip: 'الصفحة السابقة',
+                        nextAriaLabel: 'الصفحة التالية',
+                        nextTooltip: 'الصفحة التالية',
+                        lastAriaLabel: 'الصفحة الاخيرة',
+                        lastTooltip: 'الصفحة الاخيرة',
+                    }
+
+                }
+                 : {}
+                }
             
             />
         </div>

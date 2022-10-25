@@ -72,6 +72,7 @@ const MainChainOwnersClubsPaymentsPage = () => {
                     <div className="page-main">
                         <ChainOwnersClubsPaymentsTable 
                         data={clubPayments} 
+                        currency={'EGP'}
                         totalPayments={totalPayments}
                         reload={reload}
                         setReload={setReload}

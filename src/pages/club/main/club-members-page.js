@@ -7,9 +7,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
 import { config } from '../../../config/config'
 import translations from '../../../i18n'
-
-
-
+import PageHeader from '../../../components/sections/page-header'
 
 
 const MainClubMembersPage = () => {

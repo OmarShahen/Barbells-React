@@ -5,10 +5,11 @@ import { serverRequest } from '../../../API/request'
 import { trimRegistrations } from '../../../utils/trimmers'
 import toast from 'react-hot-toast'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
-import ClubMiniAttendancesTable from './mini-attendance-table'
+import TableTemplate from '../payments-details-table'
 import { useNavigate, useNavigte } from 'react-router-dom'
 import translations from '../../../i18n/index'
-
+import DoneAllIcon from '@mui/icons-material/DoneAll'
+import { NavLink } from 'react-router-dom'
 
 
 const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, isLoading, reload, setReload }) => {
@@ -21,6 +22,9 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
 
     const [registrations, setRegistrations] = useState(trimRegistrations(data))
     const [updatedRegistrations, setUpdatedRegistrations] = useState([])
+
+    const [filter, setFilter] = useState(false)
+
 
     const pagePath = window.location.pathname
     const clubName = pagePath.split('/')[2]
@@ -71,7 +75,7 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
 
         if(isClub) {
             return [
-                { title: translations[lang]['New'], field: 'isNew', editable: 'never', render: rowData => {
+                { title: translations[lang]['New'], filtering: false, field: 'isNew', editable: 'never', render: rowData => {
                     return rowData.isNew ?
                     <span className="app-badge blue white-text">{translations[lang]['new']}</span>
                     :
@@ -83,7 +87,8 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                 { title: translations[lang]['Staff'], field: 'staff.name' },
                 { title: translations[lang]['Paid'], field: 'paid' },
                 { title: translations[lang]['Attended'], field: 'attendances' },
-                { title: translations[lang]['Activity'], field: 'isActive', render: rowData => {
+                { title: translations[lang]['Status'], editable: true, field: 'status' },
+                { title: translations[lang]['Activity'], filtering: false, grouping: false, field: 'isActive', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isActive
@@ -96,7 +101,7 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                     </label>
                   </div>
                 } },
-                { title: translations[lang]['Freezed'], field: 'isFreezed', render: rowData => {
+                { title: translations[lang]['Freezed'],  filtering: false, grouping: false, field: 'isFreezed', render: rowData => {
                     return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
                 }  },
                 { title: translations[lang]['Registration Date'], field: 'registrationDate' },
@@ -105,7 +110,7 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
             ]
         } else {
             return [
-                { title: translations[lang]['New'], field: 'isNew', editable: 'never', render: rowData => {
+                { title: translations[lang]['New'],  filtering: false, field: 'isNew', editable: 'never', render: rowData => {
                     return rowData.isNew ?
                     <span className="app-badge blue white-text">{translations[lang]['new']}</span>
                     :
@@ -116,7 +121,10 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                 { title: translations[lang]['Staff'], field: 'staff.name' },
                 { title: translations[lang]['Paid'], field: 'paid' },
                 { title: translations[lang]['Attended'], field: 'attendances' },
-                { title: translations[lang]['Activity'], field: 'isActive', render: rowData => {
+                { title: translations[lang]['Attendances'],  filtering: false, grouping: false, render: rowData => <NavLink
+                to={`/app/clubs/${rowData.clubId}/registrations/${rowData._id}/attendances/main`} className="table-attendances-icon"><DoneAllIcon /></NavLink>},
+                { title: translations[lang]['Status'], editable: true, field: 'status' },
+                { title: translations[lang]['Activity'],  filtering: false, grouping: false, field: 'isActive', render: rowData => {
                     return <div className="switch">
                     <label>
                       { rowData.isActive
@@ -129,7 +137,7 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                     </label>
                   </div>
                 } },
-                { title: translations[lang]['Freezed'], field: 'isFreezed', render: rowData => {
+                { title: translations[lang]['Freezed'],  filtering: false, grouping: false, field: 'isFreezed', render: rowData => {
                     return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
                 }  },
                 { title: translations[lang]['Registration Date'], field: 'registrationDate' },
@@ -144,12 +152,23 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`${translations[lang]['Registrations']}`}
+                title={`# ${data.length}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={registrations}
                 icons={TableIcons}
-                options={{ pageSize: 10, exportButton: true, actionsColumnIndex: -1 }}
+                options={{ 
+                    pageSize: 15, 
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: registrations.length }],
+                    actionsColumnIndex: -1,
+                    exportButton: {
+                        pdf: false,
+                        csv: true
+                    }, 
+                    exportFileName: translations[lang]['Registrations'],
+                    grouping: true,
+                    filtering: filter
+                }}
                 actions={[
                     isRefreshAdded ? 
                     {
@@ -161,6 +180,12 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                     :
                     null
                     ,
+                    {
+                        icon: TableIcons.Filter,
+                        tooltip: translations[lang]['Filter'],
+                        isFreeAction: true,
+                        onClick: e => setFilter(filter ? false: true)
+                    },
                     {
                         icon: TableIcons.Cancel,
                         tooltip: translations[lang]['cancelled registrations'],
@@ -174,25 +199,31 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                     }
                 ]}
 
-                detailPanel={ isAttendance ? rowData => <ClubMiniAttendancesTable data={rowData.registrationAttendances} /> : null }
-
                 localization={ lang === 'ar' ? {
                     body: {
                         emptyDataSourceMessage: 'لا يوجد سجلات',
-                        
+                        editRow: {
+                            deleteText: 'هل انت متاكد من المسح',
+                            cancelTooltip: 'الغاء',
+                            saveTooltip: 'احفظ'
+                        },
+
+                        editTooltip: 'تعديل',
+                        deleteTooltip: 'مسح'
                     },
-                    editRow: {
-                        deleteText: 'مسح',
-                        cancelTooltip: 'الغاء'
+                    grouping: {
+                        placeholder: 'اسحب العناوين هنا للتجميع',
+                        groupedBy: 'مجموعة من'
                     },
                     header: {
                         actions: ''
                     },
                     toolbar: {
-                        exportTitle: 'تنزيل',
-                        exportAriaLabel: 'تنزيل',
+                        exportTitle: 'تحميل',
+                        exportAriaLabel: 'تحميل',
                         searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث'
+                        searchPlaceholder: 'بحث',
+                        exportCSVName: 'تحميل البينات'
                     },
                     pagination: {
                         labelRowsSelect: 'سجلات',

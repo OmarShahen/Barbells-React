@@ -8,18 +8,35 @@ import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/forms-floating-button'
 import translations from '../../../i18n'
 import { config } from '../../../config/config'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const MainChainOwnersMembersPage = () => {
+const MainChainOwnersMembersPage = ({ roles }) => {
+
+    const navigate = useNavigate()
 
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = JSON.parse(localStorage.getItem('access-token'))
 
-
+    const [authorized, setAuthorized] = useState(false)
     const [members, setMembers] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -27,7 +44,7 @@ const MainChainOwnersMembersPage = () => {
 
         serverRequest.get(`/members/chain-owners/${ownerId}`, {
             headers: {
-                'x-access-token': localStorage.getItem('access-token')
+                'x-access-token': accessToken
             }
         })
         .then(response => {
@@ -58,7 +75,11 @@ const MainChainOwnersMembersPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
             <div className="row page">
@@ -77,6 +98,8 @@ const MainChainOwnersMembersPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

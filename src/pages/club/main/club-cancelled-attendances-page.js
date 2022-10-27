@@ -4,25 +4,37 @@ import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar
 import ClubCancelledAttendancesTable from '../../../components/tables/club/club-cancelled-attendances'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
-import FloatingFormButton from '../../../components/buttons/floating-button'
 import { config } from '../../../config/config'
 import translations from '../../../i18n'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
+const MainClubCancelledAttendancesPage = ({ roles }) => {
 
-const MainClubCancelledAttendancesPage = () => {
-
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [cancelledAttendances, setCancelledAttendances] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -51,7 +63,11 @@ const MainClubCancelledAttendancesPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
             <div className="page">
@@ -75,6 +91,8 @@ const MainClubCancelledAttendancesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

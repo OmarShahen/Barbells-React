@@ -12,7 +12,7 @@ import translations from '../../../i18n'
 
 const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
 
     const lang = localStorage.getItem('lang')
 

@@ -1,45 +1,61 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { DataArrayOutlined, DataArrayTwoTone, DataObjectOutlined } from '@mui/icons-material'
-import { trimClubPayments } from '../../../utils/trimmers'
-import toast, { Toaster } from 'react-hot-toast'
+import { serverRequest } from '../../../API/request'
+import { trimStaffPayments } from '../../../utils/trimmers'
 import PaymentIcon from '@mui/icons-material/Payment'
 import translations from '../../../i18n'
-import DetailedPayments from './chain-owner-detailed-payments-table'
+import PaymentsDetaisTable from '../payments-details-table'
+import toast from 'react-hot-toast'
 
-const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPayments, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const [clubPayments, setClubPayments] = useState(trimClubPayments(data))
 
+const DetailedPayments = ({ clubId, statsQuery, currency='EGP' }) => {
+
+    const [staffPayments, setStaffPayments] = useState([])
+    const [totalPayments, setTotalPayments] = useState(0)
+    const [reload, setReload] = useState(0)
+    const [isLoading, setIsLoading] = useState(true)
     const [filter, setFilter] = useState(false)
 
-    const pagePath = window.location.pathname
-    const clubId = pagePath.split('/')[3]
-
     const lang = localStorage.getItem('lang')
+
+    useEffect(() => {
+
+        setIsLoading(true)
+
+        serverRequest.get(`/registrations/clubs/${clubId}/staffs/payments`, { 
+            params: statsQuery,
+            header: { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+         })
+        .then(response => {
+            setIsLoading(false)
+            setStaffPayments(trimStaffPayments(response.data.staffPayments))
+            setTotalPayments(response.data.totalEarnings)
+        })
+        .catch(error => {
+            setIsLoading(false)
+            return toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+        })
+
+    }, [reload])
     
     const columns = () => {
 
             return [
-                { title: translations[lang]['Payments'], filtering: false, grouping: false, field: '', render: rowData => {
-                    return <div><PaymentIcon /></div>
+                { title: translations[lang]['payments'], field: '', render: rowData => {
+                    return <div className="center"><PaymentIcon /></div>
                 } },
-                { title: translations[lang]['Branch'], field: 'club.clubCode', editable: 'never' },
-                { title: translations[lang]['Received'], field: 'count' },
-                //{ title: translations[lang]['Phone Code'], field: 'club.countryCode' },
-                { title: translations[lang]['Description'], field: 'club.description' },
-                //{ title: translations[lang]['Phone'], field: 'club.phone' },
-                { title: translations[lang]['Country'], field: 'club.location.country' },
-                { title: translations[lang]['City'], field: 'club.location.city' },
-                //{ title: translations[lang]['Registration Date'], field: 'club.registrationDate' },
+                { title: translations[lang]['Received'], field: 'count', render: rowData => <span>{`${rowData.count} EGP`}</span> },
+                { title: translations[lang]['Name'], field: 'staff.name' },
+                { title: translations[lang]['Phone Code'], field: 'staff.countryCode', render: rowData => <div className="">{rowData.staff.countryCode}</div> },
+                { title: translations[lang]['Phone'], field: 'staff.phone' },
+                { title: translations[lang]['Mail'], field: 'staff.email' },
+                { title: translations[lang]['Role'], field: 'staff.role', editable: 'never' },
+                //{ title: 'Registration Date', field: 'staff.registrationDate', editable: 'never' },
+        
             ]
-    }
-    
-
-    useEffect(() => {
-        setClubPayments(trimClubPayments(data))
-    }, [data])
+        }
 
 
     return (
@@ -48,18 +64,18 @@ const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPaymen
                 title={<div><strong>{totalPayments}</strong> <span>{currency}</span></div>}
                 isLoading={isLoading}
                 columns={columns()}
-                data={clubPayments}
+                data={staffPayments}
                 icons={TableIcons}
                 options={{ 
-                    pageSize: 15,
-                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: clubPayments.length }], 
+                    pageSize: 5, 
+                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: staffPayments.length }],
                     actionsColumnIndex: -1,
                     exportButton: {
                         pdf: false,
                         csv: true
                     }, 
-                    exportFileName: translations[lang]['Clubs-Payments'],
-                    grouping: true,
+                    exportFileName: translations[lang]['Payments'],
+                    grouping: false,
                     filtering: filter
                 }}
                 actions={[
@@ -69,18 +85,17 @@ const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPaymen
                         isFreeAction: true,
                         onClick: e => setFilter(filter ? false: true)
                     },
-                    isRefreshAdded ? 
                     {
                         icon: TableIcons.Refresh,
                         tooltip: translations[lang]['Refresh'],
                         isFreeAction: true,
                         onClick: e => setReload(reload + 1)
                     }
-                    :
-                    null
                 ]}
 
-                detailPanel={rowData => <DetailedPayments statsQuery={statsQuery} clubId={rowData._id} />}
+                detailPanel={rowData => { return <div style={{ display: 'flex', justifyContent: 'center'}}>                    
+                    <PaymentsDetaisTable staffId={rowData._id} statsQuery={statsQuery} currency={'EGP'} />
+                </div>}}
 
                 localization={ lang === 'ar' ? {
                     body: {
@@ -122,7 +137,7 @@ const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPaymen
                     }
 
                 }
-                 : {}
+                : {}
                 }
             
             />
@@ -131,4 +146,4 @@ const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPaymen
 
 }
 
-export default ChainOwnersClubsPaymentsTable
+export default DetailedPayments

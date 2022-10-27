@@ -13,7 +13,7 @@ import translations from '../../../i18n'
 
 const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
 
     const [staffs, setStaffs] = useState(trimStaffs(data))
     const [updatedStaffs, setUpdatedStaffs] = useState([])
@@ -101,7 +101,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         const staffTableId = oldStaff.tableData.id
 
                 
-        serverRequest.put(`/staffs/${newStaff._id}`, newStaff)
+        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, headers)
         .then(response => {
 
             const staffData = response.data.staff
@@ -127,7 +127,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive })
+        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, headers)
         .then(response => {
 
             staffsData[staffTableId] = response.data.staff

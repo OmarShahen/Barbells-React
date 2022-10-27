@@ -8,23 +8,36 @@ import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/forms-floating-button'
 import { config } from '../../../config/config'
 import translations from '../../../i18n'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
+const MainClubPackagesPage = ({ roles }) => {
 
-const MainClubPackagesPage = () => {
+    const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
-
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [packages, setPackages] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -54,7 +67,11 @@ const MainClubPackagesPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
             <FloatingFormButton modalId={'package-form-modal'}/>
@@ -80,6 +97,8 @@ const MainClubPackagesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

@@ -14,7 +14,9 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 
+        'x-access-token': JSON.parse(localStorage.getItem('access-token')) 
+    }
 
     const [members, setMembers] = useState(trimMembers(data))
     const [updatedMembers, setUpdatedMembers] = useState([])
@@ -48,6 +50,11 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
             newMember.gender = translations[lang][newMember.gender]
         }
 
+        if(!Number.parseInt(newMember.membership)) {
+            return toast.error(translations[lang]['Membership must be a number'], { position: 'top-right', duration: 3000 })
+        }
+
+        newMember.membership = Number.parseInt(newMember.membership)
         const membersData = [...members]  
         const memberTableId = oldMember.tableData.id
                 

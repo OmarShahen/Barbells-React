@@ -7,25 +7,18 @@ import CardMembershipIcon from '@mui/icons-material/CardMembership'
 import LogoutIcon from '@mui/icons-material/Logout'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined'
-import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined'
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import PaymentIcon from '@mui/icons-material/Payment'
-import { useNavigate, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { iconPicker } from '../../utils/icon-finder'
 import translation from '../../i18n/index'
 import DashboardIcon from '@mui/icons-material/Dashboard'
-import Logo from '../../images/new-logo-2.png'
-
+import Logo from '../logo/logo'
 
 const ClubAdminSideBar = () => {
 
-    const navigate = useNavigate()
-
-    const user = JSON.parse(localStorage.getItem('user'))
     const club = JSON.parse(localStorage.getItem('club'))
-
     const lang = localStorage.getItem('lang')
 
     const pagePath = window.location.pathname
@@ -33,10 +26,9 @@ const ClubAdminSideBar = () => {
 
     return (
         <div className="side-bar center hide-on-small-only">
-            {/*<div className="app-logo">
-                <img src={Logo} className="" style={{ width: '4rem', height: '4rem' }}/>
-                <span>Barbells</span>
-            </div>*/}
+            <div className="app-logo">
+                <Logo width={'3rem'} height={'3rem'} />
+            </div>
             <ul className="side-nav-list">
                 <NavLink to={`/app/clubs/${club._id}/dashboard`}>
                     <li className={ pagePath.includes('dashboard') ? 'active-side-nav' : null } >

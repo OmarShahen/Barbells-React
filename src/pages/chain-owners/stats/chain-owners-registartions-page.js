@@ -19,14 +19,21 @@ import translations from '../../../i18n'
 import CachedIcon from '@mui/icons-material/Cached'
 import PieChartCard from '../../../components/cards/pie-chart-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const ChainOwnersRegistrationsPage = () => {
+const ChainOwnersRegistrationsPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
@@ -46,6 +53,7 @@ const ChainOwnersRegistrationsPage = () => {
     const [totalExpiredRegistrations, setTotalExpiredRegistrations] = useState(0)
     const [registrations, setRegistrations] = useState([])
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 
     const [registrationCompletionStat, setRegistrationCompletionStat] = useState({
@@ -68,6 +76,15 @@ const ChainOwnersRegistrationsPage = () => {
     const [registrationExpirationLabel, setRegistrationExpirationLabel] = useState([])
     const [registrationExpirationData, setRegistrationExpirationData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -145,7 +162,6 @@ const ChainOwnersRegistrationsPage = () => {
         for(let i=0;i<labels.length;i++) {
             allClubsData.push({ label: labels[i], data: data[i], color: colors[i] })
         }
-
         allClubsData.sort((package1, package2) => package2.data - package1.data)
 
         return allClubsData
@@ -154,7 +170,11 @@ const ChainOwnersRegistrationsPage = () => {
 
 
     return (
-        <div className="lighten-5 page-body">
+        <>
+        {
+            authorized
+            &&
+            <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
@@ -313,7 +333,9 @@ const ChainOwnersRegistrationsPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

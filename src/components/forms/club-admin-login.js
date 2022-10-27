@@ -4,6 +4,7 @@ import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
+import Logo from '../logo/logo'
 
 
 const LoginForm = () => {
@@ -53,7 +54,6 @@ const LoginForm = () => {
             setIsLoading(false)
 
             const data = response.data
-
             const token = data.token
 
             localStorage.setItem('access-token', JSON.stringify(token))
@@ -64,18 +64,19 @@ const LoginForm = () => {
             localStorage.setItem('user', JSON.stringify(user))
             localStorage.setItem('club', JSON.stringify(club))
 
-            navigate(`/app/clubs/${club._id}/dashboard`)
+            return navigate(`/app/clubs/${club._id}/dashboard`)
 
         })
         .catch(error => {
-            setIsLoading(false)
-            const errorData = error.response.data
 
-            if(errorData.field === 'phone') {
+            setIsLoading(false)
+            const errorData = error.response
+            
+            if(errorData.data.field === 'phone') {
                 return setPhoneError(errorData.message)
             }
 
-            if(errorData.field === 'password') {
+            if(errorData.data.field === 'password') {
                 return setPasswordError(errorData.message)
             }
         })
@@ -86,10 +87,11 @@ const LoginForm = () => {
         <>
             <div className="login-form-container container center">
             <div className="center login-form-header">
-                        <h4>{translations[lang]['Welcome Back']}</h4>
-                        <span>{translations[lang]['Sign in to your account as club admin']}</span>
-                    </div>
+                <h4>{translations[lang]['Welcome Back']}</h4>
+                <span>{translations[lang]['Sign in to your account as club admin']}</span>
+            </div>
                 <div className="login-form-wrapper white card-effect">
+                        <Logo height={'4rem'} width={'4rem'} />
                     <form className="row" onSubmit={submit}>
                         <div className="input-field input-field-container col s12">
                             <input 

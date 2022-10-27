@@ -9,21 +9,23 @@ import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import { config } from '../../../config/config'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
+const MainClubPaymentsPage = ({ roles }) => {
 
+    const navigate = useNavigate()
 
-
-const MainClubPaymentsPage = () => {
-
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-
-
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
     const todayDate = new Date()
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
@@ -31,6 +33,15 @@ const MainClubPaymentsPage = () => {
     const [totalPayments, setTotalPayments] = useState([])
     const [payments, setPayments] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -59,7 +70,11 @@ const MainClubPaymentsPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
             <FloatingFormButton />
@@ -89,6 +104,8 @@ const MainClubPaymentsPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

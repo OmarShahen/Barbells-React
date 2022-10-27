@@ -1,42 +1,41 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
 import ClubSideBar from '../../../components/navigation/club-admin-side-bar'
-import ChainOwnerSideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
 import PackagesTable from '../../../components/tables/club/club-packages'
 import BarChart from '../../../components/charts/bar-chart'
-import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
-import ChartModal from '../../../components/modals/chart-modal'
 import { config } from '../../../config/config'
-import PersonalInfoCard from '../../../components/cards/personal-info'
-import PackagesPercentageCard from '../../../components/cards/packages-percentages'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
 
-const ClubPackagesPage = () => {
+const ClubPackagesPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
     const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
     todayDate = new Date()
 
-    const [submit, setSubmit] = useState(true)
+    const [authorized, setAuthorized] = useState(false)
     const [statQuery, setStatQuery] = useState({
         from: format(monthDate, 'yyyy-MM-dd'), 
         to: format(todayDate, 'yyyy-MM-dd') 
@@ -54,6 +53,16 @@ const ClubPackagesPage = () => {
     const [packagesLabels, setPackagesLabels] = useState([])
     const [packagesData, setPackagesData] = useState([])
 
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -112,10 +121,12 @@ const ClubPackagesPage = () => {
         return allPackagesData
     }
 
-
-
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubSideBar />
             <Toaster />
             <FloatingFormButton />
@@ -123,7 +134,7 @@ const ClubPackagesPage = () => {
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={"Packages Stats"} statsQuery={statQuery} />
+                        <NavBar pageName={"Packages Stats"} statsQuery={statQuery} pageRoles={roles} />
                         <div className="page-main">
                         <div className="page-body-header">
                                 <h5>
@@ -184,6 +195,8 @@ const ClubPackagesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

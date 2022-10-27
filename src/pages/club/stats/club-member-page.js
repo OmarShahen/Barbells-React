@@ -6,15 +6,12 @@ import Card from '../../../components/cards/card'
 import ClubRegistrationTable from '../../../components/tables/club/club-registrations'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { config } from '../../../config/config'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import ChartModal from '../../../components/modals/chart-modal'
-import PersonalInfoCard from '../../../components/cards/personal-info'
-import PackagesPercentageCard from '../../../components/cards/packages-percentages'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
@@ -22,19 +19,23 @@ import { to12 } from '../../../utils/hours'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
 import CachedIcon from '@mui/icons-material/Cached'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
+const ClubMemberPage = ({ roles }) => {
 
-const ClubMemberPage = () => {
+    const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
-    const clubId = pagePath.split('/')[3]
     const memberId = pagePath.split('/')[5]
 
     const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
     const lang = localStorage.getItem('lang')
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [statQuery, setStatQuery] = useState({ until: format(new Date(), 'yyyy-MM-dd') })
 
@@ -80,6 +81,15 @@ const ClubMemberPage = () => {
         return allPackagesData
     }
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -162,7 +172,11 @@ const ClubMemberPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             { user.role === 'OWNER' ? <ChainOwnerSideBar /> : <ClubSideBar /> }
             <Toaster />
             <FloatingFormButton />
@@ -170,7 +184,7 @@ const ClubMemberPage = () => {
             <div className="page">
                 <div className="row">
                 <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <NavBar pageName={translations[lang]["Member Stats"]} statsQuery={statQuery} />
+                    <NavBar pageName={translations[lang]["Member Stats"]} statsQuery={statQuery} pageRoles={roles} />
                     <div className="page-main">
                     <div className="page-body-header">
                             <h5>
@@ -334,8 +348,10 @@ const ClubMemberPage = () => {
                     </div>
                     </div>                
                 </div>
-            </div>
-                )
+        </div>
+        }
+        </>
+    )
 }
 
 export default ClubMemberPage

@@ -5,7 +5,6 @@ import Card from '../../../components/cards/card'
 import AttendancesTable from '../../../components/tables/club/club-attendances'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
@@ -18,12 +17,19 @@ import { iconPicker } from '../../../utils/icon-finder'
 import { to12 } from '../../../utils/hours'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
-const ClubsAttendancesPage = () => {
+const ClubsAttendancesPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     const lang = localStorage.getItem('lang')
 
@@ -37,6 +43,7 @@ const ClubsAttendancesPage = () => {
         to: format(todayDate, 'yyyy-MM-dd') 
     })
 
+    const [authorized, setAuthorized] = useState(false)
 
     const [totalAttendances, setTotalAttendances] = useState(0)
     const [totalCancelledAttendances, setTotalCancelledAttendances] = useState(0)
@@ -55,6 +62,16 @@ const ClubsAttendancesPage = () => {
     const [hoursLabels, setHoursLabels] = useState([])
     const [hoursData, setHoursData] = useState([])
 
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -129,18 +146,20 @@ const ClubsAttendancesPage = () => {
         return allClubsData
     }
 
-
     return (
-        <div className="lighten-5 page-body">
+        <>
+        {
+            authorized
+            &&
+            <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
-
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]['Attendances Stats']} statsQuery={statQuery} />
+                        <NavBar pageName={translations[lang]['Attendances Stats']} statsQuery={statQuery} pageRoles={roles} />
                         <div className="page-main">
                             <div className="page-body-header">
                                 <h5>
@@ -270,7 +289,9 @@ const ClubsAttendancesPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

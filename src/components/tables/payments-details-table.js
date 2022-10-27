@@ -14,7 +14,12 @@ const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
 
     useEffect(() => {
 
-        serverRequest.get(`/registrations/staffs/${staffId}`, { params: statsQuery })
+        serverRequest.get(`/registrations/staffs/${staffId}`, { 
+            params: statsQuery,
+            headers: {
+                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+            }
+        })
         .then(response => {
             setIsLoading(false)
             setData(trimPaymentsDetails(response.data.registrations))

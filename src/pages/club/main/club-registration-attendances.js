@@ -7,21 +7,36 @@ import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
 import { config } from '../../../config/config'
 import translations from '../../../i18n'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
+const MainClubRegistrationAttendancesPage = ({ roles }) => {
 
-const MainClubRegistrationAttendancesPage = () => {
+    const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const registrationId = pagePath.split('/')[5]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [attendances, setAttendances] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -50,7 +65,11 @@ const MainClubRegistrationAttendancesPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
             <div className="page">
@@ -75,6 +94,8 @@ const MainClubRegistrationAttendancesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

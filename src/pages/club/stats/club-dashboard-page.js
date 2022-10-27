@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
 import SideBar from '../../../components/navigation/club-admin-side-bar'
 import Card from '../../../components/cards/card'
-import ClubAttendanceTable from '../../../components/tables/club/club-attendances'
 import ClubRegistrationTable from '../../../components/tables/club/club-registrations'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
@@ -18,22 +17,25 @@ import { iconPicker } from '../../../utils/icon-finder'
 import { to12 } from '../../../utils/hours'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
+const ClubDashboardPage = ({ roles }) => {
 
-const ClubDashboardPage = () => {
+    const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
 
     const todayDate = new Date()
 
-    const club = JSON.parse(localStorage.getItem('club'))
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
@@ -50,6 +52,15 @@ const ClubDashboardPage = () => {
     const [hoursLabels, setHoursLabels] = useState([])
     const [hoursData, setHoursData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -122,6 +133,9 @@ const ClubDashboardPage = () => {
 
 
     return (
+        <>
+        { authorized
+        &&
         <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
@@ -149,7 +163,7 @@ const ClubDashboardPage = () => {
                                     <Card title={translation[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalRegistrations} color={config.color.blue} />
                                 </div>
                                 <div className="col s12 m3">
-                                    <Card title={translation[lang]["Earnings"]} sign={club.currency} icon={iconPicker('earnings')} number={totalEarnings} currency={club.currency} color={config.color.purple} />
+                                    <Card title={translation[lang]["Earnings"]} icon={iconPicker('earnings')} number={totalEarnings} color={config.color.purple} />
                                 </div>
                                 <div className="col s12 m3">
                                     <Card title={translation[lang]["Attendances"]} icon={iconPicker('attendances')} number={totalAttendances} color={config.color.cyan} />
@@ -217,6 +231,8 @@ const ClubDashboardPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </> 
     )
 }
 

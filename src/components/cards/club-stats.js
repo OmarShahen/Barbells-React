@@ -8,6 +8,7 @@ import translations from '../../i18n'
 
 const ClubStatsCard = ({ clubId, statsQuery }) => {
 
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const lang = localStorage.getItem('lang')
 
     const [clubName, setClubName] = useState()
@@ -22,7 +23,8 @@ const ClubStatsCard = ({ clubId, statsQuery }) => {
     useEffect(() => {
 
         serverRequest.get(`/clubs/${clubId}/stats/main`, {
-            params: statsQuery
+            params: statsQuery,
+            headers
         })
         .then(response => {
 

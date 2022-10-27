@@ -4,7 +4,7 @@ import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
-import Logo from '../../images/form-img.png'
+import Logo from '../logo/logo'
 
 const ChainOwnerLoginForm = () => {
 
@@ -99,8 +99,7 @@ const ChainOwnerLoginForm = () => {
                         <span>{translations[lang]['Sign in to your account as chain owner']}</span>
                     </div>
                 <div className="login-form-wrapper white card-effect">
-                    <div className="center">
-                    </div>
+                    <Logo height={'4rem'} width={'4rem'} />
                     <form className="row" onSubmit={submit}>
                         <div className="input-field input-field-container col s12">
                             <input 

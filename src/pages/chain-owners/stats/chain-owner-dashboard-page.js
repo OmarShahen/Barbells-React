@@ -17,22 +17,26 @@ import { format } from 'date-fns'
 import { config } from '../../../config/config'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import CachedIcon from '@mui/icons-material/Cached'
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
-import DataDateShower from '../../../components/data-date-shower'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
-const ChainOwnersDashboardPage = () => {
+const ChainOwnersDashboardPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const chainOwner = JSON.parse(localStorage.getItem('user'))
-    const ownedClubs = chainOwner.clubs
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     const todayDate = new Date()
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
 
@@ -49,6 +53,15 @@ const ChainOwnersDashboardPage = () => {
     const [clubsLabels, setClubsLabels] = useState([])
     const [clubsData, setClubsData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -117,12 +130,15 @@ const ChainOwnersDashboardPage = () => {
 
 
     return (
-        <div className="lighten-5 page-body">
+        <>
+        {
+            authorized
+            &&
+            <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
-
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
@@ -191,12 +207,11 @@ const ChainOwnersDashboardPage = () => {
                                         </div>
                                     </div>
                                 <div>
-
                                 </div>
                                 </div>
                                 <div className="row">
                                 {
-                                    ownedClubs.map(club => {
+                                    chainOwner.clubs.map(club => {
                                         return <div className="col s12 m4">
                                         <ClubStatsCard clubId={club._id} statsQuery={statQuery} />
                                     </div>
@@ -213,7 +228,9 @@ const ChainOwnersDashboardPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

@@ -40,7 +40,7 @@ const UserNavIcon = ({ user }) => {
                     localStorage.setItem('access-token', null)
                     localStorage.setItem('club', null)
 
-                    user.role !== 'owner' ? navigate('/clubs-admins/login') : navigate('/chains-owners/login')
+                    user.role !== 'OWNER' ? navigate('/clubs-admins/login') : navigate('/chains-owners/login')
                 }}>
                 {translations[lang]['Logout']}
             </li>

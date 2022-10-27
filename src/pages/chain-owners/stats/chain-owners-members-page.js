@@ -5,7 +5,6 @@ import Card from '../../../components/cards/card'
 import MembersTable from '../../../components/tables/club/club-members'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
@@ -17,33 +16,33 @@ import { iconPicker } from '../../../utils/icon-finder'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import translations from '../../../i18n'
 import CachedIcon from '@mui/icons-material/Cached'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
 
-const ChainOwnersMembersPage = () => {
+const ChainOwnersMembersPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
 
     const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 
     const [totalMembers, setTotalMembers] = useState(0)
     const [totalActiveMembers, setTotalActiveMembers] = useState(0)
     const [totalBlockedMembers, setTotalBlockedMembers] = useState(0)
     const [members, setMembers] = useState([])
-
-    const [membersGenderPercentageStat, setMemberGenderPercentageStat] = useState({
-        totalMembers: 0,
-        totalMales: 0,
-        totalFemales: 0,
-        malePercentage: 0,
-        femalePercentage: 0
-    })
 
 
     const [growthLabels, setGrowthLabels] = useState([])
@@ -58,6 +57,15 @@ const ChainOwnersMembersPage = () => {
     const [ageLabels, setAgeLabels] = useState([])
     const [ageData, setAgeData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -77,8 +85,6 @@ const ChainOwnersMembersPage = () => {
             setTotalActiveMembers(data.totalActiveMembers)
             setTotalBlockedMembers(data.totalBlockedMembers)
             setMembers(data.members)
-
-            setMemberGenderPercentageStat(data.membersGenderPercentageStat)
 
             const growthStats = data.membersStatsGrowth
             let growthLabels = growthStats.map(stat => stat._id)
@@ -139,7 +145,11 @@ const ChainOwnersMembersPage = () => {
 
 
     return (
-        <div className="lighten-5 page-body">
+        <>
+        {
+            authorized
+            &&
+            <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
@@ -284,7 +294,9 @@ const ChainOwnersMembersPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

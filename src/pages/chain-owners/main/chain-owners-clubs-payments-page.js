@@ -10,21 +10,38 @@ import translations from '../../../i18n'
 import { config } from '../../../config/config'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import FloatingFormsButton from '../../../components/buttons/forms-floating-button'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
-const MainChainOwnersClubsPaymentsPage = () => {
+const MainChainOwnersClubsPaymentsPage = ({ roles }) => {
+
+    const navigate = useNavigate()
 
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = JSON.parse(localStorage.getItem('access-token'))
 
     const todayDate = new Date()
 
     const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
-
+    const [authorized, setAuthorized] = useState(false)
     const [clubPayments, setClubPayments] = useState([])
     const [totalPayments, setTotalPayments] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -37,7 +54,7 @@ const MainChainOwnersClubsPaymentsPage = () => {
 
         serverRequest.get(`/registrations/chain-owners/${ownerId}/payments`, {
             headers: {
-                'x-access-token': localStorage.getItem('access-token')
+                'x-access-token': accessToken
             },
             params: statQuery
         })
@@ -61,7 +78,11 @@ const MainChainOwnersClubsPaymentsPage = () => {
     }, [statQuery, reload])
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
@@ -72,6 +93,7 @@ const MainChainOwnersClubsPaymentsPage = () => {
                     <div className="page-main">
                         <ChainOwnersClubsPaymentsTable 
                         data={clubPayments} 
+                        statsQuery={statQuery}
                         currency={'EGP'}
                         totalPayments={totalPayments}
                         reload={reload}
@@ -83,6 +105,8 @@ const MainChainOwnersClubsPaymentsPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

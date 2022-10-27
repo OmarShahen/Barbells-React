@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import ClubsPage from "./pages/clubs-page"
 import ClubDashboardPage from "./pages/club/stats/club-dashboard-page"
 import ClubMembersPage from "./pages/club/stats/club-members-page"
 import ClubMemberPage from "./pages/club/stats/club-member-page"
@@ -9,9 +8,6 @@ import ClubPackagesPage from "./pages/club/stats/club-packages-page"
 import ClubPackagePage from "./pages/club/stats/club-package-page"
 import ClubRegistrationsPage from "./pages/club/stats/club-registrations-page"
 import ClubAttendancesPage from "./pages/club/stats/club-attendances-page"
-import ClubCancelledAttendancesPage from './pages/club/stats/club-cancelled-attendances'
-import ClubCancelledRegistrationsPage from './pages/club/stats/club-cancelled-registrations'
-import ClubFreezedRegistrationsPage from "./pages/club/stats/club-freezed-registrations"
 
 import ChainOwnersPage from "./pages/chain-owners/chain-owners-page"
 
@@ -66,50 +62,48 @@ const App = () => {
       <Route path="/chain-owners" element={<ChainOwnersPage />} />
 
         {/** Clubs Pages Section */}
-        <Route path="/app/clubs" element={<ClubsPage />} />
-        <Route path="/app/clubs/:clubId/dashboard" element={<ClubDashboardPage />} />
-        <Route path="/app/clubs/:clubId/members/stats" element={<ClubMembersPage />} />
-        <Route path="/app/clubs/:clubId/members/:memberId/stats" element={<ClubMemberPage />} />
-        <Route path="/app/clubs/:clubId/staffs/stats" element={<ClubStaffsPage />} />
-        <Route path="/app/clubs/:clubId/staffs/:staffName/:staffId/stats" element={<ClubStaffPage />} />
-        <Route path="/app/clubs/:clubId/packages/stats" element={<ClubPackagesPage />} />
-        <Route path="/app/clubs/:clubId/packages/:packageId/stats" element={<ClubPackagePage />} />
-        <Route path="/app/clubs/:clubId/registrations/stats" element={<ClubRegistrationsPage />} />
-        <Route path="/app/clubs/:clubId/attendances/stats" element={<ClubAttendancesPage />} />
-
+        <Route path="/app/clubs/:clubId/dashboard" element={<ClubDashboardPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/members/stats" element={<ClubMembersPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/members/:memberId/stats" element={<ClubMemberPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/staffs/stats" element={<ClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
+        <Route path="/app/clubs/:clubId/staffs/:staffName/:staffId/stats" element={<ClubStaffPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
+        <Route path="/app/clubs/:clubId/packages/stats" element={<ClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
+        <Route path="/app/clubs/:clubId/packages/:packageId/stats" element={<ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
+        <Route path="/app/clubs/:clubId/registrations/stats" element={<ClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
+        <Route path="/app/clubs/:clubId/attendances/stats" element={<ClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
 
 
         {/** Main Club Pages Section */}
-        <Route path="/app/clubs/:clubId/members/main" element={<MainClubMembersPage />} />
-        <Route path="/app/clubs/:clubId/staffs/main" element={<MainClubStaffsPage />} />
-        <Route path="/app/clubs/:clubId/packages/main" element={<MainClubPackagesPage />} />
-        <Route path="/app/clubs/:clubId/registrations/main" element={<MainClubRegistrationsPage />} />
-        <Route path="/app/clubs/:clubId/attendances/main" element={<MainClubAttendancesPage />} />
-        <Route path="/app/clubs/:clubId/cancelled-attendances/main" element={<MainClubCancelledAttendancesPage />} />
-        <Route path="/app/clubs/:clubId/cancelled-registrations/main" element={<MainClubCancelledRegistrationsPage />} />
-        <Route path="/app/clubs/:clubId/freezed-registrations/main" element={<MainClubFreezedRegistrationsPage />} />
-        <Route path="/app/clubs/:clubId/clubs-admins/main" element={<MainClubAdminsPage />} />
-        <Route path="/app/clubs/:clubId/payments/main" element={<MainClubPaymentsPagePage />} />
-        <Route path="/app/clubs/:clubId/registrations/:registrationId/attendances/main" element={<MainClubRegistrationAttendancesPage />} />
+        <Route path="/app/clubs/:clubId/members/main" element={<MainClubMembersPage roles={['ADMIN','CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/staffs/main" element={<MainClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/packages/main" element={<MainClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/registrations/main" element={<MainClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/attendances/main" element={<MainClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/cancelled-attendances/main" element={<MainClubCancelledAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/cancelled-registrations/main" element={<MainClubCancelledRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/freezed-registrations/main" element={<MainClubFreezedRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/clubs-admins/main" element={<MainClubAdminsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/payments/main" element={<MainClubPaymentsPagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
+        <Route path="/app/clubs/:clubId/registrations/:registrationId/attendances/main" element={<MainClubRegistrationAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
 
         {/** Main Chain Owners Pages Section */}
-        <Route path="/app/chain-owners/:ownerId/clubs/main" element={<ChainOwnerClubsPage />} />
-        <Route path="/app/chain-owners/:ownerId/payments/main" element={<MainChainOwnersClubsPaymentsPage />} />
-        <Route path="/app/chain-owners/:ownerId/staffs/main" element={<MainChainOwnersStaffsPage />} />
-        <Route path="/app/chain-owners/:ownerId/club-admins/main" element={<MainChainOwnersClubAdminsPage />} />
-        <Route path="/app/chain-owners/:ownerId/members/main" element={<MainChainOwnersMembersPage />} />
-        <Route path="/app/chain-owners/:ownerId/registrations/main" element={<MainChainOwnersRegistrationsPage />} />
-        <Route path="/app/chain-owners/:ownerId/attendances/main" element={<MainChainOwnersAttendancesPage />} />
-        <Route path="/app/chain-owners/:ownerId/packages/main" element={<MainChainOwnersPackagesPage />} />
-        <Route path="/app/chain-owners/:ownerId/cancelled-registrations/main" element={<MainChainOwnersCancelledRegistrationsPage />} />
-        <Route path="/app/chain-owners/:ownerId/cancelled-attendances/main" element={<MainChainOwnersCancelledAttendancesPage />} />
-        <Route path="/app/chain-owners/:ownerId/freezed-registrations/main" element={<MainChainOwnersFreezedRegistrationsPage />} />
+        <Route path="/app/chain-owners/:ownerId/clubs/main" element={<ChainOwnerClubsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/payments/main" element={<MainChainOwnersClubsPaymentsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/staffs/main" element={<MainChainOwnersStaffsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/club-admins/main" element={<MainChainOwnersClubAdminsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/members/main" element={<MainChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/registrations/main" element={<MainChainOwnersRegistrationsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/attendances/main" element={<MainChainOwnersAttendancesPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/packages/main" element={<MainChainOwnersPackagesPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/cancelled-registrations/main" element={<MainChainOwnersCancelledRegistrationsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/cancelled-attendances/main" element={<MainChainOwnersCancelledAttendancesPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/freezed-registrations/main" element={<MainChainOwnersFreezedRegistrationsPage roles={['ADMIN', 'OWNER']} />} />
 
-        <Route path="/app/chain-owners/:ownerId/dashboard" element={<ChainOwnersDashboardPage />} />
-        <Route path="/app/chain-owners/:ownerId/registrations/stats" element={<ChainOwnersRegistrationsPage />} />
-        <Route path="/app/chain-owners/:ownerId/attendances/stats" element={<ChainOwnersAttendancesPage />} />
-        <Route path="/app/chain-owners/:ownerId/packages/stats" element={<ChainOwnersPackagesPage />} />
-        <Route path="/app/chain-owners/:ownerId/members/stats" element={<ChainOwnersMembersPage />} />
+        <Route path="/app/chain-owners/:ownerId/dashboard" element={<ChainOwnersDashboardPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/registrations/stats" element={<ChainOwnersRegistrationsPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/attendances/stats" element={<ChainOwnersAttendancesPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/packages/stats" element={<ChainOwnersPackagesPage roles={['ADMIN', 'OWNER']} />} />
+        <Route path="/app/chain-owners/:ownerId/members/stats" element={<ChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />} />
 
         <Route path="/clubs-admins/login" element={<LoginForm />}/>
         <Route path="/chains-owners/login" element={<ChainOwnerLoginForm />}/>

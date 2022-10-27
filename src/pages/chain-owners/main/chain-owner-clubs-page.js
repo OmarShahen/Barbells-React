@@ -9,20 +9,37 @@ import { format } from 'date-fns'
 import ClubForm from '../../../components/forms/club-form'
 import translations from '../../../i18n'
 import { config } from '../../../config/config'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const ChainOwnerClubsPage = () => {
+const ChainOwnerClubsPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
 
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
+    const [authorized, setAuthorized] = useState(false)
     const [clubs, setClubs] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -56,7 +73,11 @@ const ChainOwnerClubsPage = () => {
     }, [reload])
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
             <FloatingFormButton modalId={'club-form-modal'}/>
@@ -76,6 +97,8 @@ const ChainOwnerClubsPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

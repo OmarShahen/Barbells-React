@@ -8,18 +8,34 @@ import FloatingFormButton from '../../../components/buttons/forms-floating-butto
 import translations from '../../../i18n'
 import { config } from '../../../config/config'
 import ClubPackageForm from '../../../components/forms/package-form'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
+const MainChainOwnersPackagesPage = ({ roles }) => {
 
-const MainChainOwnersPackagesPage = () => {
+    const navigate = useNavigate()
 
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = JSON.parse(localStorage.getItem('access-token'))
 
-
+    const [authorized, setAuthorized] = useState(false)
     const [packages, setPackages] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -27,7 +43,7 @@ const MainChainOwnersPackagesPage = () => {
 
         serverRequest.get(`/packages/chain-owners/${ownerId}`, {
             headers: {
-                'x-access-token': localStorage.getItem('access-token')
+                'x-access-token': accessToken
             }
         })
         .then(response => {
@@ -54,7 +70,11 @@ const MainChainOwnersPackagesPage = () => {
       
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
             <FloatingFormButton modalId={'package-form-modal'}/>
@@ -79,6 +99,8 @@ const MainChainOwnersPackagesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

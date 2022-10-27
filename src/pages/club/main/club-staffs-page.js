@@ -8,25 +8,41 @@ import FloatingFormButton from '../../../components/buttons/forms-floating-butto
 import ClubStaffForm from '../../../components/forms/staff-form'
 import { config } from '../../../config/config'
 import translations from '../../../i18n'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const MainClubStaffsPage = () => {
+const MainClubStaffsPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [staffs, setStaffs] = useState([])
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
 
     useEffect(() => {
 
         setIsLoading(true)
-
         serverRequest.get(`/staffs/clubs/${clubId}/roles/staff`, {
             headers
         })
@@ -37,7 +53,6 @@ const MainClubStaffsPage = () => {
         })
         .catch(errorResponse => {
             setIsLoading(false)
-
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
         })
            
@@ -47,7 +62,11 @@ const MainClubStaffsPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
             <FloatingFormButton modalId={"staff-form-modal"}/>
@@ -77,6 +96,8 @@ const MainClubStaffsPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

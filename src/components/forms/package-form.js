@@ -60,7 +60,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
         if(!attendance || !Number.parseInt(attendance)) return setAttendanceError('package attendance is required to be a number')
 
-        if(!price || !Number.parseInt(price)) return setPriceError('package price is required to be a number')
+        if(!price || !Number.parseFloat(price)) return setPriceError('package price is required to be a number')
 
         if(!duration) return setDurationError('package duration is required to be a number')
 
@@ -72,12 +72,14 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
             clubId: targetClub,
             title,
             attendance: Number.parseInt(attendance),
-            price: Number.parseInt(price),
+            price: Number.parseFloat(price),
             expiresIn: duration
         }
 
         const requestHeader = {
-            headers: `${localStorage.getItem('access-token')}`
+            headers: {
+                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+            }
         }
 
         setIsSubmitting(true)
@@ -102,8 +104,6 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
         .catch(errorResponse => {
 
             setIsSubmitting(false)
-
-            console.log(errorResponse)
             
             try {
 
@@ -145,7 +145,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
                             </span>
                         </div>
                     </h3>
-                    <div className="divider"></div>
+                    <div className="divider form-divider"></div>
                 </div>
                 <form className="row" name="package-form" id="package-form" onSubmit={submitForm} autocomplete="off">
                     <div className="col s12 row">
@@ -191,7 +191,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
                                 </div>
                                 <div className="input-field input-field-container col s12 m6">
                                     <input 
-                                    type="number" 
+                                    type="text" 
                                     onChange={ e => setPrice(e.target.value)} 
                                     onClick={ e => {
                                         setPriceError()

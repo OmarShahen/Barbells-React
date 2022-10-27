@@ -261,6 +261,7 @@
     "Allowed": "مسموح",
     "Security": "الامان",
     "Secure": "مؤمن",
-    "Insecure": "غير امن"
+    "Insecure": "غير امن",
+    "Membership must be a number": "العضوية يجب ان تكون رقم"
 
 }

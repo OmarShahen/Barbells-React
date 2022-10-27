@@ -5,7 +5,6 @@ import Card from '../../../components/cards/card'
 import RegistrationsTable from '../../../components/tables/club/club-registrations'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
@@ -18,28 +17,32 @@ import { iconPicker } from '../../../utils/icon-finder'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const ClubRegistrationsPage = () => {
+const ClubRegistrationsPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-
-    const club = JSON.parse(localStorage.getItem('club'))
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
     todayDate = new Date()
 
-    const [submit, setSubmit] = useState(true)
     const [statQuery, setStatQuery] = useState({
         from: format(monthDate, 'yyyy-MM-dd'), 
         to: format(todayDate, 'yyyy-MM-dd') 
     })
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 
     const [totalRegistrations, setTotalRegistrations] = useState(0)
@@ -67,6 +70,16 @@ const ClubRegistrationsPage = () => {
     const [registrationExpirationLabel, setRegistrationExpirationLabel] = useState([])
     const [registrationExpirationData, setRegistrationExpirationData] = useState([])
 
+
+    useEffect(() => {
+        
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -145,18 +158,19 @@ const ClubRegistrationsPage = () => {
     }
 
 
-
     return (
+        <>
+        { authorized
+        &&
         <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
-
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]['Registrations Stats']} statsQuery={statQuery} />
+                        <NavBar pageName={translations[lang]['Registrations Stats']} pageRoles={roles} statsQuery={statQuery} />
                         <div className="page-main">
                             <div className="page-body-header">
                                 <h5>
@@ -269,10 +283,7 @@ const ClubRegistrationsPage = () => {
                                         />
                                     </div>
                                 </div>
-                                
                             </div>
-                        
-
                             <div className="row">
                                 <div className="col s12">
                                     <RegistrationsTable data={registrations} />
@@ -282,7 +293,9 @@ const ClubRegistrationsPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

@@ -3,6 +3,10 @@
     padding: .5rem;
 }
 
+.form-divider {
+    margin-bottom: 1rem;
+}
+
 .input-field-container {
     margin: .5rem 0;
 }

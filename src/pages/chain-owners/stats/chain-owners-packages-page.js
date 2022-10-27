@@ -17,13 +17,20 @@ import { iconPicker } from '../../../utils/icon-finder'
 import translations from '../../../i18n'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import CachedIcon from '@mui/icons-material/Cached'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
-const ChainOwnersPackagesPage = () => {
+const ChainOwnersPackagesPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
+
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
@@ -41,10 +48,21 @@ const ChainOwnersPackagesPage = () => {
     const [totalPackagesRegistrations, setTotalPackagesRegistrations] = useState(0)
     const [packages, setPackages] = useState([])
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 
     const [packagesLabels, setPackagesLabels] = useState([])
     const [packagesData, setPackagesData] = useState([])
+
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -108,7 +126,11 @@ const ChainOwnersPackagesPage = () => {
 
 
     return (
-        <div className="blue-grey lighten-5">
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
@@ -176,6 +198,8 @@ const ChainOwnersPackagesPage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

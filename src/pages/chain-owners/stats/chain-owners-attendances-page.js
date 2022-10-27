@@ -20,15 +20,21 @@ import CachedIcon from '@mui/icons-material/Cached'
 import translations from '../../../i18n'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { to12 } from '../../../utils/hours'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
-const ChainOwnersAttendancesPage = () => {
+const ChainOwnersAttendancesPage = ({ roles }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const navigate = useNavigate()
+
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
+    const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
@@ -44,6 +50,7 @@ const ChainOwnersAttendancesPage = () => {
     const [totalCancelledAttendances, setTotalCancelledAttendances] = useState(0)
     const [attendances, setAttendances] = useState([])
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 
     const [clubsLabels, setClubsLabels] = useState([])
@@ -61,6 +68,15 @@ const ChainOwnersAttendancesPage = () => {
     const [hoursLabels, setHoursLabels] = useState([])
     const [hoursData, setHoursData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/chains-owners/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -146,7 +162,11 @@ const ChainOwnersAttendancesPage = () => {
 
 
     return (
-        <div className="lighten-5 page-body">
+        <>
+        {
+            authorized
+            &&
+            <div className="lighten-5 page-body">
             <SideBar />
             <Toaster />
             <FloatingFormButton />
@@ -319,7 +339,9 @@ const ChainOwnersAttendancesPage = () => {
                         </div>                        
                     </div>
                 </div>
-            </div>
+        </div>
+        }
+        </>
     )
 }
 

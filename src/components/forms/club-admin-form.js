@@ -73,13 +73,13 @@ const ClubAdminForm = () => {
             password
         }
 
-        const requestHeader = {
-            headers: `${localStorage.getItem('access-token')}`
-        }
-
         setIsSubmitting(true)
 
-        serverRequest.post('/staffs/owners', newStaff, requestHeader)
+        serverRequest.post('/staffs/club-admin', newStaff, {
+            headers: {
+                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+            }
+        })
         .then(response => {
 
             setIsSubmitting(false)
@@ -90,7 +90,6 @@ const ClubAdminForm = () => {
 
             document.querySelector('.modal').M_Modal.close()
             return resetForm()
-
 
         })
         .catch(errorResponse => {

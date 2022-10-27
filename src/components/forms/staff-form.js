@@ -78,13 +78,15 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
             clubId: targetClub,
             name,
             email,
-            phone: Number.parseInt(phone),
+            phone,
             countryCode: Number.parseInt(countryCode),
             password
         }
 
         const requestHeader = {
-            headers: `${localStorage.getItem('access-token')}`
+            headers: {
+                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+            }
         }
 
         setIsSubmitting(true)
@@ -97,7 +99,6 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
             const successMessage = response.data.message
 
             toast.success(successMessage, { duration: 5000, position: 'top-right' })
-
             setReload(reload + 1)
 
             return resetForm()
@@ -107,8 +108,6 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
         .catch(errorResponse => {
 
             setIsSubmitting(false)
-
-            console.log(errorResponse)
 
             try {
 
@@ -170,7 +169,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
                                 </div>
                             }
                     </h3>
-                    <div className="divider"></div>
+                    <div className="divider form-divider"></div>
                 </div>
                 <form className="row" name="staff-form" id="staff-form" onSubmit={submitForm} autocomplete="off">
                     <div className="col s12 row">

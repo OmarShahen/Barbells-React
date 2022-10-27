@@ -4,7 +4,6 @@ import ClubSideBar from '../../../components/navigation/club-admin-side-bar'
 import ChainOwnerSideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
 import ClubRegistrationsTable from '../../../components/tables/club/club-registrations'
-import PieChart from '../../../components/charts/pie-chart'
 import LineChart from '../../../components/charts/line-chart'
 import BarChart from '../../../components/charts/bar-chart'
 import { serverRequest } from '../../../API/request'
@@ -13,24 +12,25 @@ import FloatingFormButton from '../../../components/buttons/floating-button'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import ChartModal from '../../../components/modals/chart-modal'
 import { config } from '../../../config/config'
-import PackageInfoCard from '../../../components/cards/package-info'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
 import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
+import { useNavigate } from 'react-router-dom'
+import { isUserValid } from '../../../utils/security'
 
 
+const ClubPackagePage = ({ roles }) => {
 
-const ClubPackagePage = () => {
+    const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
-    const clubId = pagePath.split('/')[3]
     const packageId = pagePath.split('/')[5]
     const user = JSON.parse(localStorage.getItem('user'))
+    const accessToken = localStorage.getItem('access-token')
 
 
     const lang = localStorage.getItem('lang')
@@ -39,6 +39,7 @@ const ClubPackagePage = () => {
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
     todayDate = new Date()
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [statQuery, setStatQuery] = useState({
         from: format(monthDate, 'yyyy-MM-dd'), 
@@ -61,17 +62,6 @@ const ClubPackagePage = () => {
     const [totalRegistrations, setTotalRegistrations] = useState(0)
     const [totalMembers, setTotalMembers] = useState(0)
 
-
-    const [packageGenderPercentageStat , setPackageGenderPercentageStat] = useState({
-        totalMembers: 0,
-        totalMales: 0,
-        totalFemales: 0,
-        malePercentage: 0,
-        femalePercentage: 0
-    })
-
-    const [chartColors, setChartColors] = useState([])
-
     const [packagesLabels, setPackagesLabels] = useState([])
     const [packagesData, setPackagesData] = useState([])
 
@@ -84,6 +74,15 @@ const ClubPackagePage = () => {
     const [packageGrowthLabels, setPackageGrowthLabels] = useState([])
     const [packageGrowthData, setPackageGrowthData] = useState([])
 
+    useEffect(() => {
+
+        if(!isUserValid(accessToken, user, roles)) {
+            setAuthorized(false)
+            navigate('/clubs-admins/login')
+        } else {
+            setAuthorized(true)
+        }
+    }, [])
 
     useEffect(() => {
 
@@ -97,8 +96,6 @@ const ClubPackagePage = () => {
                 const data = response.data
     
                 setClubPackage(data.package)
-    
-                setPackageGenderPercentageStat(data.packageGenderPercentageStat)
     
                 setTotalPackageRegistrations(data.totalPackageRegistrations)
                 setTotalActiveRegistrations(data.totalActiveRegistrations)
@@ -114,7 +111,6 @@ const ClubPackagePage = () => {
                 
                 let packagesLabels = [data.package.title, translations[lang]['other packages']]
                 let packagesData = [packageStats.packageTotal, packageStats.othersTotal]            
-                let packagesChartColors = config.colors  
 
                 let totalRegistrations = 0
                 packagesData.map(registration => totalRegistrations += registration)
@@ -123,7 +119,6 @@ const ClubPackagePage = () => {
     
                 setPackagesLabels(packagesLabels)
                 setPackagesData(packagesData)
-                setChartColors(packagesChartColors)
     
                 let ageStats = data.packageAgeStats
                 let ageLabels = ageStats.map(stat => stat._id || 0)
@@ -183,15 +178,19 @@ const ClubPackagePage = () => {
     }
 
     return (
-        <div className="blue-grey lighten-5">
-        { user.role === 'OWNER' ? <ChainOwnerSideBar /> : <ClubSideBar /> }
+        <>
+        {
+            authorized
+            &&
+            <div className="blue-grey lighten-5">
+            { user.role === 'OWNER' ? <ChainOwnerSideBar /> : <ClubSideBar /> }
             <Toaster />
             <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} />
+                        <NavBar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} pageRoles={roles} />
                         <div className="page-main">
                         <div className="page-body-header">
                                 <h5>
@@ -363,6 +362,8 @@ const ClubPackagePage = () => {
                 </div>
             </div>
         </div>
+        }
+        </>
     )
 }
 

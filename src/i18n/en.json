@@ -259,5 +259,6 @@
     "Allowed": "Allowed",
     "Security": "Security",
     "Secure": "Secure",
-    "Insecure": "Open"
+    "Insecure": "Open",
+    "Membership must be a number": "Membership must be a number"
 }

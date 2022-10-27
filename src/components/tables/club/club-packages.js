@@ -17,7 +17,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
+    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
 
     const [packages, setPackages] = useState(data)
     const [updatedPackages, setUpdatedPackages] = useState([])
@@ -59,7 +59,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             newPackage.expiresIn = `${expirationNumber} ${translations[lang][expirationPeriod]}`
         }
                 
-        serverRequest.put(`/packages/${newPackage._id}`, newPackage)
+        serverRequest.put(`/packages/${newPackage._id}`, newPackage, headers)
         .then(response => {
 
             const packageData = response.data.package
@@ -85,7 +85,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         const packageTableId = packageData.tableData.id
         const packagesData = [...packages]
 
-        serverRequest.patch(`/packages/${packageData._id}`, { isOpen: !packageData.isOpen })
+        serverRequest.patch(`/packages/${packageData._id}`, { isOpen: !packageData.isOpen }, { headers })
         .then(response => {
 
             packagesData[packageTableId] = response.data.package

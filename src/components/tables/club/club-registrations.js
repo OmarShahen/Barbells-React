@@ -5,9 +5,10 @@ import { trimRegistrations } from '../../../utils/trimmers'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n/index'
+import DropdownAttendancesTable from './dropdown/attendances'
 
 
-const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, isLoading, reload, setReload }) => {
+const ClubRegistrationsTable = ({ data, statsQuery, isClub, isAttendance, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const navigate = useNavigate()
 
@@ -137,8 +138,6 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
         }
     }
 
-
-
     return (
         <div className="table-container">
             <MaterialTable 
@@ -188,6 +187,8 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                             )
                     }
                 ]}
+
+                detailPanel={rowData => <DropdownAttendancesTable registrationId={rowData._id} statsQuery={statsQuery}/>}
 
                 localization={ lang === 'ar' ? {
                     body: {

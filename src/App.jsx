@@ -100,6 +100,7 @@ const App = () => {
         <Route path="/app/chain-owners/:ownerId/members/stats" element={<ChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />} />
 
         <Route path="/clubs-admins/login" element={<LoginForm />}/>
+        <Route path="/" element={<LoginForm />} />
         <Route path="/chains-owners/login" element={<ChainOwnerLoginForm />}/>
         <Route path="/forgot-password" element={<ForgotPasswordForm />} />
         <Route path="/reset-password/:token" element={<ResetPasswordForm />} />

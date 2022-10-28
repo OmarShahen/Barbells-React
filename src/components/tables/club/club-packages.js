@@ -11,13 +11,13 @@ import PackageNav from '../../navigation/options/package-nav'
 import Modal from '../../modals/modal'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
 
     const [packages, setPackages] = useState(data)
     const [updatedPackages, setUpdatedPackages] = useState([])

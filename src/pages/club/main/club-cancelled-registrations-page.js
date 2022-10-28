@@ -9,18 +9,19 @@ import { config } from '../../../config/config'
 import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 const MainClubCancelledRegistrationsPage = ({ roles }) => {
 
     const navigate = useNavigate()
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)

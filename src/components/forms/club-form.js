@@ -4,6 +4,7 @@ import { serverRequest } from '../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import CircularLoadingButton from '../buttons/loading-button'
 import M from 'materialize-css'
+import { localStorageSecured } from '../../security/localStorage'
 
 const ClubForm = () => {
 
@@ -89,7 +90,9 @@ const ClubForm = () => {
         }
 
         const requestHeader = {
-            headers: `${localStorage.getItem('access-token')}`
+            headers: {
+                'x-access-token': localStorageSecured.get('access-token')
+            }
         }
 
         setIsSubmitting(true)

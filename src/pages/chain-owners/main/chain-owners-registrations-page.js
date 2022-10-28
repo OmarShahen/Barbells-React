@@ -5,11 +5,12 @@ import ClubRegistrationsTable from '../../../components/tables/club/club-registr
 import { serverRequest } from '../../../API/request'
 import { format } from 'date-fns'
 import toast, { Toaster } from 'react-hot-toast'
-import FloatingFormButton from '../../../components/buttons/forms-floating-button'
 import translations from '../../../i18n'
 import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
+
 
 
 const MainChainOwnersRegistrationsPage = ({ roles }) => {
@@ -20,8 +21,8 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = JSON.parse(localStorage.getItem('access-token'))
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [registrations, setRegistrations] = useState([])

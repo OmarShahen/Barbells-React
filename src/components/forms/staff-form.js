@@ -8,6 +8,7 @@ import { PhoneAndroidRounded } from '@mui/icons-material'
 import translations from '../../i18n'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
+import { localStorageSecured } from '../../security/localStorage'
 
 
 const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
@@ -15,7 +16,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
-    const owner = JSON.parse(localStorage.getItem('user'))
+    const owner = localStorageSecured.get('user')
     const lang = localStorage.getItem('lang')
     
 
@@ -85,7 +86,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
 
         const requestHeader = {
             headers: {
-                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+                'x-access-token': localStorageSecured.get('access-token')
             }
         }
 

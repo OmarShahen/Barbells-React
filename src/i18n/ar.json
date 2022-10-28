@@ -262,6 +262,7 @@
     "Security": "الامان",
     "Secure": "مؤمن",
     "Insecure": "غير امن",
-    "Membership must be a number": "العضوية يجب ان تكون رقم"
+    "Membership must be a number": "العضوية يجب ان تكون رقم",
+    "Invalid phone formate": "صيغة الهاتف غير صالحة"
 
 }

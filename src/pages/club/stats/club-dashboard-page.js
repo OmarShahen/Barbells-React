@@ -19,12 +19,13 @@ import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
 
 const ClubDashboardPage = ({ roles }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
@@ -32,8 +33,8 @@ const ClubDashboardPage = ({ roles }) => {
 
     const todayDate = new Date()
 
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)

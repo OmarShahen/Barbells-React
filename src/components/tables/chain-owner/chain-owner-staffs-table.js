@@ -1,15 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import toast from 'react-hot-toast'
-import { serverRequest } from '../../../API/request'
-import { trimChainOwners } from '../../../utils/trimmers'
 import translations from '../../../i18n'
-
 
 const ChainOwnersStaffsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
 
     const lang = localStorage.getItem('lang')
 

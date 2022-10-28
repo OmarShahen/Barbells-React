@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import './nav-bar.css'
-import OwnerStatsNav from './owner-stats-nav'
-import Modal from '../modals/modal'
 import M from 'materialize-css'
-import ClubAdminStatNav from './club-admin-stats-nav'
 import UserNavIcon from '../dropdown/user-nav-icon'
 import ClubAdminResponsiveMenu from './club-admin-responsive-menu'
 import DataDateShower from '../data-date-shower'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
+import { localStorageSecured } from '../../security/localStorage'
 
 const NavBar = ({ pageName, statsQuery }) => {
 
-    const user = JSON.parse(localStorage.getItem('user'))
-    const club = JSON.parse(localStorage.getItem('club'))
+    const user = localStorageSecured.get('user')
+    const club = localStorageSecured.get('club')
 
     const [showMenu, setShowMenu] = useState(false)
 
@@ -42,18 +40,6 @@ const NavBar = ({ pageName, statsQuery }) => {
         <>
             <div className="app-all-nav-container blue white">
                 <div className="app-nav-bar white-text">
-                    
-
-                    {
-                        user.role === 'CLUB-ADMIN' ?
-                        <Modal id={'club-admin-stats-nav'}>
-                            <ClubAdminStatNav />
-                        </Modal>
-                        :
-                        <Modal id={'owner-stats-nav'}>
-                            <OwnerStatsNav />
-                        </Modal>
-                    }
                     <div className="club-admin-responsive-menu" onClick={e => toggleMenu()}>
                         <i className="material-icons">menu</i>
                     </div>

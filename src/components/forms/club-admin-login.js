@@ -1,11 +1,11 @@
-import React, { useState, useEffect  } from 'react'
+import React, { useState } from 'react'
 import './login.css'
 import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
 import Logo from '../logo/logo'
-
+import { localStorageSecured } from '../../security/localStorage'
 
 const LoginForm = () => {
 
@@ -29,6 +29,10 @@ const LoginForm = () => {
 
         if(!phone) {
             return setPhoneError(translations[lang]['Phone is required'])
+        }
+
+        if(!Number.parseInt(phone)) {
+            return setPhoneError(translations[lang]['Invalid phone formate'])
         }
 
         if(!password) {
@@ -56,13 +60,13 @@ const LoginForm = () => {
             const data = response.data
             const token = data.token
 
-            localStorage.setItem('access-token', JSON.stringify(token))
+            localStorageSecured.set('access-token', token)
 
             const user = data.clubAdmin
             const club = data.club
 
-            localStorage.setItem('user', JSON.stringify(user))
-            localStorage.setItem('club', JSON.stringify(club))
+            localStorageSecured.set('user', user)
+            localStorageSecured.set('club', club)
 
             return navigate(`/app/clubs/${club._id}/dashboard`)
 
@@ -70,14 +74,13 @@ const LoginForm = () => {
         .catch(error => {
 
             setIsLoading(false)
-            const errorData = error.response
             
-            if(errorData.data.field === 'phone') {
-                return setPhoneError(errorData.message)
+            if(error.response.data.field === 'phone') {
+                return setPhoneError(error.response.data.message)
             }
 
-            if(errorData.data.field === 'password') {
-                return setPasswordError(errorData.message)
+            if(error.response.data.field === 'password') {
+                return setPasswordError(error.response.data.message)
             }
         })
     }
@@ -139,7 +142,7 @@ const LoginForm = () => {
                         </div>
                         <div className="col s12">
                                <div className="left">
-                               <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
+                                    <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
                         

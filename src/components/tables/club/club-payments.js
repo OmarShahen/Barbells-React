@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { serverRequest } from '../../../API/request'
-import { format } from 'date-fns'
-import { DataArrayOutlined, DataArrayTwoTone, DataObjectOutlined } from '@mui/icons-material'
 import { trimStaffPayments } from '../../../utils/trimmers'
-import toast, { Toaster } from 'react-hot-toast'
-import { TrendingUpRounded } from '@material-ui/icons'
 import PaymentIcon from '@mui/icons-material/Payment'
-import RegistrationTable from './club-registrations'
 import translations from '../../../i18n'
 import PaymentsDetaisTable from '../payments-details-table'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 const ClubPaymentsTable = ({ data, statsQuery, isClub, totalPayments, currency, isRefreshAdded, isLoading, reload, setReload }) => {
@@ -22,7 +16,7 @@ const ClubPaymentsTable = ({ data, statsQuery, isClub, totalPayments, currency, 
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
-    const club = JSON.parse(localStorage.getItem('club'))
+    const club = localStorageSecured.get('club')
 
     const lang = localStorage.getItem('lang')
     

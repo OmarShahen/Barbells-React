@@ -5,7 +5,6 @@ import Card from '../../../components/cards/card'
 import AttendancesTable from '../../../components/tables/club/club-attendances'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
@@ -14,27 +13,27 @@ import ChartModal from '../../../components/modals/chart-modal'
 import { config } from '../../../config/config'
 import format from 'date-fns/format'
 import { iconPicker } from '../../../utils/icon-finder'
-import PackagesPercentageCard from '../../../components/cards/packages-percentages'
-import AttendancesPercentageCard from '../../../components/cards/attendances-percentages'
 import CachedIcon from '@mui/icons-material/Cached'
 import translations from '../../../i18n'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { to12 } from '../../../utils/hours'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
+
 
 
 const ChainOwnersAttendancesPage = ({ roles }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))

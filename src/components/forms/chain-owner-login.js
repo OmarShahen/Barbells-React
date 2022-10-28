@@ -5,6 +5,8 @@ import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
 import Logo from '../logo/logo'
+import { localStorageSecured } from '../../security/localStorage'
+
 
 const ChainOwnerLoginForm = () => {
 
@@ -30,6 +32,10 @@ const ChainOwnerLoginForm = () => {
             return setPhoneError(translations[lang]['Phone is required'])
         }
 
+        if(!Number.parseInt(phone)) {
+            return setPhoneError(translations[lang]['Invalid phone formate'])
+        }
+
         if(!password) {
             return setPasswordError(translations[lang]['Password is required'])
         }
@@ -53,34 +59,25 @@ const ChainOwnerLoginForm = () => {
             setIsLoading(false)
 
             const data = response.data
-
             const token = data.token
-
-            localStorage.setItem('access-token', JSON.stringify(token))
-
             const user = data.chainOwner
 
-            user.role = 'OWNER'
-
-            localStorage.setItem('user', JSON.stringify(user))
+            localStorageSecured.set('access-token', token)
+            localStorageSecured.set('user', user)
 
             navigate(`/app/chain-owners/${user._id}/dashboard`)
 
         })
         .catch(error => {
 
-            console.log(error)
-
             setIsLoading(false)
 
-            const errorData = error.response.data
-
-            if(errorData.field === 'phone') {
-                return setPhoneError(errorData.message)
+            if(error.response.data.field === 'phone') {
+                return setPhoneError(error.response.data.message)
             }
 
-            if(errorData.field === 'password') {
-                return setPasswordError(errorData.message)
+            if(error.response.data.field === 'password') {
+                return setPasswordError(error.response.data.message)
             }
         })
     }

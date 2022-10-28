@@ -5,6 +5,8 @@ import toast from 'react-hot-toast'
 import translations from '../../i18n'
 import { config } from '../../config/config'
 import CircularLoadingButton from '../buttons/loading-button'
+import { localStorageSecured } from '../../security/localStorage'
+
 
 const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
 
@@ -17,7 +19,7 @@ const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
         serverRequest.get(`/registrations/staffs/${staffId}`, { 
             params: statsQuery,
             headers: {
-                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+                'x-access-token': localStorageSecured.get('access-token')
             }
         })
         .then(response => {

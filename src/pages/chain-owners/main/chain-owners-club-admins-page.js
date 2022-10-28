@@ -11,6 +11,8 @@ import translations from '../../../i18n'
 import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
+
 
 
 const MainChainOwnersClubAdminsPage = ({ roles }) => {
@@ -21,8 +23,8 @@ const MainChainOwnersClubAdminsPage = ({ roles }) => {
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = JSON.parse(localStorage.getItem('access-token'))
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [staffs, setStaffs] = useState([])

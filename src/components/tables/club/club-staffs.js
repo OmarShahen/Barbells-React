@@ -2,18 +2,14 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
 import { serverRequest } from '../../../API/request'
-import { format } from 'date-fns'
-import { DataArrayOutlined, DataArrayTwoTone, DataObjectOutlined } from '@mui/icons-material'
 import { trimStaffs } from '../../../utils/trimmers'
-import toast, { Toaster } from 'react-hot-toast'
-import { TrendingUpRounded } from '@material-ui/icons'
-import StaffNav from '../../navigation/options/staff-nav'
+import toast from 'react-hot-toast'
 import translations from '../../../i18n'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
 
     const [staffs, setStaffs] = useState(trimStaffs(data))
     const [updatedStaffs, setUpdatedStaffs] = useState([])
@@ -21,9 +17,6 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
     const [filter, setFilter] = useState(false)
 
     const lang = localStorage.getItem('lang')
-
-    const pagePath = window.location.pathname
-    const clubId = pagePath.split('/')[3]
 
     const columns = () => {
 

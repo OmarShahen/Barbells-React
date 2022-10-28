@@ -5,7 +5,6 @@ import Card from '../../../components/cards/card'
 import RegistrationsTable from '../../../components/tables/club/club-registrations'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
@@ -17,23 +16,23 @@ import { iconPicker } from '../../../utils/icon-finder'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import translations from '../../../i18n'
 import CachedIcon from '@mui/icons-material/Cached'
-import PieChartCard from '../../../components/cards/pie-chart-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 const ChainOwnersRegistrationsPage = ({ roles }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))

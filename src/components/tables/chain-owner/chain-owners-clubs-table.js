@@ -6,13 +6,13 @@ import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 import { trimClubs } from '../../../utils/trimmers'
 import translations from '../../../i18n'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 
 const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
 
     const lang = localStorage.getItem('lang')
 

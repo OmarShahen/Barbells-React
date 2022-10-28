@@ -1,10 +1,6 @@
 import React from 'react'
 import './side-bar.css'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
-import GroupIcon from '@mui/icons-material/Group'
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter'
-import CardMembershipIcon from '@mui/icons-material/CardMembership'
-import LogoutIcon from '@mui/icons-material/Logout'
 import DoneAllIcon from '@mui/icons-material/DoneAll'
 import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined'
 import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined'
@@ -15,10 +11,11 @@ import { iconPicker } from '../../utils/icon-finder'
 import translation from '../../i18n/index'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import Logo from '../logo/logo'
+import { localStorageSecured } from '../../security/localStorage'
 
 const ClubAdminSideBar = () => {
 
-    const club = JSON.parse(localStorage.getItem('club'))
+    const club = localStorageSecured.get('club')
     const lang = localStorage.getItem('lang')
 
     const pagePath = window.location.pathname

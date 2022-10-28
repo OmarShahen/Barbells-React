@@ -4,11 +4,11 @@ import { serverRequest } from '../../API/request'
 import toast from 'react-hot-toast'
 import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined'
 import translations from '../../i18n'
-
+import { localStorageSecured } from '../../security/localStorage'
 
 const ClubStatsCard = ({ clubId, statsQuery }) => {
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const lang = localStorage.getItem('lang')
 
     const [clubName, setClubName] = useState()

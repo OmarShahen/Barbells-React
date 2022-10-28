@@ -13,10 +13,11 @@ import { iconPicker } from '../../utils/icon-finder'
 import translation from '../../i18n/index'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import Logo from '../logo/logo'
+import { localStorageSecured } from '../../security/localStorage'
 
-const ClubAdminSideBar = () => {
+const ChainOwnerSideBar = () => {
 
-    const user = JSON.parse(localStorage.getItem('user'))
+    const user = localStorageSecured.get('user')
     const lang = localStorage.getItem('lang')
 
     const pagePath = window.location.pathname
@@ -165,4 +166,4 @@ const ClubAdminSideBar = () => {
     )
 }
 
-export default ClubAdminSideBar
+export default ChainOwnerSideBar

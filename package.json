@@ -28,6 +28,7 @@
     "react-materialize": "^3.10.0",
     "react-router-dom": "^6.3.0",
     "react-scripts": "^4.0.3",
+    "secure-ls": "^1.2.6",
     "web-vitals": "^1.0.1"
   },
   "scripts": {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import NavBar from '../../../components/navigation/nav-bar'
+import ClubAdminNavbar from '../../../components/navigation/nav-bar'
+import ChainOwnerNavbar from '../../../components/navigation/chain-owner-nav-bar'
 import ClubSideBar from '../../../components/navigation/club-admin-side-bar'
 import ChainOwnerSideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
@@ -20,18 +21,18 @@ import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 const ClubPackagePage = ({ roles }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const packageId = pagePath.split('/')[5]
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
-
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     const lang = localStorage.getItem('lang')
 
@@ -190,7 +191,11 @@ const ClubPackagePage = ({ roles }) => {
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} pageRoles={roles} />
+                    { user.role === 'OWNER' ? 
+                        <ChainOwnerNavbar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} />
+                        :
+                        <ClubAdminNavbar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} />
+                    }
                         <div className="page-main">
                         <div className="page-body-header">
                                 <h5>

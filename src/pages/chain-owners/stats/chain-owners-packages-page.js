@@ -4,13 +4,10 @@ import SideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
 import PackagesTable from '../../../components/tables/club/club-packages'
 import BarChart from '../../../components/charts/bar-chart'
-import LineChart from '../../../components/charts/line-chart'
-import PieChart from '../../../components/charts/pie-chart'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import FloatingFormButton from '../../../components/buttons/floating-button'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
-import ChartModal from '../../../components/modals/chart-modal'
 import { config } from '../../../config/config'
 import format from 'date-fns/format'
 import { iconPicker } from '../../../utils/icon-finder'
@@ -19,18 +16,20 @@ import PercentagesCard from '../../../components/cards/percentages-card'
 import CachedIcon from '@mui/icons-material/Cached'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
+import { localStorageSecured } from '../../../security/localStorage'
+
 
 const ChainOwnersPackagesPage = ({ roles }) => {
 
     const navigate = useNavigate()
 
-    const headers = { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+    const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = JSON.parse(localStorage.getItem('user'))
-    const accessToken = localStorage.getItem('access-token')
+    const user = localStorageSecured.get('user')
+    const accessToken = localStorageSecured.get('access-token')
 
     let todayDate = new Date()
     let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))

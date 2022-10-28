@@ -7,13 +7,14 @@ import CircularLoadingButton from '../buttons/loading-button'
 import M from 'materialize-css'
 import translations from '../../i18n'
 import AppsOutlinedIcon from '@mui/icons-material/AppsOutlined'
+import { localStorageSecured } from '../../security/localStorage'
 
 const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
 
-    const owner = JSON.parse(localStorage.getItem('user'))
+    const owner = localStorageSecured.get('user')
     const lang = localStorage.getItem('lang')
 
     const [title, setTitle] = useState()
@@ -78,7 +79,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
         const requestHeader = {
             headers: {
-                'x-access-token': JSON.parse(localStorage.getItem('access-token'))
+                'x-access-token': localStorageSecured.get('access-token')
             }
         }
 

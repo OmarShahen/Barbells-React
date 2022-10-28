@@ -7,7 +7,7 @@ import PaymentIcon from '@mui/icons-material/Payment'
 import translations from '../../../i18n'
 import PaymentsDetaisTable from '../payments-details-table'
 import toast from 'react-hot-toast'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 
 const DetailedPayments = ({ clubId, statsQuery, currency='EGP' }) => {
@@ -21,12 +21,12 @@ const DetailedPayments = ({ clubId, statsQuery, currency='EGP' }) => {
     const lang = localStorage.getItem('lang')
 
     useEffect(() => {
-
+        
         setIsLoading(true)
 
         serverRequest.get(`/registrations/clubs/${clubId}/staffs/payments`, { 
             params: statsQuery,
-            header: { 'x-access-token': JSON.parse(localStorage.getItem('access-token')) }
+            headers: { 'x-access-token': localStorageSecured.get('access-token') }
          })
         .then(response => {
             setIsLoading(false)

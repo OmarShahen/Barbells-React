@@ -2,8 +2,6 @@ import React, { useEffect } from 'react'
 import ClubDashboardPage from "./pages/club/stats/club-dashboard-page"
 import ClubMembersPage from "./pages/club/stats/club-members-page"
 import ClubMemberPage from "./pages/club/stats/club-member-page"
-import ClubStaffsPage from "./pages/club/stats/club-staffs-page"
-import ClubStaffPage from "./pages/club/stats/club-staff-page"
 import ClubPackagesPage from "./pages/club/stats/club-packages-page"
 import ClubPackagePage from "./pages/club/stats/club-package-page"
 import ClubRegistrationsPage from "./pages/club/stats/club-registrations-page"
@@ -22,7 +20,6 @@ import MainClubFreezedRegistrationsPage from "./pages/club/main/club-freezed-reg
 import MainClubPaymentsPagePage from "./pages/club/main/club-payments-page"
 import MainClubAdminsPage from "./pages/club/main/club-admins-page"
 import ChainOwnerClubsPage from "./pages/chain-owners/main/chain-owner-clubs-page"
-import MainClubRegistrationAttendancesPage from './pages/club/main/club-registration-attendances'
 
 import MainChainOwnersStaffsPage from './pages/chain-owners/main/chain-owners-staffs-page'
 import MainChainOwnersClubsPaymentsPage from "./pages/chain-owners/main/chain-owners-clubs-payments-page"
@@ -65,8 +62,6 @@ const App = () => {
         <Route path="/app/clubs/:clubId/dashboard" element={<ClubDashboardPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
         <Route path="/app/clubs/:clubId/members/stats" element={<ClubMembersPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
         <Route path="/app/clubs/:clubId/members/:memberId/stats" element={<ClubMemberPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
-        <Route path="/app/clubs/:clubId/staffs/stats" element={<ClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
-        <Route path="/app/clubs/:clubId/staffs/:staffName/:staffId/stats" element={<ClubStaffPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
         <Route path="/app/clubs/:clubId/packages/stats" element={<ClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
         <Route path="/app/clubs/:clubId/packages/:packageId/stats" element={<ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
         <Route path="/app/clubs/:clubId/registrations/stats" element={<ClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>} />
@@ -84,7 +79,6 @@ const App = () => {
         <Route path="/app/clubs/:clubId/freezed-registrations/main" element={<MainClubFreezedRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
         <Route path="/app/clubs/:clubId/clubs-admins/main" element={<MainClubAdminsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
         <Route path="/app/clubs/:clubId/payments/main" element={<MainClubPaymentsPagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
-        <Route path="/app/clubs/:clubId/registrations/:registrationId/attendances/main" element={<MainClubRegistrationAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} />
 
         {/** Main Chain Owners Pages Section */}
         <Route path="/app/chain-owners/:ownerId/clubs/main" element={<ChainOwnerClubsPage roles={['ADMIN', 'OWNER']} />} />

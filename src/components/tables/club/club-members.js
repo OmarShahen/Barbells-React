@@ -8,14 +8,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
-
+import { localStorageSecured } from '../../../security/localStorage'
 
 const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const navigate = useNavigate()
 
     const headers = { 
-        'x-access-token': JSON.parse(localStorage.getItem('access-token')) 
+        'x-access-token': localStorageSecured.get('access-token')
     }
 
     const [members, setMembers] = useState(trimMembers(data))

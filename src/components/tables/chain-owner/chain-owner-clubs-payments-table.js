@@ -1,21 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { DataArrayOutlined, DataArrayTwoTone, DataObjectOutlined } from '@mui/icons-material'
 import { trimClubPayments } from '../../../utils/trimmers'
-import toast, { Toaster } from 'react-hot-toast'
 import PaymentIcon from '@mui/icons-material/Payment'
 import translations from '../../../i18n'
 import DetailedPayments from './chain-owner-detailed-payments-table'
+
 
 const ChainOwnersClubsPaymentsTable = ({ data, statsQuery, currency, totalPayments, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const [clubPayments, setClubPayments] = useState(trimClubPayments(data))
 
     const [filter, setFilter] = useState(false)
-
-    const pagePath = window.location.pathname
-    const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
     

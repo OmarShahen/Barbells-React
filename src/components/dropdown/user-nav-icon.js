@@ -1,7 +1,6 @@
 import React from 'react'
 import './dropdown.css'
 import { useNavigate } from 'react-router-dom'
-import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import translations from '../../i18n'
 
 const UserNavIcon = ({ user }) => {

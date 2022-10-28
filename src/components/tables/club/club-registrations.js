@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { serverRequest } from '../../../API/request'
 import { trimRegistrations } from '../../../utils/trimmers'
-import toast from 'react-hot-toast'
 import AcUnitIcon from '@mui/icons-material/AcUnit'
-import TableTemplate from '../payments-details-table'
-import { useNavigate, useNavigte } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n/index'
-import DoneAllIcon from '@mui/icons-material/DoneAll'
-import { NavLink } from 'react-router-dom'
 
 
 const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const navigate = useNavigate()
-
-    const headers = { 'x-access-token': localStorage.getItem('access-token') }
 
     const lang = localStorage.getItem('lang')
 
@@ -27,7 +20,6 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
 
 
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
     const Id = pagePath.split('/')[3]
     
 
@@ -121,8 +113,6 @@ const ClubRegistrationsTable = ({ data, isClub, isAttendance, isRefreshAdded, is
                 { title: translations[lang]['Staff'], field: 'staff.name' },
                 { title: translations[lang]['Paid'], field: 'paid' },
                 { title: translations[lang]['Attended'], field: 'attendances' },
-                { title: translations[lang]['Attendances'],  filtering: false, grouping: false, render: rowData => <NavLink
-                to={`/app/clubs/${rowData.clubId}/registrations/${rowData._id}/attendances/main`} className="table-attendances-icon"><DoneAllIcon /></NavLink>},
                 { title: translations[lang]['Status'], editable: true, field: 'status' },
                 { title: translations[lang]['Activity'],  filtering: false, grouping: false, field: 'isActive', render: rowData => {
                     return <div className="switch">

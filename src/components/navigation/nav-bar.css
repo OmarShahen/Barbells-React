@@ -80,6 +80,15 @@
     color: #000;
 }
 
+.form-navbar {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: row;
+    align-items: center;
+    width: 100vw;
+    background-color: #FFF;
+}
+
 .app-responsive-menu {
     position: fixed;
     opacity: .8;

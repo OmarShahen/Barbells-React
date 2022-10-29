@@ -90,7 +90,7 @@ const MainClubPackagesPage = ({ roles }) => {
                                     isLoading={isLoading} 
                                     isRefreshAdded={true}
                                     />
-                                    <ClubPackageForm />
+                                    <ClubPackageForm reload={reload} setReload={setReload}/>
                                 </div>
                             </div>
                         </div>                        

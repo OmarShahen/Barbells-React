@@ -289,3 +289,12 @@ background-color: #a8bbbf;
 .character-counter {
     display: none !important;
 }
+
+
+.loading {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

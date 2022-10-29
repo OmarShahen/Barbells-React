@@ -257,7 +257,7 @@ const ClubsAttendancesPage = ({ roles }) => {
                                         {translations[lang]['Attendances Times']}
                                     </h5>
                                     <div className="row">
-                                        <div className="col s12 m6">
+                                        <div className="col s12 m6 chart-table-container">
                                             <PercentagesCard 
                                             category={translations[lang]['Times']}
                                             dataOf={translations[lang]['Attendances']}

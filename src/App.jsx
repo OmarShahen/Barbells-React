@@ -1,5 +1,6 @@
 import React, { useEffect, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import LoadingPage from './components/loading/loading-page'
 
 
 const MainClubMembersPage = React.lazy(() => import( "./pages/club/main/club-members-page"))
@@ -60,49 +61,49 @@ const App = () => {
         path="/app/clubs/:clubId/dashboard" 
         
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubDashboardPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
           </Suspense>
         }
           />
         <Route path="/app/clubs/:clubId/members/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubMembersPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
           </Suspense>
         } />
 
         <Route path="/app/clubs/:clubId/members/:memberId/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubMemberPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
           </Suspense>
         } />
 
         <Route path="/app/clubs/:clubId/packages/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
           </Suspense>
         } />
 
         <Route path="/app/clubs/:clubId/packages/:packageId/stats"  
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
           </Suspense>
         } />
 
         <Route path="/app/clubs/:clubId/registrations/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
           </Suspense>
         } />
 
         <Route path="/app/clubs/:clubId/attendances/stats"   
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
           </Suspense>
           } />
@@ -111,67 +112,67 @@ const App = () => {
         {/** Main Club Pages Section */}
         <Route path="/app/clubs/:clubId/members/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubMembersPage roles={['ADMIN','CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  
         <Route path="/app/clubs/:clubId/staffs/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  
         <Route path="/app/clubs/:clubId/packages/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/clubs/:clubId/registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
         <Route path="/app/clubs/:clubId/attendances/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/clubs/:clubId/cancelled-attendances/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubCancelledAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/clubs/:clubId/cancelled-registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubCancelledRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
         <Route path="/app/clubs/:clubId/freezed-registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubFreezedRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
         <Route path="/app/clubs/:clubId/clubs-admins/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubAdminsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  
         <Route path="/app/clubs/:clubId/payments/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainClubPaymentsPagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
@@ -179,149 +180,151 @@ const App = () => {
         {/** Main Chain Owners Pages Section */}
         <Route path="/app/chain-owners/:ownerId/clubs/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <ChainOwnerClubsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
         <Route
          path="/app/chain-owners/:ownerId/payments/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersClubsPaymentsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  
         <Route path="/app/chain-owners/:ownerId/staffs/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersStaffsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
         
         <Route path="/app/chain-owners/:ownerId/club-admins/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersClubAdminsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
     
         <Route path="/app/chain-owners/:ownerId/members/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
        
         <Route path="/app/chain-owners/:ownerId/registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersRegistrationsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  
         <Route path="/app/chain-owners/:ownerId/attendances/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersAttendancesPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
    
         <Route path="/app/chain-owners/:ownerId/packages/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersPackagesPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
       
         <Route path="/app/chain-owners/:ownerId/cancelled-registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersCancelledRegistrationsPage roles={['ADMIN', 'OWNER']} />
          </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/cancelled-attendances/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersCancelledAttendancesPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/freezed-registrations/main" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <MainChainOwnersFreezedRegistrationsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/dashboard" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <ChainOwnersDashboardPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/registrations/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <ChainOwnersRegistrationsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
      
         <Route path="/app/chain-owners/:ownerId/attendances/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <ChainOwnersAttendancesPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/packages/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <ChainOwnersPackagesPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
 
         <Route path="/app/chain-owners/:ownerId/members/stats" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />
           </Suspense> 
         } />
 
         <Route path="/clubs-admins/login" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
         <LoginForm />
         </Suspense>
       }/>
         <Route path="/" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <LoginForm />
           </Suspense>
       }/>
 
         <Route path="/chains-owners/login" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ChainOwnerLoginForm />
           </Suspense>
         }/>
 
         <Route path="/forgot-password" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ForgotPasswordForm />
           </Suspense>
       } />
 
         <Route path="/reset-password/:token" 
         element={
-          <Suspense fallback={<div>loading...</div>}>
+          <Suspense fallback={<LoadingPage />}>
             <ResetPasswordForm />
           </Suspense>}
         />
+
+        <Route path="/test" element={<LoadingPage />} />
         
       </Routes>
     </Router>

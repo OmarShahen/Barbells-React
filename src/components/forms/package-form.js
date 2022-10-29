@@ -91,15 +91,9 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
             setIsSubmitting(false)
 
             const successMessage = response.data.message
-
             toast.success(successMessage, { duration: 5000, position: 'top-right' })
-
-            document.querySelector('.modal').M_Modal.close()
-
+            resetForm()
             setReload(reload + 1)
-
-            return resetForm()
-
 
         })
         .catch(errorResponse => {
@@ -118,13 +112,10 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
             if(error.data.field === 'expiresIn') return setDurationError(error.data.message)
 
-
             toast.error(error.data.message, { duration: 5000, position: 'top-right' })
 
-            } catch(error) {
-                console.error(error)
-                toast.error('internal server error, please contact customer support', { duration: 5000, position: 'top-right' })
-            }
+            } catch(error) {}
+
         })
     }
 

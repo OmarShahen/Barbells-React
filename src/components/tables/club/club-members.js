@@ -9,10 +9,12 @@ import LockOpenIcon from '@mui/icons-material/LockOpen'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
+import { config } from '../../../config/config'
 
 const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const navigate = useNavigate()
+    const lang = localStorage.getItem('lang')
 
     const headers = { 
         'x-access-token': localStorageSecured.get('access-token')
@@ -21,12 +23,13 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
     const [members, setMembers] = useState(trimMembers(data))
     const [updatedMembers, setUpdatedMembers] = useState([])
 
+    const [successMessage, setSuccessMessage] = useState(translations[lang]['Successful Operation'])
+    const [errorMessage, setErrorMessage] = useState(translations[lang]['Failed Operation'])
+
     const [filter, setFilter] = useState(false)
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
-
-    const lang = localStorage.getItem('lang')
     
 
     useEffect(() => {
@@ -65,19 +68,18 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
             memberData.club = oldMember.club
             membersData[memberTableId] = memberData
 
-
             setUpdatedMembers(membersData)
-            toast.success(response.data.message, { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
-        })       
+        })    
 
     }
 
@@ -86,8 +88,11 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const memberTableId = memberData.tableData.id
         const membersData = [...members]
 
-        serverRequest.patch(`/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers })
+        toast.promise(
+            serverRequest.patch(`/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers })
         .then(response => {
+
+            setSuccessMessage(response.data.message)
 
             let updatedMember = response.data.member
             updatedMember.club = memberData.club
@@ -95,18 +100,18 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
             membersData[memberTableId] = updatedMember
 
             setUpdatedMembers(membersData)
-
-            toast.success(updatedMember.isBlocked ? translations[lang]['Member is disabled successfully'] : translations[lang]['Member is enabled successfully']
-                ,{ position: 'top-right', duration: 3000 })
         })
         .catch(error => {
-            console.error(error)     
-            try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
-            } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
-            }
-        })       
+            setErrorMessage(error.response.data.message)
+            throw error
+        }),
+        {
+            loading: <strong>{translations[lang]['loading']}</strong>,
+            success: <strong>{successMessage}</strong>,
+            error: <strong>{errorMessage}</strong>
+        },
+        { position: 'top-right', duration: config.TOAST_SUCCESS_TIME }
+    )   
         
     }
 
@@ -115,23 +120,26 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const membersData = [...members]  
         const memberTableId = memberData.tableData.id
                 
-        serverRequest.delete(`/members/${memberData._id}`, { headers })
+        toast.promise(
+            serverRequest.delete(`/members/${memberData._id}`, { headers, params: lang })
         .then(response => {
 
-            const filteredMembers = membersData.filter((member, index) => memberTableId !== index)
+            setSuccessMessage(response.data.message)
 
+            const filteredMembers = membersData.filter((member, index) => memberTableId !== index)
             setUpdatedMembers(filteredMembers)
-            toast.success('deleted member successfully!', { position: 'top-right', duration: 3000 })
 
         })
         .catch(error => {
-            console.error(error)     
-            try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
-            } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
-            }
-        })
+            setErrorMessage(error.response.data.message)
+            throw error
+        }),
+        {
+            loading: <strong>{translations[lang]['loading']}</strong>,
+            success: <strong>{successMessage}</strong>,
+            error: <strong>{errorMessage}</strong>
+        },
+        { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
     }
 
 
@@ -146,7 +154,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     <span className="app-badge grey white-text">old</span>
                 } },
                 { title: translations[lang]['Image'], field: 'imageURL', filtering: false, export: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
+                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Branch'], editable: false, field: 'club.clubCode' },
                 { title: translations[lang]['Name'], field: 'name' },
@@ -196,7 +204,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     <span className="app-badge grey white-text">{translations[lang]['old']}</span>
                 } },
                 { title:translations[lang]['Image'], export: false, field: 'imageURL', filtering: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
+                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Name'], field: 'name' },
                 { title: translations[lang]['Phone Code'], editable: false, field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },

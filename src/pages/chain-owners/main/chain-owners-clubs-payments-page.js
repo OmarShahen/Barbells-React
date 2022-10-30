@@ -88,7 +88,7 @@ const MainChainOwnersClubsPaymentsPage = ({ roles }) => {
             <Toaster />
             <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
-            <div className="row page">
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]["Payments"]} statsQuery={statQuery} />
                     <div className="page-main">

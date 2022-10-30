@@ -9,7 +9,9 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-
+import StatDatePicker from '../../../components/forms/stats-date-picker-form'
+import { format } from 'date-fns'
+import FloatingFormButton from '../../../components/buttons/floating-button'
 
 const MainClubAttendancesPage = ({ roles }) => {
 
@@ -28,6 +30,9 @@ const MainClubAttendancesPage = ({ roles }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [attendances, setAttendances] = useState([])
 
+    const todayDate = new Date()
+    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+
     useEffect(() => {
 
         if(!isUserValid(accessToken, user, roles)) {
@@ -43,7 +48,8 @@ const MainClubAttendancesPage = ({ roles }) => {
         setIsLoading(true)
 
         serverRequest.get(`/attendances/clubs/${clubId}`, {
-            headers
+            headers,
+            params: statsQuery
         })
         .then(response => {
             setIsLoading(false)
@@ -53,11 +59,9 @@ const MainClubAttendancesPage = ({ roles }) => {
         .catch(errorResponse => {
             setIsLoading(false)
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
-        })
-           
-            
+        })         
 
-    }, [reload])
+    }, [reload, statsQuery])
 
 
 
@@ -69,10 +73,12 @@ const MainClubAttendancesPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
+            <FloatingFormButton />
+            <StatDatePicker setStatQuery={setStatsQuery}/>
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Attendances"]} />
+                        <NavBar pageName={translations[lang]["Attendances"]} statsQuery={statsQuery} />
                         <div className="page-main">
                             <div className="row">
                                 <div className="col s12">

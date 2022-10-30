@@ -23,25 +23,25 @@ const ClubAdminResponsiveMenu = ({ pageName, user, club }) => {
     const pagePath = window.location.pathname
 
     return <div className="app-responsive-menu black">
-    <ul className="side-nav-list">
-                <NavLink to={`/app/clubs/${club._id}/dashboard`}>
-                    <li className={ pagePath.includes('dashboard') ? 'active-side-nav' : null } >
-                        <DashboardIcon />
-                        <span>{translations[lang]['Dashboard']}</span>
-                    </li>
-                </NavLink>
-                <li className={ pagePath.includes('packages') ? 'active-side-nav' : null } >
-                    <NavLink to={`/app/clubs/${club._id}/packages/main`}>
-                        <AppsOutlinedIcon />
-                        <span>{translations[lang]['Packages']}</span>
-                    </NavLink>
+        <ul className="side-nav-list">
+            <NavLink to={`/app/clubs/${club._id}/dashboard`}>
+                <li className={ pagePath.includes('dashboard') ? 'active-side-nav' : null } >
+                    <DashboardIcon />
+                    <span>{translations[lang]['Dashboard']}</span>
                 </li>
-                <li className={ pagePath.includes('payments') ? 'active-side-nav' : null } >
-                <NavLink to={`/app/clubs/${club._id}/payments/main`}>
-                    <PaymentIcon />
-                    <span>{translations[lang]['Payments']}</span>
+            </NavLink>
+            <li className={ pagePath.includes('packages') ? 'active-side-nav' : null } >
+                <NavLink to={`/app/clubs/${club._id}/packages/main`}>
+                    <AppsOutlinedIcon />
+                    <span>{translations[lang]['Packages']}</span>
                 </NavLink>
-                </li>
+            </li>
+            <li className={ pagePath.includes('payments') ? 'active-side-nav' : null } >
+            <NavLink to={`/app/clubs/${club._id}/payments/main`}>
+                <PaymentIcon />
+                <span>{translations[lang]['Payments']}</span>
+            </NavLink>
+            </li>
                 <div className="list-collection">
                 <li>
                    <a href="#">
@@ -147,7 +147,7 @@ const ClubAdminResponsiveMenu = ({ pageName, user, club }) => {
                     </li>
                 </div>
                 </div>
-            </ul>
+        </ul>
     </div>
 }
 

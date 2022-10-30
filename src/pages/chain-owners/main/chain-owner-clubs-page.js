@@ -81,7 +81,7 @@ const ChainOwnerClubsPage = ({ roles }) => {
             <SideBar />
             <Toaster />
             <FloatingFormButton modalId={'club-form-modal'}/>
-            <div className="row page">
+            <div className="page">
                 <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]['Clubs']}/>
                     <div className="page-main">

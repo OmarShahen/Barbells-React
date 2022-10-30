@@ -10,7 +10,8 @@ import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-
+import StatDatePicker from '../../../components/forms/stats-date-picker-form'
+import FloatingFormButton from '../../../components/buttons/floating-button'
 
 
 const MainChainOwnersRegistrationsPage = ({ roles }) => {
@@ -29,6 +30,9 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
 
+    const todayDate = new Date()
+    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+
     useEffect(() => {
 
         if(!isUserValid(accessToken, user, roles)) {
@@ -46,7 +50,8 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
         serverRequest.get(`/registrations/chain-owners/${ownerId}`, {
             headers: {
                 'x-access-token': accessToken
-            }
+            },
+            params: statsQuery
         })
         .then(response => {
 
@@ -67,7 +72,7 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
 
         })
 
-    }, [reload])
+    }, [reload, statsQuery])
 
     useEffect(() => {
         window.scrollTo(0, 0)
@@ -82,9 +87,11 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
-            <div className="row page">
+            <FloatingFormButton />
+            <StatDatePicker setStatQuery={setStatsQuery} />
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <NavBar pageName={translations[lang]["Registrations"]} />
+                    <NavBar pageName={translations[lang]["Registrations"]} statsQuery={statsQuery} />
                     <div className="page-main">
                         <ClubRegistrationsTable 
                         data={registrations} 

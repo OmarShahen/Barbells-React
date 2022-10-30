@@ -54,9 +54,7 @@ const MainChainOwnersCancelledRegistrationsPage = ({ roles }) => {
         .then(response => {
 
             setIsLoading(false)
-
             const cancelledRegistrations = response.data.cancelledRegistrations
-
             setCancelledRegistrations(cancelledRegistrations)
         })
         .catch(error => {
@@ -77,7 +75,7 @@ const MainChainOwnersCancelledRegistrationsPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
-            <div className="row page">
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]["Cancelled Registrations"]} />
                     <div className="page-main">

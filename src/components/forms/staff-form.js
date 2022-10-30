@@ -65,15 +65,15 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
 
         e.preventDefault()
 
-        if(!name) return setNameError('name is required')
+        if(!name) return setNameError(translations[lang]['Name is required'])
 
-        if(!phone || !Number.parseInt(phone)) return setPhoneError('phone is required to be a number')
+        if(!phone || !Number.parseInt(phone)) return setPhoneError(translations[lang]['Phone is required to be a number'])
 
-        if(!countryCode) return setCountryCodeError('country code is required to be a number')
+        if(!countryCode) return setCountryCodeError(translations[lang]['Country code is required to be a number'])
 
-        if(!password) return setPasswordError('password is required')
+        if(!password) return setPasswordError(translations[lang]['Password is required'])
 
-        if(password !== confirmPassword) return setConfirmPasswordError('password and confirm password are not the same') 
+        if(password !== confirmPassword) return setConfirmPasswordError(translations[lang]['Password and confirm password are not the same']) 
 
         const newStaff = {
             clubId: targetClub,

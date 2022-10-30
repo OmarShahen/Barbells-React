@@ -9,6 +9,9 @@ import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import StatDatePicker from '../../../components/forms/stats-date-picker-form'
+import FloatingFormButton from '../../../components/buttons/floating-button'
+import { format } from 'date-fns'
 
 
 
@@ -27,6 +30,9 @@ const MainChainOwnersAttendancesPage = ({ roles }) => {
     const [attendances, setAttendances] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    const todayDate = new Date()
+    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
 
     useEffect(() => {
 
@@ -49,14 +55,14 @@ const MainChainOwnersAttendancesPage = ({ roles }) => {
         serverRequest.get(`/attendances/chain-owners/${ownerId}`, {
             headers: {
                 'x-access-token': accessToken
-            }
+            },
+            params: statsQuery
         })
         .then(response => {
 
             setIsLoading(false)
 
             const attendances = response.data.attendances
-
             setAttendances(attendances)
         })
         .catch(error => {
@@ -67,7 +73,7 @@ const MainChainOwnersAttendancesPage = ({ roles }) => {
         })
 
 
-    }, [reload])
+    }, [reload, statsQuery])
 
     return (
         <>
@@ -77,9 +83,11 @@ const MainChainOwnersAttendancesPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
-            <div className="row page">
+            <FloatingFormButton />
+            <StatDatePicker setStatQuery={setStatsQuery} />
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <NavBar pageName={translations[lang]['Attendances']} />
+                    <NavBar pageName={translations[lang]['Attendances']} statsQuery={statsQuery} />
                     <div className="page-main">
                         <ClubAttendancesTable 
                         data={attendances} 

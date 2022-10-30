@@ -59,6 +59,7 @@ const ChainOwnerLoginForm = () => {
             setIsLoading(false)
 
             const data = response.data
+
             const token = data.token
             const user = data.chainOwner
 
@@ -69,6 +70,8 @@ const ChainOwnerLoginForm = () => {
 
         })
         .catch(error => {
+
+            console.error(error)
 
             setIsLoading(false)
 

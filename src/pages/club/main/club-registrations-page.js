@@ -9,7 +9,9 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-
+import StatDatePicker from '../../../components/forms/stats-date-picker-form'
+import { format } from 'date-fns'
+import FloatingFormButton from '../../../components/buttons/floating-button'
 
 const MainClubRegistrationsPage = ({ roles }) => {
 
@@ -27,6 +29,9 @@ const MainClubRegistrationsPage = ({ roles }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [registrations, setRegistrations] = useState([])
 
+    const todayDate = new Date()
+    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+
     useEffect(() => {
 
         if(!isUserValid(accessToken, user, roles)) {
@@ -43,7 +48,8 @@ const MainClubRegistrationsPage = ({ roles }) => {
         setIsLoading(true)
 
         serverRequest.get(`/registrations/clubs/${clubId}`, {
-            headers
+            headers,
+            params: statsQuery
         })
         .then(response => {
 
@@ -59,7 +65,7 @@ const MainClubRegistrationsPage = ({ roles }) => {
         })
     
 
-    }, [reload])
+    }, [reload, statsQuery])
 
 
 
@@ -71,14 +77,17 @@ const MainClubRegistrationsPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
+            <FloatingFormButton />
+            <StatDatePicker setStatQuery={setStatsQuery} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Registrations"]} />
+                        <NavBar pageName={translations[lang]["Registrations"]} statsQuery={statsQuery} />
                         <div className="page-main">
                             <div className="row">
                                 <div className="col s12">
                                     <ClubRegistrationsTable 
+                                    statsQuery={statsQuery}
                                     isAttendance={true}
                                     data={registrations} 
                                     reload={reload}

@@ -20,7 +20,8 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
     const [title, setTitle] = useState()
     const [attendance, setAttendance] = useState()
     const [price, setPrice] = useState()
-    const [duration, setDuration] = useState()
+    const [durationNumber, setDurationNumber] = useState()
+    const [durationType, setDurationType] = useState('day')
     const [targetClub, setTargetClub] = useState(
         isChooseClub && owner.clubs.length !== 0 ? owner.clubs[0]._id : clubId 
     )
@@ -30,7 +31,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
     const [titleError, setTitleError] = useState()
     const [attendanceError, setAttendanceError] = useState()
     const [priceError, setPriceError] = useState()
-    const [durationError, setDurationError] = useState()
+    const [durationNumberError, setDurationNumberError] = useState()
 
     useEffect(() => {
         M.AutoInit()
@@ -42,12 +43,12 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
         setTitle('')
         setAttendance('')
         setPrice('')
-        setDuration('')
+        setDurationNumber('')
 
         setTitleError()
         setAttendanceError()
         setPriceError()
-        setDurationError()
+        setDurationNumberError()
 
         document.querySelector('#package-form').reset()
 
@@ -57,27 +58,26 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
         e.preventDefault()
 
-        if(!title) return setTitleError('package title is required')
+        if(!title) return setTitleError(translations[lang]['Package title is required'])
 
-        if(!attendance || !Number.parseInt(attendance)) return setAttendanceError('package attendance is required to be a number')
+        if(!attendance || !Number.parseInt(attendance)) return setAttendanceError(translations[lang]['Package attendance is required to be a number'])
 
-        if(!price || !Number.parseFloat(price)) return setPriceError('package price is required to be a number')
+        if(!price || !Number.parseFloat(price)) return setPriceError(translations[lang]['Package price is required to be a number'])
 
-        if(!duration) return setDurationError('package duration is required to be a number')
-
-        const validateDuration = isDurationValid(duration)
-
-        if(!validateDuration.isAccepted) return setDurationError(validateDuration.message)
+        if(!durationNumber) return setDurationNumberError(translations[lang]['Duration number is required'])
+        
+        const expiresIn = `${durationNumber} ${durationType}`
 
         const newPackage = {
             clubId: targetClub,
             title,
             attendance: Number.parseInt(attendance),
-            price: Number.parseFloat(price),
-            expiresIn: duration
+            price: Number.parseFloat(price), 
+            expiresIn
         }
 
         const requestHeader = {
+            params: { lang },
             headers: {
                 'x-access-token': localStorageSecured.get('access-token')
             }
@@ -110,7 +110,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
             if(error.data.field === 'price') return setPriceError(error.data.message)
 
-            if(error.data.field === 'expiresIn') return setDurationError(error.data.message)
+            if(error.data.field === 'expiresIn') return setDurationNumberError(error.data.message)
 
             toast.error(error.data.message, { duration: 5000, position: 'top-right' })
 
@@ -203,22 +203,32 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
                                 </div>
                                 <div className="input-field input-field-container col s12 m6">
                                     <input 
-                                    type="text" 
-                                    onChange={ e => setDuration(e.target.value)}
+                                    type="number" 
+                                    onChange={ e => setDurationNumber(e.target.value)}
                                     onClick={ e => {
-                                        setDurationError()
+                                        setDurationNumberError()
                                     }}
-                                    style={durationError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
-                                    id="package-duration" 
-                                    value={duration} 
+                                    style={durationNumberError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
+                                    id="package-duration-number" 
+                                    value={durationNumber} 
                                     />
 
-                                    { durationError ? 
-                                    <label for="package-duration" style={{ color: '#f44336' }}>{durationError}</label> 
+                                    { durationNumberError ? 
+                                    <label for="package-duration-number" style={{ color: '#f44336' }}>{durationNumberError}</label> 
                                     : 
-                                    <label for="package-duration">{translations[lang]['Duration']}* ({translations[lang]['e.g.']} 1 {translations[lang]['month']})</label>
+                                    <label for="package-duration-number">{translations[lang]['Duration Number']}* ({translations[lang]['e.g.']} 1)</label>
                                     }
                                 </div>
+                                <div className="input-field col s12 m6">
+                                        <select onChange={e => setDurationType(e.target.value)}>    
+                                            <option value="day" selected>{translations[lang]['Dayl']}</option>    
+                                            <option value="week">{translations[lang]['Weekl']}</option>
+                                            <option value="month">{translations[lang]['Monthl']}</option>
+                                            <option value="year">{translations[lang]['Yearl']}</option>                                                                          
+                                                
+                                        </select>
+                                        <label>{translations[lang]['Duration Type']}</label>
+                                    </div>
                                 {
                                     isChooseClub ?
                                     <div className="input-field col s12 m6">

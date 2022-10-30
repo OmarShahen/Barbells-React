@@ -141,7 +141,7 @@ const LoginForm = () => {
                                }
                         </div>
                         <div className="col s12">
-                               <div className="left">
+                               <div className="right">
                                     <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>

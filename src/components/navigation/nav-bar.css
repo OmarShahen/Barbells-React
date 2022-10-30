@@ -94,7 +94,7 @@
     opacity: .8;
     z-index: 100;
     width: 100vw;
-    height: 100vh;
+    height: auto;
     padding: .5rem;
     animation-name: menu;
     animation-duration: .7s;
@@ -176,7 +176,7 @@
         height: 0
     }
     to {
-        height: 100vh;
+        height: auto;
     }
   }
 

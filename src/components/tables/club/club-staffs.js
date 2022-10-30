@@ -24,7 +24,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
 
             return [
                 { title: translations[lang]['Image'], grouping: false, filtering: false, field: 'imageURL', editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
+                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Name'], field: 'name' },
                 { title: translations[lang]['Phone Code'], field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
@@ -52,7 +52,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         } else {
             return [
                 { title: translations[lang]['Image'], field: 'imageURL', grouping: false, filtering: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
+                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
                 } },
                 { title: translations[lang]['Name'], field: 'name' },
                 { title: translations[lang]['Phone Code'], field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
@@ -94,7 +94,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         const staffTableId = oldStaff.tableData.id
 
                 
-        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, headers)
+        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, { headers })
         .then(response => {
 
             const staffData = response.data.staff
@@ -120,7 +120,7 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, headers)
+        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, { headers })
         .then(response => {
 
             staffsData[staffTableId] = response.data.staff

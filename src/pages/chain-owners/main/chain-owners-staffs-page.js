@@ -86,7 +86,7 @@ const MainChainOwnersStaffsPage = ({ roles }) => {
             <SideBar />
             <Toaster />
             <FloatingFormButton modalId={"staff-form-modal"}/>
-            <div className="row page">
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]["Staffs"]} />
                     <div className="page-main">

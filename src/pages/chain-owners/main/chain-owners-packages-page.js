@@ -80,7 +80,7 @@ const MainChainOwnersPackagesPage = ({ roles }) => {
             <SideBar />
             <Toaster />
             <FloatingFormButton modalId={'package-form-modal'}/>
-            <div className="row page">
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]["Packages"]} />
                     <div className="page-main">

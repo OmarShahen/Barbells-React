@@ -10,8 +10,8 @@ import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-
-
+import StatDatePicker from '../../../components/forms/stats-date-picker-form'
+import FloatingFormButton from '../../../components/buttons/floating-button'
 
 const MainChainOwnersMembersPage = ({ roles }) => {
 
@@ -28,6 +28,9 @@ const MainChainOwnersMembersPage = ({ roles }) => {
     const [members, setMembers] = useState([])
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
+
+    const todayDate = new Date()
+    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
 
     useEffect(() => {
 
@@ -46,33 +49,31 @@ const MainChainOwnersMembersPage = ({ roles }) => {
         serverRequest.get(`/members/chain-owners/${ownerId}`, {
             headers: {
                 'x-access-token': accessToken
-            }
+            },
+            params: statsQuery
         })
         .then(response => {
 
             setIsLoading(false)
 
             const members = response.data.members
-            
             members.forEach(member => {
                 member.registrationDate = format(new Date(member.createdAt), 'dd MMM yyyy')
             })
-
             setMembers(members)
         })
         .catch(error => {
             setIsLoading(false)
-            console.error(error)
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
 
         })
 
 
-    }, [reload])
+    }, [reload, statsQuery])
 
     useEffect(() => {
-  window.scrollTo(0, 0)
-}, [])
+        window.scrollTo(0, 0)
+    }, [])
 
 
     return (
@@ -83,9 +84,11 @@ const MainChainOwnersMembersPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
-            <div className="row page">
+            <StatDatePicker setStatQuery={setStatsQuery} />
+            <FloatingFormButton />
+            <div className="page">
                 <div className="col s12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                    <NavBar pageName={translations[lang]["Members"]} />
+                    <NavBar pageName={translations[lang]["Members"]} statsQuery={statsQuery} />
                     <div className="page-main">
                         <ClubMembersTable 
                         data={members} 

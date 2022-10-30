@@ -5,10 +5,7 @@ import { serverRequest } from '../../../API/request'
 import { trimPackages } from '../../../utils/trimmers'
 import toast, { Toaster } from 'react-hot-toast'
 import { config } from '../../../config/config'
-import Options from '../../../components/dropdown/options'
 import M from 'materialize-css'
-import PackageNav from '../../navigation/options/package-nav'
-import Modal from '../../modals/modal'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
@@ -59,7 +56,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             newPackage.expiresIn = `${expirationNumber} ${translations[lang][expirationPeriod]}`
         }
                 
-        serverRequest.put(`/packages/${newPackage._id}`, newPackage, headers)
+        serverRequest.put(`/packages/${newPackage._id}`, newPackage, { headers })
         .then(response => {
 
             const packageData = response.data.package
@@ -93,7 +90,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             setUpdatedPackages(packagesData)
 
             toast.success(packageData.isOpen ? 'package is disabled successfully' : 'package is enabled successfully'
-                , { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
+                ,{ position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
         })
         .catch(error => {
             console.error(error)     

@@ -306,7 +306,7 @@ const ChainOwnersAttendancesPage = ({ roles }) => {
                                         {translations[lang]['Attendances Hours']}
                                     </h5>
                                     <div className="row">
-                                        <div className="col s12 m6">
+                                        <div className="col s12 m6 chart-table-container">
                                             <PercentagesCard 
                                             category={translations[lang]['Times']}
                                             dataOf={translations[lang]['Attendances']}
@@ -329,7 +329,6 @@ const ChainOwnersAttendancesPage = ({ roles }) => {
 
                                 </div>
                             </div>                        
-
                             <div className="row">
                                 <div className="col s12">
                                     <AttendancesTable data={attendances} isClub={true} />

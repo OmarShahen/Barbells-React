@@ -72,8 +72,6 @@ const ChainOwnerLoginForm = () => {
         })
         .catch(error => {
 
-            console.error(error)
-
             setIsLoading(false)
 
             if(error.response.data.field === 'phone') {

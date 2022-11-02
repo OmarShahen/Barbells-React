@@ -39,7 +39,7 @@ const ClubDashboardPage = ({ roles }) => {
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+    const [statQuery, setStatQuery] = useState({ specific: format(todayDate, 'yyyy-MM-dd') })
 
     const [totalRegistrations, setTotalRegistrations] = useState(0)
     const [totalEarnings, setTotalEarnings] = useState(0)

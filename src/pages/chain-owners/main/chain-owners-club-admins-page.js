@@ -93,6 +93,7 @@ const MainChainOwnersClubAdminsPage = ({ roles }) => {
                         title={'Clubs Admins'}
                         data={staffs}
                         isClub={true}
+                        staffRole={'CLUB-ADMIN'}
                         reload={reload}
                         setReload={setReload}
                         isLoading={isLoading} 

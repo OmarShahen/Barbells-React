@@ -30,6 +30,7 @@ const MainChainOwnersMembersPage = ({ roles }) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const todayDate = new Date()
+    todayDate.setDate(todayDate.getDate() + 1)
     const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
 
     useEffect(() => {

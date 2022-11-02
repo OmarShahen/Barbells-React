@@ -34,16 +34,17 @@ const ClubsAttendancesPage = ({ roles }) => {
 
     const lang = localStorage.getItem('lang')
 
-    let todayDate = new Date()
-    let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
-    todayDate = new Date()
+    const todayDate = new Date()
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
 
-    const [reload, setReload] = useState(0)
-    const [statQuery, setStatQuery] = useState({
+    const [statQuery, setStatQuery] = useState({ 
         from: format(monthDate, 'yyyy-MM-dd'), 
         to: format(todayDate, 'yyyy-MM-dd') 
     })
 
+    const [reload, setReload] = useState(0)
     const [authorized, setAuthorized] = useState(false)
 
     const [totalAttendances, setTotalAttendances] = useState(0)

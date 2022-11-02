@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
 import Logo from '../logo/logo'
 import { localStorageSecured } from '../../security/localStorage'
+import { NavLink } from 'react-router-dom'
 
 
 const ChainOwnerLoginForm = () => {
@@ -146,9 +147,14 @@ const ChainOwnerLoginForm = () => {
                                }
                         </div>
                         <div className="col s12">
-                               <div className="left">
+                               <div className="right">
                                <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=OWNER')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
+                        </div>
+                        <div className="col s12">
+                            <p className="center">
+                                {translations[lang]['Login as']} <NavLink to="/clubs-admins/login">{translations[lang]['as Club Admin']}</NavLink>
+                            </p>
                         </div>
                         
                     </form>

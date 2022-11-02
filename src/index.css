@@ -82,7 +82,6 @@ body {
 
 .stats-charts-container div {
     flex: 1;
-    
 }
 
 /*.chart-graph-container {
@@ -126,7 +125,7 @@ body {
 }
 
 button:focus {
-    background-color: #FFF;
+    background-color: #FFF !important;
 }
 
 @media screen and (max-width: 800px) {
@@ -193,7 +192,6 @@ background-color: #a8bbbf;
 
 .table-container {
     box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
-
 }
 
 .icon-header-container {
@@ -289,7 +287,6 @@ background-color: #a8bbbf;
 .character-counter {
     display: none !important;
 }
-
 
 .loading {
     width: 100vw;

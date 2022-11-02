@@ -34,9 +34,15 @@ const ChainOwnersMembersPage = ({ roles }) => {
     const user = localStorageSecured.get('user')
     const accessToken = localStorageSecured.get('access-token')
 
-    let todayDate = new Date()
+    const todayDate = new Date()
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
 
-    const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+    const [statQuery, setStatQuery] = useState({ 
+        from: format(monthDate, 'yyyy-MM-dd'), 
+        to: format(todayDate, 'yyyy-MM-dd') 
+    })
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
 

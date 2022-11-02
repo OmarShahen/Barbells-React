@@ -69,7 +69,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
 
         if(!phone || !Number.parseInt(phone)) return setPhoneError(translations[lang]['Phone is required to be a number'])
 
-        if(!countryCode) return setCountryCodeError(translations[lang]['Country code is required to be a number'])
+        if(!countryCode || !Number.parseInt(countryCode)) return setCountryCodeError(translations[lang]['Country code is required to be a number'])
 
         if(!password) return setPasswordError(translations[lang]['Password is required'])
 
@@ -215,13 +215,14 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
                                 </div>
                                 <div className="input-field input-field-container col s12 m6">
                                     <input 
-                                    type="number" 
+                                    type="text" 
                                     onChange={ e => setCountryCode(e.target.value)} 
                                     onClick={ e => {
                                         setCountryCodeError()
                                     } }
                                     style={countryCodeError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null } 
                                     id="staff-country-code" 
+                                    default={countryCode}
                                     value={countryCode} 
                                     />
 

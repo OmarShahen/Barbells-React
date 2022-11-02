@@ -38,7 +38,16 @@ const ClubMemberPage = ({ roles }) => {
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
-    const [statQuery, setStatQuery] = useState({ until: format(new Date(), 'yyyy-MM-dd') })
+
+    const todayDate = new Date()
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
+
+    const [statQuery, setStatQuery] = useState({ 
+        from: format(monthDate, 'yyyy-MM-dd'), 
+        to: format(todayDate, 'yyyy-MM-dd') 
+    })
 
 
     const [member, setMember] = useState({})
@@ -208,8 +217,8 @@ const ClubMemberPage = ({ roles }) => {
                                     </div>
                             </div>  
                         <div className="white my-container card-effect">
-                                <h5 className="center">
-                                    {translations[lang]['Registrations Growth']}
+                                <h5 className="left">
+                                    {translations[lang]['Attendances Growth']}
                                 </h5>
                                 
                                     <a className="modal-trigger" href="#month-line-chart-modal">

@@ -285,6 +285,11 @@
     "Yearl": "سنة",
     "loading": "تحميل",
     "Successful Operation": "تمت العملية بنجاح",
-    "Failed Operation": "لم تتم العملية"
+    "Failed Operation": "لم تتم العملية",
+    "upgrade to club admin": "تغير الدور الي مدير نادي",
+    "downgrade to staff": "تغير الدور الي طاقم عمل",
+    "Login as": "سجل الدخول الي الحساب ",
+    "Owner": "كمالك",
+    "as Club Admin": "كمدير فرع"
 
 }

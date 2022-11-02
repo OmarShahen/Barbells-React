@@ -39,7 +39,7 @@ const ChainOwnersDashboardPage = ({ roles }) => {
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
-    const [statQuery, setStatQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+    const [statQuery, setStatQuery] = useState({ specific: format(todayDate, 'yyyy-MM-dd') })
 
 
     const [totalRegistrations, setTotalRegistrations] = useState(0)

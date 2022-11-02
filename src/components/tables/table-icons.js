@@ -18,6 +18,8 @@ import ViewColumn from '@material-ui/icons/ViewColumn';
 import RefreshIcon from '@mui/icons-material/Refresh'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
+import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 
 
 const tableIcons = {
@@ -41,7 +43,10 @@ const tableIcons = {
     Refresh: forwardRef((props, ref) => <RefreshIcon {...props} ref={ref} />),
     Confirm: forwardRef((props, ref) => <CheckCircleIcon {...props} ref={ref} style={{ color: "dodgerblue" }}/>),
     Cancel: forwardRef((props, ref) => <DeleteForeverIcon {...props} ref={ref} />),
-    
+    Upgrade: forwardRef((props, ref) => <ManageAccountsOutlinedIcon {...props} ref={ref} />),
+    Downgrade: forwardRef((props, ref) => <BadgeOutlinedIcon {...props} ref={ref} />),
+
+
   }
 
 export default tableIcons

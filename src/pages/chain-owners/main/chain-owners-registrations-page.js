@@ -31,7 +31,14 @@ const MainChainOwnersRegistrationsPage = ({ roles }) => {
     const [isLoading, setIsLoading] = useState(true)
 
     const todayDate = new Date()
-    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
+
+    const [statsQuery, setStatsQuery] = useState({ 
+        from: format(monthDate, 'yyyy-MM-dd'), 
+        to: format(todayDate, 'yyyy-MM-dd') 
+    })
 
     useEffect(() => {
 

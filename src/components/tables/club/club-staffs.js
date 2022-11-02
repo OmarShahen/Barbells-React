@@ -6,8 +6,9 @@ import { trimStaffs } from '../../../utils/trimmers'
 import toast from 'react-hot-toast'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
+import { config } from '../../../config/config'
 
-const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
+const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const headers = { 'x-access-token': localStorageSecured.get('access-token') }
 
@@ -165,6 +166,29 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
         })
     }
 
+    const updateStaffRole = async (staffData, role) => {
+
+        const staffTableId = staffData.tableData.id
+        const staffsData = [...staffs]
+
+        serverRequest.patch(`/staffs/${staffData._id}/role`, { role }, { headers })
+        .then(response => {
+
+            const filteredStaffs = staffsData.filter((staff, index) => staffTableId !== index)
+            setUpdatedStaffs(filteredStaffs)
+
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
+        })
+        .catch(error => {
+            console.error(error)     
+            try {
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
+            } catch(error) {
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
+            }
+        })
+    }
+
 
 
     return (
@@ -192,6 +216,22 @@ const ClubStaffsTable = ({ title, data, isClub, isRefreshAdded, isLoading, reloa
                     onRowDelete: deleteStaff
                 }}
                 actions={[
+                    staffRole === 'CLUB-ADMIN' ? 
+                    {
+                        icon: TableIcons.Downgrade,
+                        tooltip: translations[lang]['downgrade to staff'],
+                        onClick: (e, row)=> updateStaffRole(row, 'STAFF')
+                    }
+                    :
+                    null,
+                    staffRole === 'STAFF' ? 
+                    {
+                        icon: TableIcons.Upgrade,
+                        tooltip: translations[lang]['upgrade to club admin'],
+                        onClick: (e, row)=> updateStaffRole(row, 'CLUB-ADMIN')
+                    }
+                    :
+                    null,
                     {
                         icon: TableIcons.Filter,
                         tooltip: translations[lang]['Filter'],

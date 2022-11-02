@@ -99,7 +99,7 @@
     align-items: center;
 }
 
-.side-nav-list li:hover, .active-side-nav, .side-nav-list a:hover {
+.side-nav-list li:hover, .side-nav-list a:hover {
     cursor: pointer;
     color: #568FED !important;
     transition: all .5s ease;
@@ -110,7 +110,7 @@
 }
 
 .active-side-nav a {
-    color: #e9ecef;
+    color: #568FED !important;
 }
 
 .app-logout:hover {

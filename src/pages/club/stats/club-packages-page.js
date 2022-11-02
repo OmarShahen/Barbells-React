@@ -32,16 +32,17 @@ const ClubPackagesPage = ({ roles }) => {
     const user = localStorageSecured.get('user')
     const accessToken = localStorageSecured.get('access-token')
 
-    let todayDate = new Date()
-    let monthDate = new Date(todayDate.setDate(todayDate.getDate() - 30))
-    todayDate = new Date()
+    const todayDate = new Date()
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
 
-    const [authorized, setAuthorized] = useState(false)
-    const [statQuery, setStatQuery] = useState({
+    const [statQuery, setStatQuery] = useState({ 
         from: format(monthDate, 'yyyy-MM-dd'), 
         to: format(todayDate, 'yyyy-MM-dd') 
     })
 
+    const [authorized, setAuthorized] = useState(false)
     const [reload ,setReload] = useState(0)
 
     const [totalPackages, setTotalPackages] = useState(0)

@@ -279,5 +279,10 @@
     "Yearl": "Year",
     "loading": "loading",
     "Successful Operation": "Successful Operation",
-    "Failed Operation": "Failed Operation"
+    "Failed Operation": "Failed Operation",
+    "upgrade to club admin": "upgrade to club admin",
+    "downgrade to staff": "downgrade to staff",
+    "Login as": "Login as",
+    "Owner": "Owner",
+    "as Club Admin": "Club Admin"
 }

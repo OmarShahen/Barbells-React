@@ -93,6 +93,7 @@ const MainChainOwnersStaffsPage = ({ roles }) => {
                         <ClubStaffsTable 
                         data={staffs} 
                         isClub={true} 
+                        staffRole={'STAFF'}
                         reload={reload}
                         setReload={setReload}
                         isLoading={isLoading} 

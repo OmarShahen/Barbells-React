@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
 import './login.css'
+import './form.css'
 import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
 import Logo from '../logo/logo'
 import { localStorageSecured } from '../../security/localStorage'
+import { NavLink } from 'react-router-dom'
 
 const LoginForm = () => {
 
@@ -103,7 +105,7 @@ const LoginForm = () => {
                             onClick={ e => {
                                 setPhoneError()
                             }}
-                            style={phoneError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
+                            style={phoneError ? { borderBottom: '1px solid #f44336', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
                             id="login-phone" 
                             value={phone} 
                             />
@@ -121,7 +123,7 @@ const LoginForm = () => {
                             onClick={ e => {
                                 setPasswordError()
                             }}
-                            style={passwordError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
+                            style={passwordError ? { borderBottom: '1px solid #f44336', boxShadow: '0 1px 0 0 #f44336 ' } : null }  
                             id="login-password" 
                             value={password} 
                             />
@@ -145,7 +147,11 @@ const LoginForm = () => {
                                     <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
-                        
+                        <div className="col s12">
+                            <p className="center">
+                                {translations[lang]['Login as']} <NavLink to="/chains-owners/login">{translations[lang]['Owner']}</NavLink>
+                            </p>
+                        </div>                
                     </form>
                 </div>
             </div>

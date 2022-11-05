@@ -51,7 +51,7 @@ const ClubStatsCard = ({ clubId, statsQuery }) => {
 
         })
 
-    }, [])
+    }, [statsQuery])
 
 
     return (

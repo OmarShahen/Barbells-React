@@ -86,9 +86,9 @@ export const trimFreezedRegistrations = (freezedRegistrations) => {
         freezedRegistration.freezePeriod = translatePackageDuration(freezedRegistration.freezeDuration)
 
         if(!freezedRegistration.activator) {
-            freezedRegistration.isFreezed = false
-        } else {
             freezedRegistration.isFreezed = true
+        } else {
+            freezedRegistration.isFreezed = false
         }
             
     })

@@ -30,9 +30,6 @@ const NavBar = ({ pageName, statsQuery }) => {
         let dropdown = document.querySelectorAll('.dropdown-trigger')
         M.Dropdown.init(dropdown, { alignment: 'right' })
 
-        let tooltip = document.querySelectorAll('.tooltipped');
-        M.Tooltip.init(tooltip)
-
     }, [])
 
     return (

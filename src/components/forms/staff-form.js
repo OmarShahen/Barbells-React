@@ -87,7 +87,8 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
         const requestHeader = {
             headers: {
                 'x-access-token': localStorageSecured.get('access-token')
-            }
+            },
+            params: { lang }
         }
 
         setIsSubmitting(true)

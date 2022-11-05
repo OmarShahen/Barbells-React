@@ -56,14 +56,15 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             newPackage.expiresIn = `${expirationNumber} ${translations[lang][expirationPeriod]}`
         }
                 
-        serverRequest.put(`/packages/${newPackage._id}`, newPackage, { headers })
+        serverRequest.put(`/packages/${newPackage._id}`, newPackage, { headers, params: { lang } })
         .then(response => {
 
             const packageData = response.data.package
+            packageData.club = oldPackage.club
             packagesData[packageTableId] = packageData
 
             setUpdatedPackages(packagesData)
-            toast.success('updated package successfully!', { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
@@ -85,17 +86,19 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         serverRequest.patch(`/packages/${packageData._id}`, { isOpen: !packageData.isOpen }, { headers })
         .then(response => {
 
+            let updatedPackage = response.data.package
+            updatedPackage.club = packageData.club
             packagesData[packageTableId] = response.data.package
 
             setUpdatedPackages(packagesData)
 
-            toast.success(packageData.isOpen ? 'package is disabled successfully' : 'package is enabled successfully'
+            toast.success(packageData.isOpen ? translations[lang]['Package is disabled successfully'] : translations[lang]['Package is enabled successfully']
                 ,{ position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
                 toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
@@ -108,21 +111,21 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         const packagesData = [...packages]  
         const packageTableId = packageData.tableData.id
                 
-        serverRequest.delete(`/packages/${packageData._id}`, { headers })
+        serverRequest.delete(`/packages/${packageData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredPackages = packagesData.filter((packageObj, index) => packageTableId !== index)
 
             setUpdatedPackages(filteredPackages)
-            toast.success('deleted package successfully!', { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })
     }
@@ -132,7 +135,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
 
         if(isClub) {
             return [
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
+                { title: translations[lang]['Branch'], editable: false, field: 'club.clubCode' },
                 { title: translations[lang]['Title'], field: 'title' },
                 { title: translations[lang]['Attendance'], field: 'attendance' },
                 { title: translations[lang]['Price'], field: 'price' },
@@ -196,7 +199,6 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             ]
         }
     }
-
     
 
     return (

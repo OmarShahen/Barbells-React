@@ -90,14 +90,14 @@
 }
 
 .app-responsive-menu {
-    position: fixed;
+    /*position: fixed;*/
     opacity: .8;
     z-index: 100;
     width: 100vw;
     height: auto;
     padding: .5rem;
-    animation-name: menu;
-    animation-duration: .7s;
+    /*animation-name: menu;
+    animation-duration: .7s;*/
 }
 
 .app-responsive-menu {

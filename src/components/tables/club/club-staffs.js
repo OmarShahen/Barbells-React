@@ -95,22 +95,23 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = oldStaff.tableData.id
 
                 
-        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, { headers })
+        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, { headers, params: { lang } })
         .then(response => {
 
             const staffData = response.data.staff
+            staffData.club = oldStaff.club
             staffsData[staffTableId] = staffData
 
             setUpdatedStaffs(staffsData)
-            toast.success('updated staff successfully!', { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })       
 
@@ -121,22 +122,24 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, { headers })
+        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, { headers, params: { lang } })
         .then(response => {
 
-            staffsData[staffTableId] = response.data.staff
+            const updatedStaff = response.data.staff
+            updatedStaff.club = staffData.club
+            staffsData[staffTableId] = updatedStaff
 
             setUpdatedStaffs(staffsData)
 
-            toast.success(staffData.isAccountActive ? 'staff is disabled successfully' : 'staff is enabled successfully'
-                , { position: 'top-right', duration: 3000 })
+            toast.success(staffData.isAccountActive ? translations[lang]['Staff is disabled successfully'] : translations[lang]['Staff is enabled successfully']
+                , { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })       
         
@@ -147,21 +150,21 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffsData = [...staffs]  
         const staffTableId = staffData.tableData.id
                 
-        serverRequest.delete(`/staffs/${staffData._id}`, { headers })
+        serverRequest.delete(`/staffs/${staffData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredStaffs = staffsData.filter((staff, index) => staffTableId !== index)
 
             setUpdatedStaffs(filteredStaffs)
-            toast.success('deleted staff successfully!', { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })
     }
@@ -171,7 +174,7 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}/role`, { role }, { headers })
+        serverRequest.patch(`/staffs/${staffData._id}/role`, { role }, { headers, params: { lang } })
         .then(response => {
 
             const filteredStaffs = staffsData.filter((staff, index) => staffTableId !== index)

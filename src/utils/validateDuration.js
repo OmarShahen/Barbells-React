@@ -1,22 +1,23 @@
+import translations from "../i18n"
 
-export const isDurationValid = (period) => {
+export const isDurationValid = (period, lang) => {
 
     const periodSplit = period.split(' ')
 
-    if(periodSplit.length !== 2) return { isAccepted: false, message: 'invalid expiration period formate', field: 'expiresIn' }
+    if(periodSplit.length !== 2) return { isAccepted: false, message: translations[lang]['Invalid expiration period formate'], field: 'expiresIn' }
 
     let periodNumber = periodSplit[0]
     const periodName = periodSplit[1]
 
     if(!Number.parseInt(periodNumber)) {
-        return { isAccepted: false, message: 'period number must be a number', field: 'expiresIn' }
+        return { isAccepted: false, message: translations[lang]['Period number must be a number'], field: 'expiresIn' }
     }
 
 
     const validPeriodsNamesList = ['day', 'days', 'week', 'weeks', 'month', 'months', 'year']
 
     if(!validPeriodsNamesList.includes(periodName)) {
-        return { isAccepted: false, message: 'invalid period name', field: 'expiresIn' }
+        return { isAccepted: false, message: translations[lang]['Invalid period name'], field: 'expiresIn' }
     }
 
     periodNumber = Number.parseInt(periodNumber)
@@ -24,19 +25,19 @@ export const isDurationValid = (period) => {
 
     if((periodName === 'day' || periodName === 'days') && (periodNumber > 365 || periodNumber < 0)) {
 
-        return { isAccepted: false, message: 'days must be between 1 to 365 days' }
+        return { isAccepted: false, message: translations[lang]['Days must be between 1 to 365 days'] }
 
     } else if((periodName === 'week' || periodName === 'weeks') && (periodNumber > 48 || periodNumber < 0)) {
 
-        return { isAccepted: false, message: 'weeks must be between 1 to 48 weeks' }
+        return { isAccepted: false, message: translations[lang]['Weeks must be between 1 to 48 weeks'] }
 
     } else if((periodName ==='month' || periodName === 'months') && (periodNumber > 12 || periodNumber < 0)) {
 
-        return { isAccepted: false, message: 'months must be between 1 to 12 months' }
+        return { isAccepted: false, message: translations[lang]['Months must be between 1 to 12 months'] }
 
     } else if((periodName === 'year') && (periodNumber > 1 || periodNumber < 0)) {
 
-        return { isAccepted: false, message: 'only 1 year period is valid' }
+        return { isAccepted: false, message: translations[lang]['Only 1 year period is valid'] }
 
     }
 

@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
 import { serverRequest } from '../../../API/request'
-import { format } from 'date-fns'
 import toast from 'react-hot-toast'
 import { trimClubs } from '../../../utils/trimmers'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
-
+import { config } from '../../../config/config'
 
 
 const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
@@ -32,28 +31,28 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
         const clubsData = [...clubs]  
         const clubTableId = oldClub.tableData.id
                 
-        serverRequest.put(`/clubs/${newClub._id}`, newClub, { headers })
+        serverRequest.put(`/clubs/${newClub._id}`, newClub, { headers, params: { lang } })
         .then(response => {
 
             const clubData = response.data.club
             clubsData[clubTableId] = clubData
 
             setUpdatedClubs(clubsData)
-            toast.success('updated club successfully!', { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })       
 
     }
 
-    const updateClubStatus = (clubData) => {
+    /*const updateClubStatus = (clubData) => {
 
         const clubTableId = clubData.tableData.id
         const clubsData = [...clubs]
@@ -77,9 +76,9 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
             }
         })       
         
-    }
+    }*/
 
-    const deleteClub = async (clubData) => {
+    /*const deleteClub = async (clubData) => {
 
         const clubsData = [...clubs]  
         const clubTableId = clubData.tableData.id
@@ -90,18 +89,18 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
             const filteredClubs = clubsData.filter((club, index) => clubTableId !== index)
 
             setUpdatedClubs(filteredClubs)
-            toast.success('deleted club successfully!', { position: 'top-right', duration: 3000 })
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
             console.error(error)     
             try {
-                toast.error(error.response.data.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             } catch(error) {
-                toast.error(error.message, { position: 'top-right', duration: 3000 })
+                toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })
-    }
+    }*/
 
 
     const columns = [
@@ -114,7 +113,7 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
         { title: translations[lang]['Phone'], field: 'phone' },
         { title: translations[lang]['Country'], field: 'location.country', editable: 'never' },
         { title: translations[lang]['City'], field: 'location.city', editable: 'never' },
-        { title: translations[lang]['Club Status'], filtering: false, grouping: false, field: 'isActive', editable: 'never', render: rowData => {
+        /*{ title: translations[lang]['Club Status'], filtering: false, grouping: false, field: 'isActive', editable: 'never', render: rowData => {
             return <div className="switch">
             <label>
               { rowData.isActive
@@ -126,7 +125,7 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
               <span className="lever" ></span>
             </label>
           </div>
-        } },
+        } },*/
         { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
 
 
@@ -153,7 +152,7 @@ const ClubsTable = ({ data, isRefreshAdded, isLoading, reload, setReload }) => {
                     filtering: filter
                 }}
                 editable={{
-                    onRowDelete: deleteClub,
+                    //onRowDelete: deleteClub,
                     onRowUpdate: updateClub
                 }}
                 actions={[

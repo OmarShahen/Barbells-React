@@ -3,10 +3,8 @@ import NavBar from '../../../components/navigation/chain-owner-nav-bar'
 import SideBar from '../../../components/navigation/chain-owner-side-bar'
 import ClubsTable from '../../../components/tables/chain-owner/chain-owners-clubs-table'
 import toast, { Toaster } from 'react-hot-toast'
-import FloatingFormButton from '../../../components/buttons/forms-floating-button'
 import { serverRequest } from '../../../API/request'
 import { format } from 'date-fns'
-import ClubForm from '../../../components/forms/club-form'
 import translations from '../../../i18n'
 import { config } from '../../../config/config'
 import { useNavigate } from 'react-router-dom'
@@ -80,7 +78,6 @@ const ChainOwnerClubsPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <SideBar />
             <Toaster />
-            <FloatingFormButton modalId={'club-form-modal'}/>
             <div className="page">
                 <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                     <NavBar pageName={translations[lang]['Clubs']}/>
@@ -92,7 +89,6 @@ const ChainOwnerClubsPage = ({ roles }) => {
                         isLoading={isLoading} 
                         isRefreshAdded={true}
                         />
-                        <ClubForm />
                     </div>
                 </div>
             </div>

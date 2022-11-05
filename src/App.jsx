@@ -1,19 +1,31 @@
 import React, { useEffect, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import LoadingPage from './components/loading/loading-page'
+import LoginForm from "./components/forms/club-admin-login"
+import ChainOwnerLoginForm from "./components/forms/chain-owner-login"
+import ForgotPasswordForm from './components/forms/forgot-password'
+import ResetPasswordForm from './components/forms/reset-password-form'
 
 
-const MainClubMembersPage = React.lazy(() => import( "./pages/club/main/club-members-page"))
-const MainClubStaffsPage = React.lazy(() => import( "./pages/club/main/club-staffs-page"))
-const MainClubPackagesPage = React.lazy(() => import( "./pages/club/main/club-packages-page"))
-const MainClubRegistrationsPage = React.lazy(() => import( "./pages/club/main/club-registrations-page"))
-const MainClubAttendancesPage = React.lazy(() => import( "./pages/club/main/club-attendances-page"))
-const MainClubCancelledAttendancesPage = React.lazy(() => import( "./pages/club/main/club-cancelled-attendances-page"))
-const MainClubCancelledRegistrationsPage = React.lazy(() => import( "./pages/club/main/club-cancelled-registrations-page"))
-const MainClubFreezedRegistrationsPage = React.lazy(() => import( "./pages/club/main/club-freezed-registrations-page"))
-const MainClubPaymentsPagePage = React.lazy(() => import( "./pages/club/main/club-payments-page"))
-const MainClubAdminsPage = React.lazy(() => import( "./pages/club/main/club-admins-page"))
-const ChainOwnerClubsPage = React.lazy(() => import( "./pages/chain-owners/main/chain-owner-clubs-page"))
+import MainClubMembersPage from "./pages/club/main/club-members-page"
+import MainClubStaffsPage from "./pages/club/main/club-staffs-page"
+import MainClubPackagesPage from "./pages/club/main/club-packages-page"
+import MainClubRegistrationsPage from "./pages/club/main/club-registrations-page"
+import MainClubAttendancesPage from "./pages/club/main/club-attendances-page"
+import MainClubCancelledAttendancesPage from "./pages/club/main/club-cancelled-attendances-page"
+import MainClubCancelledRegistrationsPage from "./pages/club/main/club-cancelled-registrations-page"
+import MainClubFreezedRegistrationsPage from "./pages/club/main/club-freezed-registrations-page"
+import MainClubPaymentsPagePage from "./pages/club/main/club-payments-page"
+import MainClubAdminsPage from "./pages/club/main/club-admins-page"
+import ChainOwnerClubsPage from "./pages/chain-owners/main/chain-owner-clubs-page"
+
+import ClubDashboardPage from "./pages/club/stats/club-dashboard-page"
+import ClubMembersPage from "./pages/club/stats/club-members-page"
+import ClubMemberPage from "./pages/club/stats/club-member-page"
+import ClubPackagesPage from "./pages/club/stats/club-packages-page"
+import ClubPackagePage from "./pages/club/stats/club-package-page"
+import ClubRegistrationsPage from "./pages/club/stats/club-registrations-page"
+import ClubAttendancesPage from "./pages/club/stats/club-attendances-page"
 
 const MainChainOwnersStaffsPage = React.lazy(() => import( './pages/chain-owners/main/chain-owners-staffs-page'))
 const MainChainOwnersClubsPaymentsPage = React.lazy(() => import( "./pages/chain-owners/main/chain-owners-clubs-payments-page"))
@@ -32,18 +44,6 @@ const ChainOwnersAttendancesPage = React.lazy(() => import( "./pages/chain-owner
 const ChainOwnersPackagesPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-packages-page"))
 const ChainOwnersMembersPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-members-page"))
 
-const LoginForm = React.lazy(() => import( "./components/forms/club-admin-login"))
-const ChainOwnerLoginForm = React.lazy(() => import( "./components/forms/chain-owner-login"))
-const ForgotPasswordForm = React.lazy(() => import( './components/forms/forgot-password'))
-const ResetPasswordForm = React.lazy(() => import( './components/forms/reset-password-form'))
-
-const ClubDashboardPage = React.lazy(() => import("./pages/club/stats/club-dashboard-page"))
-const ClubMembersPage = React.lazy(() => import("./pages/club/stats/club-members-page"))
-const ClubMemberPage = React.lazy(() => import("./pages/club/stats/club-member-page"))
-const ClubPackagesPage = React.lazy(() => import("./pages/club/stats/club-packages-page"))
-const ClubPackagePage = React.lazy(() => import("./pages/club/stats/club-package-page"))
-const ClubRegistrationsPage = React.lazy(() => import("./pages/club/stats/club-registrations-page"))
-const ClubAttendancesPage = React.lazy(() => import("./pages/club/stats/club-attendances-page"))
 
 const App = () => {
 
@@ -80,17 +80,17 @@ const App = () => {
           </Suspense>
         } />
 
+      <Route exact path="/app/clubs/:clubId/packages/:packageId/stats"  
+        element={
+          <Suspense fallback={<LoadingPage />}>
+            <ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
+          </Suspense>
+        } />
+
         <Route exact path="/app/clubs/:clubId/packages/stats" 
         element={
           <Suspense fallback={<LoadingPage />}>
             <ClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
-          </Suspense>
-        } />
-
-        <Route exact path="/app/clubs/:clubId/packages/:packageId/stats"  
-        element={
-          <Suspense fallback={<LoadingPage />}>
-            <ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
           </Suspense>
         } />
 

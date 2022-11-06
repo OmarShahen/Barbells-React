@@ -43,18 +43,18 @@ const DropdownAttendancesTable = ({ registrationId, statsQuery }) => {
             <table className="highlight centered">
             <thead>
                 <tr>
-                    <th>New</th>
-                    <th>Staff</th>
-                    <th>Attendance Time</th>
-                    <th>Attendance Date</th>
+                    <th>{translations[lang]['New']}</th>
+                    <th>{translations[lang]['Staff']}</th>
+                    <th>{translations[lang]['Attendance Time']}</th>
+                    <th>{translations[lang]['Attendance Date']}</th>
                 </tr>
             </thead>
             <tbody>
                 {data.map(row => <tr>
                     <td>{row.isNew ?
-                    <span className="app-badge blue white-text">new</span>
+                    <span className="app-badge blue white-text">{translations[lang]['new']}</span>
                     :
-                    <span className="app-badge grey white-text">old</span>
+                    <span className="app-badge grey white-text">{translations[lang]['old']}</span>
                     }</td>
                     <td>{row.staff.name}</td>
                     <td>{row.attendanceTime}</td>

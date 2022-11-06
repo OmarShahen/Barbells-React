@@ -23,9 +23,6 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
     const [members, setMembers] = useState(trimMembers(data))
     const [updatedMembers, setUpdatedMembers] = useState([])
 
-    const [successMessage, setSuccessMessage] = useState(translations[lang]['Successful Operation'])
-    const [errorMessage, setErrorMessage] = useState(translations[lang]['Failed Operation'])
-
     const [filter, setFilter] = useState(false)
 
     const pagePath = window.location.pathname
@@ -83,16 +80,13 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
 
     }
 
-    const updatememberAuthStatus = (memberData) => {
+    const updateMemberAuthStatus = (memberData) => {
 
         const memberTableId = memberData.tableData.id
         const membersData = [...members]
 
-        toast.promise(
-            serverRequest.patch(`/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers })
+        serverRequest.patch(`/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers, params: { lang } })
         .then(response => {
-
-            setSuccessMessage(response.data.message)
 
             let updatedMember = response.data.member
             updatedMember.club = memberData.club
@@ -100,18 +94,11 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
             membersData[memberTableId] = updatedMember
 
             setUpdatedMembers(membersData)
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
         })
         .catch(error => {
-            setErrorMessage(error.response.data.message)
-            throw error
-        }),
-        {
-            loading: <strong>{translations[lang]['loading']}</strong>,
-            success: <strong>{successMessage}</strong>,
-            error: <strong>{errorMessage}</strong>
-        },
-        { position: 'top-right', duration: config.TOAST_SUCCESS_TIME }
-    )   
+            toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
+        })
         
     }
 
@@ -120,26 +107,17 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const membersData = [...members]  
         const memberTableId = memberData.tableData.id
                 
-        toast.promise(
-            serverRequest.delete(`/members/${memberData._id}`, { headers, params: lang })
+        serverRequest.delete(`/members/${memberData._id}`, { headers, params: { lang } })
         .then(response => {
-
-            setSuccessMessage(response.data.message)
 
             const filteredMembers = membersData.filter((member, index) => memberTableId !== index)
             setUpdatedMembers(filteredMembers)
+            toast.success(response.data.message, { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
 
         })
         .catch(error => {
-            setErrorMessage(error.response.data.message)
-            throw error
-        }),
-        {
-            loading: <strong>{translations[lang]['loading']}</strong>,
-            success: <strong>{successMessage}</strong>,
-            error: <strong>{errorMessage}</strong>
-        },
-        { position: 'top-right', duration: config.TOAST_SUCCESS_TIME })
+            toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
+        })
     }
 
 
@@ -183,9 +161,9 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     <label>
                       { rowData.isBlocked
                        ? 
-                       <input type="checkbox" onChange={() => updatememberAuthStatus(rowData)} checked={false} />
+                       <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={false} />
                         : 
-                        <input type="checkbox" onChange={() => updatememberAuthStatus(rowData)} checked={true} />
+                        <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={true} />
                     }
                       <span className="lever" ></span>
                     </label>
@@ -239,9 +217,9 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     <label>
                       { rowData.isBlocked
                        ? 
-                       <input type="checkbox" onChange={() => updatememberAuthStatus(rowData)} checked={false} />
+                       <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={false} />
                         : 
-                        <input type="checkbox" onChange={() => updatememberAuthStatus(rowData)} checked={true} />
+                        <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={true} />
                     }
                       <span className="lever" ></span>
                     </label>

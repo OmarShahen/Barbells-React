@@ -8,6 +8,7 @@ import ResetPasswordForm from './components/forms/reset-password-form'
 
 
 import MainClubMembersPage from "./pages/club/main/club-members-page"
+import MainClubOffersMessagesPage from './pages/club/main/club-offers-messages-page'
 import MainClubStaffsPage from "./pages/club/main/club-staffs-page"
 import MainClubPackagesPage from "./pages/club/main/club-packages-page"
 import MainClubRegistrationsPage from "./pages/club/main/club-registrations-page"
@@ -116,11 +117,16 @@ const App = () => {
         <MainClubMembersPage roles={['ADMIN','CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
+
+        <Route 
+        path="/app/clubs/:clubId/offers-messages/main" 
+        element={<MainClubOffersMessagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />} 
+        />
  
         <Route exact path="/app/clubs/:clubId/staffs/main" 
         element={
           <Suspense fallback={<LoadingPage />}>
-        <MainClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+          <MainClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         </Suspense> 
         } />
  

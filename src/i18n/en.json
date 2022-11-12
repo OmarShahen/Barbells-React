@@ -294,5 +294,10 @@
     "Days must be between 1 to 365 days": "Days must be between 1 to 365 days",
     "Weeks must be between 1 to 48 weeks": "Weeks must be between 1 to 48 weeks",
     "Months must be between 1 to 12 months": "Months must be between 1 to 12 months",
-    "Only 1 year period is valid": "Only 1 year period is valid"
+    "Only 1 year period is valid": "Only 1 year period is valid",
+    "Send Offer": "Send Offer",
+    "Message is required": "Message is required",
+    "Send Offer Message": "Send Offer Message",
+    "Choose Language": "Choose Language",
+    "Message": "Message"
 }

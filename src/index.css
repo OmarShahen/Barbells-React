@@ -295,3 +295,30 @@ background-color: #a8bbbf;
     justify-content: center;
     align-items: center;
 }
+
+.send-offer-message-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.send-offer-message-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #FFF;
+    border-radius: .25rem;
+    padding: 1rem 1.2rem;
+    margin: .5rem 0;
+}
+
+.send-offer-message-row .row-info {
+    display: flex;
+    justify-content: center;
+}
+
+.send-offer-icon-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: grey !important;
+}

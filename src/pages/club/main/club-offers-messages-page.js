@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
 import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar'
-import ClubMembersTable from '../../../components/tables/club/club-members'
+import ClubOffersMessagesTable from '../../../components/tables/club/club-offers-messages'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
 import { config } from '../../../config/config'
@@ -9,13 +9,15 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-import StatDatePicker from '../../../components/forms/stats-date-picker-form'
-import { format } from 'date-fns'
-import FloatingFormButton from '../../../components/buttons/floating-button'
+import FloatingFormButton from '../../../components/buttons/forms-floating-button'
+import ClubOfferMessageForm from '../../../components/forms/offers-messages-form'
+import ClubOffersMessagesMembersTable from '../../../components/tables/club/offers-messages/members'
+import SendOfferMessage from '../../../components/loading/offers-messages'
 
-const MainClubMembersPage = ({ roles }) => {
+const MainClubOffersMessagesPage = ({ roles }) => {
 
     const navigate = useNavigate()
+
     const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
@@ -27,11 +29,10 @@ const MainClubMembersPage = ({ roles }) => {
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    const [members, setMembers] = useState([])
+    const [offersMessages, setOffersMessages] = useState([])
+    const [offeredMembers, setOfferedMembers] = useState([])
+    const [mode, setMode] = useState('VIEW')
 
-    const todayDate = new Date()
-    todayDate.setDate(todayDate.getDate() + 1)
-    const [statsQuery, setStatsQuery] = useState({ until: format(todayDate, 'yyyy-MM-dd') })
 
     useEffect(() => {
 
@@ -47,25 +48,22 @@ const MainClubMembersPage = ({ roles }) => {
 
         setIsLoading(true)
 
-        serverRequest.get(`/members/clubs/${clubId}`, {
+        serverRequest.get(`/offers-messages/clubs/${clubId}`, {
             headers,
-            params: statsQuery
         })
         .then(response => {
-            
             setIsLoading(false)
-
             const data = response.data
-            setMembers(data.members)    
+            setOffersMessages(data.offersMessages)    
         })
         .catch(errorResponse => {
-
             setIsLoading(false)
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
-        })
-            
+        })         
 
-    }, [reload, statsQuery])
+    }, [reload])
+
+
 
     return (
         <>
@@ -75,22 +73,38 @@ const MainClubMembersPage = ({ roles }) => {
             <div className="blue-grey lighten-5">
             <ClubAdminSideBar />
             <Toaster />
-            <FloatingFormButton />
-            <StatDatePicker setStatQuery={setStatsQuery} />
+            { mode === 'VIEW' && <FloatingFormButton modalId={'offer-message-form-modal'} /> }
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Members"]} pageRoles={roles} statsQuery={statsQuery} />
+                        <NavBar pageName={'Offers Messages'} />
                         <div className="page-main">
                             <div className="row">
                                 <div className="col s12">
-                                    <ClubMembersTable 
-                                    data={members} 
-                                    reload={reload}
-                                    setReload={setReload}
-                                    isLoading={isLoading} 
-                                    isRefreshAdded={true}
+                                    {
+                                        mode === 'VIEW' &&
+                                        <ClubOffersMessagesTable 
+                                        data={offersMessages} 
+                                        reload={reload}
+                                        setReload={setReload}
+                                        isLoading={isLoading} 
+                                        isRefreshAdded={true}
+                                        setMode={setMode}
+                                        />
+                                    }
+                                    { mode === 'PICK' && 
+                                    <ClubOffersMessagesMembersTable 
+                                    updatedMembers={offeredMembers} 
+                                    setUpdatedMembers={setOfferedMembers} 
+                                    setMode={setMode}
                                     />
+                                    }
+                                    {
+                                        mode === 'SEND' &&
+                                        <SendOfferMessage members={offeredMembers} />
+                                    }
+                                    
+                                    <ClubOfferMessageForm reload={reload} setReload={setReload} />
                                 </div>
                             </div>
                         </div>                        
@@ -103,4 +117,4 @@ const MainClubMembersPage = ({ roles }) => {
     )
 }
 
-export default MainClubMembersPage
+export default MainClubOffersMessagesPage

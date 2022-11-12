@@ -224,7 +224,7 @@ const ClubDashboardPage = ({ roles }) => {
                                 </div>
                             <div className="row">
                                 <div className="col s12">
-                                    <ClubRegistrationTable data={registrations} />
+                                    <ClubRegistrationTable data={registrations} statsQuery={statQuery} />
                                 </div>
                             </div>
                         </div>                        

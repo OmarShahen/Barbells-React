@@ -10,6 +10,8 @@ import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
 import { config } from '../../../config/config'
+import ClubOfferMessageForm from '../../forms/offers-messages-form'
+import LocalOfferIcon from '@mui/icons-material/LocalOffer'
 
 const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
@@ -22,6 +24,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
 
     const [members, setMembers] = useState(trimMembers(data))
     const [updatedMembers, setUpdatedMembers] = useState([])
+    const [sendToMember, setSendToMember] = useState()
 
     const [filter, setFilter] = useState(false)
 
@@ -77,7 +80,6 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                 toast.error(error.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
             }
         })    
-
     }
 
     const updateMemberAuthStatus = (memberData) => {
@@ -169,12 +171,18 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     </label>
                   </div>
                 } },
+                { title: translations[lang]['Send Offer'], field: '', render: rowData => {
+                    return <a href='#offer-message-form-modal' onClick={e => setSendToMember(rowData)} className="modal-trigger send-offer-icon-table">
+                            <LocalOfferIcon />
+                        </a>
+                }},
                 { title: translations[lang]['Registration Date'], filtering: false, field: 'registrationDate', editable: 'never' },
         
             ]
         } else {
 
             return [
+        
                 { title: translations[lang]['New'], field: 'isNew', export: false, filtering: false, editable: 'never', render: rowData => {
                     return rowData.isNew ?
                     <span className="app-badge blue white-text">{translations[lang]['new']}</span>
@@ -225,6 +233,11 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     </label>
                   </div>
                 } },
+                { title: translations[lang]['Send Offer'], field: '', render: rowData => {
+                    return <a href='#offer-message-form-modal' onClick={e => setSendToMember(rowData)} className="modal-trigger send-offer-icon-table">
+                            <LocalOfferIcon />
+                        </a>
+                }},
                 { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
         
             ]
@@ -233,6 +246,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
 
     return (
         <div className="table-container">
+            <ClubOfferMessageForm member={sendToMember} />
             <MaterialTable 
                 title={`# ${members.length}`}
                 isLoading={isLoading}
@@ -270,7 +284,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                         tooltip: translations[lang]['Filter'],
                         isFreeAction: true,
                         onClick: e => setFilter(filter ? false: true)
-                    }
+                    },
                 ]}
 
                 localization={ lang === 'ar' ? {

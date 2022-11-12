@@ -1,14 +1,17 @@
-import { FormatColorResetOutlined } from '@mui/icons-material'
 import { format } from 'date-fns'
-import { translateMonth, translatePackageDuration } from './dates'
+import { translatePackageDuration } from './dates'
 import translations from '../i18n'
 
 const lang = localStorage.getItem('lang')
 
+const getTimeZone = () => Intl.DateTimeFormat().resolvedOptions().timeZone
+
 export const trimAttendances = (attendances) => {
 
     attendances.forEach(attendance => {
-        attendance.attendanceTime = format(new Date(attendance.createdAt), 'HH:mm:ss')
+
+        attendance.attendanceTime = new Date(attendance.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
 
         lang === 'en' ? 
         attendance.registrationDate = format(new Date(attendance.createdAt), 'dd MMM yyyy')
@@ -30,11 +33,24 @@ export const trimAttendances = (attendances) => {
     return attendances
 }
 
+export const trimOffersMessages = (offersMessages) => {
+
+    offersMessages.forEach(offerMessage => {
+        lang === 'en' ? 
+        offerMessage.creationDate = format(new Date(offerMessage.createdAt), 'dd MMM yyyy')
+        :
+        offerMessage.creationDate = format(new Date(offerMessage.createdAt), 'dd-MM-yyyy')
+    })
+
+    return offersMessages
+}
+
 export const trimPaymentsDetails = (payments) => {
 
     payments.forEach(payment => {
         payment.registrationDate = format(new Date(payment.createdAt), 'dd MMM yyyy')
-        payment.registrationTime = format(new Date(payment.createdAt), 'HH:mm:ss')
+        payment.registrationTime = new Date(payment.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
     })
 
     return payments
@@ -99,7 +115,8 @@ export const trimFreezedRegistrations = (freezedRegistrations) => {
 export const trimCancelledAttendances = (cancelledAttendances) => {
 
     cancelledAttendances.forEach(cancelledAttendance => {
-        cancelledAttendance.attendanceTime = format(new Date(cancelledAttendance.createdAt), 'HH:mm:ss')
+        cancelledAttendance.attendanceTime = new Date(cancelledAttendance.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
         lang === 'en' ? 
         cancelledAttendance.cancellationDate = format(new Date(cancelledAttendance.createdAt), 'dd MMM yyyy')
         :
@@ -112,7 +129,9 @@ export const trimCancelledAttendances = (cancelledAttendances) => {
 export const trimCancelledRegistrations = (cancelledRegistrations) => {
 
     cancelledRegistrations.forEach(cancelledRegistration => {
-        cancelledRegistration.attendanceTime = format(new Date(cancelledRegistration.createdAt), 'HH:mm:ss')    
+        cancelledRegistration.attendanceTime = new Date(cancelledRegistration.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })   
+
         lang === 'en' ? 
         cancelledRegistration.cancellationDate = format(new Date(cancelledRegistration.createdAt), 'dd MMM yyyy')
         :

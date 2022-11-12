@@ -32,7 +32,6 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
     }, [])
 
     useEffect(() => {
-
         setPackages(trimPackages(data))
     }, [data])
 

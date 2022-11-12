@@ -20,6 +20,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
+import SendIcon from '@mui/icons-material/Send'
 
 
 const tableIcons = {
@@ -45,7 +46,7 @@ const tableIcons = {
     Cancel: forwardRef((props, ref) => <DeleteForeverIcon {...props} ref={ref} />),
     Upgrade: forwardRef((props, ref) => <ManageAccountsOutlinedIcon {...props} ref={ref} />),
     Downgrade: forwardRef((props, ref) => <BadgeOutlinedIcon {...props} ref={ref} />),
-
+    Message: forwardRef((props, ref) => <SendIcon {...props} ref={ref} />),
 
   }
 

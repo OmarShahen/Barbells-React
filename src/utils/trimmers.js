@@ -97,7 +97,9 @@ export const trimFreezedRegistrations = (freezedRegistrations) => {
         freezedRegistration.freezedDate = format(new Date(freezedRegistration.createdAt), dateFormate)
         freezedRegistration.originalRegistrationNewExpirationDate = format(new Date(freezedRegistration.registrationNewExpirationDate), dateFormate)
         freezedRegistration.registrationReactivationDate = format(new Date(freezedRegistration.reactivationDate), dateFormate)
-        freezedRegistration.registrationDate = format(new Date(freezedRegistration.registration.createdAt), dateFormate)
+
+        /*const registrationDate = freezedRegistration.registration.createdAt ? format(new Date(freezedRegistration.registration.createdAt), dateFormate) : null
+        freezedRegistration.registrationDate = registrationDate*/
 
         freezedRegistration.freezePeriod = translatePackageDuration(freezedRegistration.freezeDuration)
 

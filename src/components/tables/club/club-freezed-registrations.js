@@ -45,7 +45,7 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 { title: translations[lang]['Freezing Date'], field: 'freezedDate' },
                 { title: translations[lang]['Registration Expiration Date'], field: 'originalRegistrationNewExpirationDate' },
                 { title: translations[lang]['Reactivation Date'], field: 'registrationReactivationDate' },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate' },
+                //{ title: translations[lang]['Registration Date'], field: 'registrationDate' },
         
             ]
         } else {
@@ -65,7 +65,7 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 { title: translations[lang]['Freezing Date'], field: 'freezedDate' },
                 { title: translations[lang]['Registration Expiration Date'], field: 'originalRegistrationNewExpirationDate' },
                 { title: translations[lang]['Reactivation Date'], field: 'registrationReactivationDate' },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate' },
+                //{ title: translations[lang]['Registration Date'], field: 'registrationDate' },
         
             ]
         }

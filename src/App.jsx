@@ -28,7 +28,7 @@ import ClubPackagePage from "./pages/club/stats/club-package-page"
 import ClubRegistrationsPage from "./pages/club/stats/club-registrations-page"
 import ClubAttendancesPage from "./pages/club/stats/club-attendances-page"
 
-const MainChainOwnersStaffsPage = React.lazy(() => import( './pages/chain-owners/main/chain-owners-staffs-page'))
+/*const MainChainOwnersStaffsPage = React.lazy(() => import( './pages/chain-owners/main/chain-owners-staffs-page'))
 const MainChainOwnersClubsPaymentsPage = React.lazy(() => import( "./pages/chain-owners/main/chain-owners-clubs-payments-page"))
 const MainChainOwnersClubAdminsPage = React.lazy(() => import( './pages/chain-owners/main/chain-owners-club-admins-page'))
 const MainChainOwnersMembersPage = React.lazy(() => import( "./pages/chain-owners/main/chain-owners-members-page"))
@@ -43,7 +43,7 @@ const ChainOwnersDashboardPage = React.lazy(() => import( "./pages/chain-owners/
 const ChainOwnersRegistrationsPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-registartions-page"))
 const ChainOwnersAttendancesPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-attendances-page"))
 const ChainOwnersPackagesPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-packages-page"))
-const ChainOwnersMembersPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-members-page"))
+const ChainOwnersMembersPage = React.lazy(() => import( "./pages/chain-owners/stats/chain-owners-members-page"))*/
 
 
 const App = () => {
@@ -190,7 +190,7 @@ const App = () => {
         <ChainOwnerClubsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
-        <Route
+        {/*<Route
         exact
          path="/app/chain-owners/:ownerId/payments/main" 
         element={
@@ -295,44 +295,23 @@ const App = () => {
           <Suspense fallback={<LoadingPage />}>
             <ChainOwnersMembersPage roles={['ADMIN', 'OWNER']} />
           </Suspense> 
-        } />
+        } />*/}
 
-        <Route exact path="/clubs-admins/login" 
-        element={
-          <Suspense fallback={<LoadingPage />}>
-        <LoginForm />
-        </Suspense>
-      }/>
-        <Route exact path="/" 
-        element={
-          <Suspense fallback={<LoadingPage />}>
-            <LoginForm />
-          </Suspense>
-      }/>
+        <Route exact path="/clubs-admins/login" element={<LoginForm /> }/>
 
-        <Route exact path="/chains-owners/login" 
+        <Route exact path="/" element={<LoginForm />} />
+
+        {/*<Route exact path="/chains-owners/login" 
         element={
           <Suspense fallback={<LoadingPage />}>
             <ChainOwnerLoginForm />
           </Suspense>
-        }/>
+        }/>*/}
 
-        <Route exact path="/forgot-password" 
-        element={
-          <Suspense fallback={<LoadingPage />}>
-            <ForgotPasswordForm />
-          </Suspense>
-      } />
+        <Route exact path="/forgot-password" element={<ForgotPasswordForm /> }/>
 
-        <Route exact path="/reset-password/:token" 
-        element={
-          <Suspense fallback={<LoadingPage />}>
-            <ResetPasswordForm />
-          </Suspense>}
-        />
+        <Route exact path="/reset-password/:token" element={<ResetPasswordForm />} />
 
-        <Route exact path="/test" element={<LoadingPage />} />
-        
       </Routes>
     </Router>
   </div>

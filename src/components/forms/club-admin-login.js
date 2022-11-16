@@ -147,11 +147,11 @@ const LoginForm = () => {
                                     <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
-                        <div className="col s12">
+                        {/*<div className="col s12">
                             <p className="center">
                                 {translations[lang]['Login as']} <NavLink to="/chains-owners/login">{translations[lang]['Owner']}</NavLink>
                             </p>
-                        </div>                
+                        </div>*/}                
                     </form>
                 </div>
             </div>

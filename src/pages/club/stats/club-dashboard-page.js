@@ -66,7 +66,6 @@ const ClubDashboardPage = ({ roles }) => {
     useEffect(() => {
 
         setIsLoading(true)
-
         toast.promise(
             serverRequest.get(`clubs/${clubId}/stats`, {
                 params: statQuery,

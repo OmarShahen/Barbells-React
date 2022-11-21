@@ -21,7 +21,6 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
     
 
     useEffect(() => {
-
         setFreezedRegistrations(trimFreezedRegistrations(data))
     }, [data])
 

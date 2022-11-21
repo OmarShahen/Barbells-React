@@ -17,9 +17,16 @@ export const formateDates = list => {
 
 export const translatePackageDuration = (duration) => {
 
-    const splittedDuration = duration.split(' ')
-    const durationNumber = splittedDuration[0]
-    const durationName = splittedDuration[1]
+    try {
 
-    return `${durationNumber} ${translations[lang][durationName]}`
+        const splittedDuration = duration.split(' ')
+        const durationNumber = splittedDuration[0]
+        const durationName = splittedDuration[1]
+
+        return `${durationNumber} ${translations[lang][durationName]}`
+
+    } catch(error) {
+        console.error(error)
+        return translations[lang]['No Date']
+    }
 }

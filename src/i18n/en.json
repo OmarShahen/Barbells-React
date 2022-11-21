@@ -144,7 +144,6 @@
     "dashboard-loading": "Loading dashboard data",
     "dashboard-success": "Loaded dashboard data successfully",
     "dashboard-error": "Error loading dashboard data",
-
     "Sunday": "Sunday",
     "Monday": "Monday",
     "Tuesday": "Tuesday",
@@ -299,5 +298,6 @@
     "Message is required": "Message is required",
     "Send Offer Message": "Send Offer Message",
     "Choose Language": "Choose Language",
-    "Message": "Message"
+    "Message": "Message",
+    "No Date": "No Date"
 }

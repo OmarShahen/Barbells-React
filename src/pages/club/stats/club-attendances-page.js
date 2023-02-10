@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import SideBar from '../../../components/navigation/club-admin-side-bar'
 import Card from '../../../components/cards/card'
 import AttendancesTable from '../../../components/tables/club/club-attendances'
 import BarChart from '../../../components/charts/bar-chart'
@@ -15,11 +14,13 @@ import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
 import { to12 } from '../../../utils/hours'
-import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import PageHeader from '../../../components/sections/headers/page-header'
+import { useSelector } from 'react-redux'
+
 
 const ClubsAttendancesPage = ({ roles }) => {
 
@@ -29,7 +30,7 @@ const ClubsAttendancesPage = ({ roles }) => {
     const pagePath = window.location.pathname
     const ownerId = pagePath.split('/')[3]
 
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const lang = localStorage.getItem('lang')
@@ -78,7 +79,7 @@ const ClubsAttendancesPage = ({ roles }) => {
     useEffect(() => {
 
         toast.promise(
-            serverRequest.get(`/attendances/clubs/${ownerId}/stats`, {
+            serverRequest.get(`/v1/attendances/clubs/${ownerId}/stats`, {
                 params: statQuery,
                 headers
             })
@@ -154,23 +155,15 @@ const ClubsAttendancesPage = ({ roles }) => {
             authorized
             &&
             <div className="lighten-5 page-body">
-            <SideBar />
             <Toaster />
-            <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                         <NavBar pageName={translations[lang]['Attendances Stats']} statsQuery={statQuery} pageRoles={roles} />
                         <div className="page-main">
-                            <div className="page-body-header">
-                                <h5>
-                                    {translations[lang]['Attendances']}
-                                </h5>
-                                <div className="reload-icon" onClick={e => setReload(reload + 1)}>
-                                   <CachedIcon /> 
-                                </div>
-                            </div>
+                        <PageHeader pageName={'Attendances'} reload={reload} setReload={setReload} statsQuery={statQuery} />
+
                             <div className="row">
                                     <div className="col s12 m6">
                                         <Card title={translations[lang]["Attendances"]} number={totalAttendances} icon={iconPicker('attendances')} color={'#aa00ff'}/>

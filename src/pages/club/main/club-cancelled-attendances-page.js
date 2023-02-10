@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar'
 import ClubCancelledAttendancesTable from '../../../components/tables/club/club-cancelled-attendances'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
@@ -9,6 +8,9 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import { useSelector } from 'react-redux'
+import PageHeader from '../../../components/sections/headers/page-header'
+
 
 
 const MainClubCancelledAttendancesPage = ({ roles }) => {
@@ -19,7 +21,7 @@ const MainClubCancelledAttendancesPage = ({ roles }) => {
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
@@ -41,7 +43,7 @@ const MainClubCancelledAttendancesPage = ({ roles }) => {
 
         setIsLoading(true)
 
-        serverRequest.get(`/cancelled-attendances/clubs/${clubId}`, {
+        serverRequest.get(`/v1/cancelled-attendances/clubs/${clubId}`, {
             headers
         })
         .then(response => {
@@ -69,13 +71,13 @@ const MainClubCancelledAttendancesPage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            <ClubAdminSideBar />
             <Toaster />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                         <NavBar pageName={translations[lang]["Cancelled Attendances"]} />
                         <div className="page-main">
+                        <PageHeader pageName="Cancelled Attendances" reload={reload} setReload={setReload} />
                             <div className="row">
                                 <div className="col s12">
                                     <ClubCancelledAttendancesTable 

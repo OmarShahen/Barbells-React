@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { serverRequest } from '../../../API/request'
-import { format } from 'date-fns'
 import { trimCancelledRegistrations } from '../../../utils/trimmers'
 import translations from '../../../i18n'
 
@@ -25,32 +23,16 @@ const ClubCancelledRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoadi
 
 
     const columns = () => {
-
-        if(isClub) {
-
-            return [
-        
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['paid'], field: 'paid' },
-                { title: translations[lang]['Cancellation Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Cancellation Date'], field: 'cancellationDate' },
-        
-            ]
-        } else {
-            return [
-        
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Paid'], field: 'paid' },
-                { title: translations[lang]['Cancellation Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Cancellation Date'], field: 'cancellationDate' },
-        
-            ]
-        }
+        return [
+    
+            { title: translations[lang]['Member'], field: 'member.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Package'], field: 'package.title', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Staff'], field: 'staff.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Paid'], field: 'paid', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Cancellation Time'], field: 'attendanceTime', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Cancellation Date'], field: 'cancellationDate', cellStyle: { whiteSpace: 'nowrap' } },
+    
+        ]
     }
 
     return (
@@ -71,7 +53,10 @@ const ClubCancelledRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoadi
                     }, 
                     exportFileName: translations[lang]['Cancelled-Registrations'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 actions={[
                     {

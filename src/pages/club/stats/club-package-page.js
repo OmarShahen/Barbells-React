@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ClubAdminNavbar from '../../../components/navigation/nav-bar'
 import ChainOwnerNavbar from '../../../components/navigation/chain-owner-nav-bar'
-import ClubSideBar from '../../../components/navigation/club-admin-side-bar'
 import ChainOwnerSideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
 import ClubRegistrationsTable from '../../../components/tables/club/club-registrations'
@@ -16,12 +15,14 @@ import { config } from '../../../config/config'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
-import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import PageHeader from '../../../components/sections/headers/page-header'
+import { useSelector } from 'react-redux'
+
 
 
 const ClubPackagePage = ({ roles }) => {
@@ -31,7 +32,7 @@ const ClubPackagePage = ({ roles }) => {
     const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const packageId = pagePath.split('/')[5]
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const lang = localStorage.getItem('lang')
@@ -90,7 +91,7 @@ const ClubPackagePage = ({ roles }) => {
     useEffect(() => {
 
         toast.promise(
-            serverRequest.get(`/packages/${packageId}/stats`, {
+            serverRequest.get(`/v1/packages/${packageId}/stats`, {
                 params: statQuery,
                 headers
             })
@@ -186,9 +187,7 @@ const ClubPackagePage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            { user.role === 'OWNER' ? <ChainOwnerSideBar /> : <ClubSideBar /> }
             <Toaster />
-            <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
             <div className="page">
                 <div className="row">
@@ -199,14 +198,7 @@ const ClubPackagePage = ({ roles }) => {
                         <ClubAdminNavbar pageName={translations[lang]["Package Stats"]} statsQuery={statQuery} />
                     }
                         <div className="page-main">
-                        <div className="page-body-header">
-                                <h5>
-                                    {clubPackage.title}
-                                </h5>
-                                <div className="reload-icon" onClick={e => setReload(reload + 1)}>
-                                   <CachedIcon /> 
-                                </div>
-                            </div>
+                        <PageHeader pageName={clubPackage.title} reload={reload} setReload={setReload} statsQuery={statQuery} />
                                 <div className="row">
                                     <div className="col s12 m4">
                                         <Card title={translations[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalPackageRegistrations} color={'dodgerblue'}/>

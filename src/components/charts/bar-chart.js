@@ -14,7 +14,6 @@ const BarChart = ({ title, labels, data, color, axis }) => {
                 datasets: [{
                     data,
                     barPercentage: 0,
-                    borderRadius: 0,
                     hoverBackgroundColor: 'dodgerblue',
                     barThickness: 10,
                     backgroundColor: [

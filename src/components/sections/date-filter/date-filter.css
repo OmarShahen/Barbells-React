@@ -1,0 +1,27 @@
+.date-filter-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.date-picker-container {
+    border-radius: .25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .3rem .5rem;
+    background-color: #FFF;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    margin-right: .7rem;
+}
+
+.date-picker-container span {
+    margin-left: .2rem;
+}
+
+@media screen and (max-width: 800px) {
+    .date-picker-container span {
+        font-size: .8rem !important;
+    }
+}

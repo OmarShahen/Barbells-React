@@ -11,7 +11,7 @@ import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
 import { config } from '../../../config/config'
 import ClubOfferMessageForm from '../../forms/offers-messages-form'
-import LocalOfferIcon from '@mui/icons-material/LocalOffer'
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 
 const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
@@ -61,7 +61,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const membersData = [...members]  
         const memberTableId = oldMember.tableData.id
                 
-        serverRequest.put(`/members/${newMember._id}`, newMember, { headers, params: { lang } })
+        serverRequest.put(`/v1/members/${newMember._id}`, newMember, { headers, params: { lang } })
         .then(response => {
 
             const memberData = response.data.member
@@ -87,7 +87,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const memberTableId = memberData.tableData.id
         const membersData = [...members]
 
-        serverRequest.patch(`/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers, params: { lang } })
+        serverRequest.patch(`/v1/members/${memberData._id}`, { isBlocked: !memberData.isBlocked }, { headers, params: { lang } })
         .then(response => {
 
             let updatedMember = response.data.member
@@ -109,7 +109,7 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
         const membersData = [...members]  
         const memberTableId = memberData.tableData.id
                 
-        serverRequest.delete(`/members/${memberData._id}`, { headers, params: { lang } })
+        serverRequest.delete(`/v1/members/${memberData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredMembers = membersData.filter((member, index) => memberTableId !== index)
@@ -124,124 +124,68 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
 
 
     const columns = () => {
-
-        if(isClub) {
-            return [
-                { title: translations[lang]['New'], field: 'isNew', filtering: false, export: false, editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">new</span>
-                    :
-                    <span className="app-badge grey white-text">old</span>
-                } },
-                { title: translations[lang]['Image'], field: 'imageURL', filtering: false, export: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
-                } },
-                { title: translations[lang]['Branch'], editable: false, field: 'club.clubCode' },
-                { title: translations[lang]['Name'], field: 'name' },
-                { title: translations[lang]['Phone Code'], field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
-                { title: translations[lang]['Phone'], field: 'phone' },
-                { title: translations[lang]['Mail'], field: 'email' },
-                { title: translations[lang]['Membership'], type: Number, field: 'membership' },
-                { title: translations[lang]['Gender'], field: 'type'},
-                { title: translations[lang]['Age'], type: Number, field: 'age'},
-                { title: translations[lang]['Security'], editable: true, field: 'security' },
-                { title: translations[lang]['Account Security'], filtering: false, grouping: false, field: 'canAuthenticate', editable: 'never', 
-                render: rowData => rowData.canAuthenticate ? 
-                <div className="center"><LockOutlinedIcon color='primary' /></div> : <div className="center"><LockOpenIcon color='warning' /></div> } ,
-                {
-                    title: translations[lang]['Statistics'], filtering: false, grouping: false, export: false, render: rowData => {
-                        return <div className="center app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/members/${rowData._id}/stats`)}>
-                            <i className="material-icons blue white-text"
-                            >equalizer
-                            </i>
-                        </div>
-                    }
-                },
-                { title: translations[lang]['Entrance'], editable: true, field: 'entrance' },
-                { title: translations[lang]['Account Status'], filtering: false, grouping: false, field: 'isBlocked', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isBlocked
-                       ? 
-                       <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={false} />
-                        : 
-                        <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={true} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Send Offer'], field: '', render: rowData => {
-                    return <a href='#offer-message-form-modal' onClick={e => setSendToMember(rowData)} className="modal-trigger send-offer-icon-table">
-                            <LocalOfferIcon />
-                        </a>
-                }},
-                { title: translations[lang]['Registration Date'], filtering: false, field: 'registrationDate', editable: 'never' },
-        
-            ]
-        } else {
-
-            return [
-        
-                { title: translations[lang]['New'], field: 'isNew', export: false, filtering: false, editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">{translations[lang]['new']}</span>
-                    :
-                    <span className="app-badge grey white-text">{translations[lang]['old']}</span>
-                } },
-                { title:translations[lang]['Image'], export: false, field: 'imageURL', filtering: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
-                } },
-                { title: translations[lang]['Name'], field: 'name' },
-                { title: translations[lang]['Phone Code'], editable: false, field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
-                { title: translations[lang]['Phone'], field: 'phone' },
-                { title: translations[lang]['Mail'], field: 'email' },
-                { title: translations[lang]['Membership'], type: Number, field: 'membership' },
-                { title: translations[lang]['Gender'], field: 'type'},
-                { title: translations[lang]['Age'], type: Number, field: 'age'},
-                { title: translations[lang]['Security'], editable: true, field: 'security' },
-                { title: translations[lang]['Account Security'], filtering: false, grouping: false, field: 'canAuthenticate', editable: 'never',
-                render: rowData => rowData.canAuthenticate ?
-                <div className="center">
-                    <LockOutlinedIcon color='primary' />
-                </div> 
-                : 
-                <div className="center">
-                    <LockOpenIcon color='warning' />
+                
+        return [
+            { title: translations[lang]['New'], field: 'isNew', export: false, filtering: false, editable: 'never', render: rowData => {
+                return rowData.isNew ?
+                <span className="app-badge blue white-text">{translations[lang]['new']}</span>
+                :
+                <span className="app-badge grey white-text">{translations[lang]['old']}</span>
+            } },
+            { title:translations[lang]['Image'], export: false, field: 'imageURL', filtering: false, editable: 'never', render: rowData => {
+                return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
+            } },
+            { title: translations[lang]['Name'], field: 'name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Phone Code'], cellStyle: { whiteSpace: 'nowrap' }, editable: false, field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
+            { title: translations[lang]['Phone'], field: 'phone', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Gender'], field: 'type', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Age'], type: Number, field: 'age', cellStyle: { whiteSpace: 'nowrap' } },
+            //{ title: translations[lang]['Job'], type: Number, field: 'job', editable: 'never', cellStyle: { whiteSpace: 'nowrap' } },
+            //{ title: translations[lang]['Sport Type'], type: Number, field: 'sportType', editable: 'never', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Blacklist'], type: Number, field: 'isBlacklist', cellStyle: { whiteSpace: 'nowrap' }, editable: 'never', render: rowData => {
+                return rowData.isBlacklist ? <span>{translations[lang]['In Blacklist']}</span> : <span>{translations[lang]['Clean']}</span>
+            } },
+            { title: translations[lang]['Account Security'], cellStyle: { whiteSpace: 'nowrap' }, filtering: false, grouping: false, field: 'canAuthenticate', editable: 'never',
+            render: rowData => rowData.canAuthenticate ?
+            <div className="center">
+                <LockOutlinedIcon color='primary' />
+            </div> 
+            : 
+            <div className="center">
+                <LockOpenIcon color='warning' />
+            </div>
+        } ,
+        {
+            title: translations[lang]['Statistics'], filtering: false, grouping: false, export: false, render: rowData => {
+                return <div className="center app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/members/${rowData._id}/stats`)}>
+                    <i className="material-icons blue white-text"
+                    >equalizer
+                    </i>
                 </div>
-            } ,
-            {
-                title: translations[lang]['Statistics'], filtering: false, grouping: false, export: false, render: rowData => {
-                    return <div className="center app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/members/${rowData._id}/stats`)}>
-                        <i className="material-icons blue white-text"
-                        >equalizer
-                        </i>
-                    </div>
+            }
+        },
+        { title: translations[lang]['Entrance'], editable: true, field: 'entrance', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Account Status'], filtering: false, grouping: false, field: 'isBlocked', editable: 'never', render: rowData => {
+                return <div className="switch">
+                <label>
+                    { rowData.isBlocked
+                    ? 
+                    <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={false} />
+                    : 
+                    <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={true} />
                 }
-            },
-            { title: translations[lang]['Entrance'], editable: true, field: 'entrance' },
-                { title: translations[lang]['Account Status'], filtering: false, grouping: false, field: 'isBlocked', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isBlocked
-                       ? 
-                       <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={false} />
-                        : 
-                        <input type="checkbox" onChange={() => updateMemberAuthStatus(rowData)} checked={true} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Send Offer'], field: '', render: rowData => {
-                    return <a href='#offer-message-form-modal' onClick={e => setSendToMember(rowData)} className="modal-trigger send-offer-icon-table">
-                            <LocalOfferIcon />
-                        </a>
-                }},
-                { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
-        
-            ]
-        }
+                    <span className="lever" ></span>
+                </label>
+                </div>
+            } },
+            { title: translations[lang]['Send Offer'], field: '', render: rowData => {
+                return <a href='#offer-message-form-modal' onClick={e => setSendToMember(rowData)} className="modal-trigger send-offer-icon-table">
+                        <SendOutlinedIcon />
+                    </a>
+            }},
+            { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never', cellStyle: { whiteSpace: 'nowrap' } },
+    
+        ]
     }
 
     return (
@@ -263,7 +207,10 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                     }, 
                     exportFileName: translations[lang]['Members'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 editable={{
                     onRowUpdate: updateMember,
@@ -286,6 +233,63 @@ const ClubMembersTable = ({ data, isClub, isRefreshAdded, isLoading, reload, set
                         onClick: e => setFilter(filter ? false: true)
                     },
                 ]}
+
+                detailPanel={rowData => <div className="member-detail-panel">
+                    <ul>
+                        <li>
+                            <strong>{translations[lang]['Name']}</strong><br />
+                            <span>{rowData.name}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Email']}</strong><br />
+                            <span>{rowData.email ? rowData.email : translations[lang]['Not Registered']}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Phone']}</strong><br />
+                            <span>{'+' + rowData.countryCode + rowData.phone}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Gender']}</strong><br />
+                            <span>{rowData.gender}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Age']}</strong><br />
+                            <span>{rowData.age}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Address']}</strong><br />
+                            <span>{rowData.address ? rowData.address : translations[lang]['Not Registered']}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Job']}</strong><br />
+                            <span>{rowData.job ? rowData.job : translations[lang]['Not Registered']}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Sport Type']}</strong><br />
+                            <span>{rowData.sportType ? rowData.sportType : translations[lang]['Not Registered']}</span>
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Secure']}</strong><br />
+                            {
+                            rowData.canAuthenticate ? 
+                            <span className="green-text">{translations[lang]['Secure']}</span> 
+                            : 
+                            <span className="red-text">{translations[lang]['Insecure']}</span> }
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Account Status']}</strong><br />
+                            {rowData.isBlocked ? <span className="red-text">{translations[lang]['Blocked']}</span> : <span className="green-text">{translations[lang]['Active']}</span>}
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Blacklist']}</strong><br />
+                            {rowData.isBlacklist ? <span className="red-text">{translations[lang]['In Blacklist']}</span> : <span className="green-text">{translations[lang]['Clean']}</span> }
+                        </li>
+                        <li>
+                            <strong>{translations[lang]['Registration Date']}</strong><br />
+                            <span>{rowData.registrationDate}</span>
+                        </li>
+                    </ul>
+                </div>}
 
                 localization={ lang === 'ar' ? {
                     body: {

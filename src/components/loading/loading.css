@@ -1,0 +1,50 @@
+.send-offer-message-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #FFF;
+    border-radius: .25rem;
+    padding: 1rem 1.2rem;
+    margin: .5rem 0;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+}
+
+.back-btn {
+    color: #495057;
+    font-size: 1.5rem;
+}
+
+.back-btn:hover {
+    cursor: pointer;
+}
+
+.send-offer-status-container {
+    background-color: #FFF;
+    border-radius: .25rem;
+    padding: 1rem 1.2rem !important;
+    margin: .5rem 0 !important;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+}
+
+.send-offer-status-container div ul li {
+    display: flex;
+    align-items: center;
+    font-weight: normal !important;
+}
+
+.send-offer-status-container div ul li p {
+    padding: 0 1rem;
+}
+
+.send-offer-status-container p {
+    font-weight: normal;
+}
+
+.bold {
+    font-weight: bold !important;
+}
+
+.send-offer-message-row .row-info {
+    display: flex;
+    justify-content: center;
+}

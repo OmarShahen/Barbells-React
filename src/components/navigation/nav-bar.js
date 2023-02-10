@@ -5,12 +5,19 @@ import UserNavIcon from '../dropdown/user-nav-icon'
 import ClubAdminResponsiveMenu from './club-admin-responsive-menu'
 import DataDateShower from '../data-date-shower'
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined'
-import { localStorageSecured } from '../../security/localStorage'
+import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const NavBar = ({ pageName, statsQuery }) => {
 
-    const user = localStorageSecured.get('user')
-    const club = localStorageSecured.get('club')
+    const user = useSelector(state => state.user.user)
+    const club = useSelector(state => state.club.club)
+
+    const navigate = useNavigate()
+
+    if(!user.isLogged) {
+        navigate('/')
+    }
 
     const [showMenu, setShowMenu] = useState(false)
 

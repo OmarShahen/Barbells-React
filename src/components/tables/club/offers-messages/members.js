@@ -4,14 +4,14 @@ import TableIcons from '../../table-icons'
 import { serverRequest } from '../../../../API/request'
 import { trimMembers } from '../../../../utils/trimmers'
 import toast from 'react-hot-toast'
-import { useNavigate } from 'react-router-dom'
 import translations from '../../../../i18n'
 import { localStorageSecured } from '../../../../security/localStorage'
 import { config } from '../../../../config/config'
+import ArrowCircleLeftIcon from '@mui/icons-material/ArrowCircleLeft'
+
 
 const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMembers, setMode, isRefreshAdded }) => {
 
-    const navigate = useNavigate()
     const lang = localStorage.getItem('lang')
 
     const headers = { 
@@ -22,6 +22,7 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
 
     const [filter, setFilter] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
+    const [selectAll, setSelectAll] = useState(false)
 
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
@@ -29,7 +30,9 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
 
     useEffect(() => {
 
-        serverRequest.get(`/members/clubs/${clubId}`, { headers, params: { lang, status: 'active' }})
+        setUpdatedMembers([])
+
+        serverRequest.get(`/v1/members/clubs/${clubId}`, { headers, params: { lang, status: 'active' }})
         .then(response => {
             setIsLoading(false)
             setMembers(trimMembers(response.data.members))
@@ -39,6 +42,39 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
             toast.error('error loading your data', { position: 'top-right', duration: config.TOAST_ERROR_TIME })
         })
     }, [])
+
+    const sendBulkMessages = () => {
+
+        const { message, language } = localStorageSecured.get('offer-message')
+        const members = updatedMembers
+
+        setIsLoading(true)
+        serverRequest.post(
+            `/v1/offers-messages/clubs/${clubId}/members/send`,
+            { message, members, languageCode: language },
+            { headers, params: { lang } }
+        )
+        .then(response => {
+            setIsLoading(false)
+            setUpdatedMembers(response.data.status)
+            setMode('SEND')
+        })
+        .catch(error => {
+            setIsLoading(false)
+            toast.error(error.response.data.message, { position: 'top-right', duration: config.TOAST_ERROR_TIME })
+        })
+    }
+
+
+    const cancelSelection = () => {
+
+        setSelectAll(false)
+        setUpdatedMembers([])
+        setMembers(members.map(member => {
+            member.picked = false
+            return member
+        }))
+    }
 
 
     const columns = () => {
@@ -61,7 +97,7 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
         } else {
 
             return [
-                { title: updatedMembers.length === 0 ? 'Pick': updatedMembers.length, field: '', render: rowData => {
+                { title: updatedMembers.length === 0 ? translations[lang]['Pick']: updatedMembers.length, field: '', render: rowData => {
                     return <label>
                     <input type="checkbox" className="filled-in" checked={rowData.picked ? 'checked': ''} onClick={e => {
 
@@ -72,7 +108,6 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
                             rowData.picked = false
                             setUpdatedMembers(updatedMembers.filter(member => member._id !== rowData._id))
                         }
-                  
                     }}/>
                     <span></span>
                   </label>
@@ -93,89 +128,112 @@ const ClubOffersMessagesMembersTable = ({ isClub, updatedMembers, setUpdatedMemb
     }
 
     return (
-        <div className="table-container">
-            <MaterialTable 
-                title={<div>
-                    <button className="btn-small blue" onClick={e => {
-                        setUpdatedMembers(members)
-                        setMembers(members.map(member => {
-                            member.picked = true
-                            return member
-                        }))
-                    }}>Send All</button>
-                    <button className="btn-small blue" onClick={e => setMode('SEND')} style={{ marginRight: '1rem', marginLeft: '1rem' }}><i className="material-icons left">send</i>Send</button>
-                    <button className="btn-small grey" onClick={e => {
-                        setUpdatedMembers([])
-                        setMembers(members.map(member => {
-                            member.picked = false
-                            return member
-                        }))
-                    }}>Cancel</button>
-                </div>}
-                isLoading={isLoading}
-                columns={columns()}
-                data={members}
-                icons={TableIcons}
-                options={{ 
-                    pageSize: 10, 
-                    pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: members.length }],
-                    actionsColumnIndex: -1,
-                    filtering: filter
-                }}
-                onSelectionChange={(rows) => console.log(rows)}
-                actions={[
-                    {
-                        icon: TableIcons.Filter,
-                        tooltip: translations[lang]['Filter'],
-                        isFreeAction: true,
-                        onClick: e => setFilter(filter ? false: true)
-                    }
-                ]}
+        <>
+            <ArrowCircleLeftIcon className="back-btn" onClick={e => {
+                setMembers([])
+                setMode('VIEW')
+            }} />
+            <div className="table-container">
+                <MaterialTable 
+                    title={<label>
+                        <input type="checkbox" className="filled-in" checked={selectAll ? 'checked': ''} onClick={e => {
 
-                localization={ lang === 'ar' ? {
-                    body: {
-                        emptyDataSourceMessage: 'لا يوجد سجلات',
-                        editRow: {
-                            deleteText: 'هل انت متاكد من المسح',
-                            cancelTooltip: 'الغاء',
-                            saveTooltip: 'احفظ'
+                            if(selectAll === false) {
+                                setUpdatedMembers(members)
+                                setMembers(members.map(member => {
+                                    member.picked = true
+                                    return member
+                                }))
+                            } else {
+                                setUpdatedMembers([])
+                                setMembers(members.map(member => {
+                                    member.picked = false
+                                    return member
+                                }))
+                            }
+
+                            setSelectAll(!selectAll)
+                        }}
+                        />
+                        <span></span>
+                        </label>}
+                    isLoading={isLoading}
+                    columns={columns()}
+                    data={members}
+                    icons={TableIcons}
+                    options={{ 
+                        pageSize: 10, 
+                        pageSizeOptions: [5, 10, 20, { label: translations[lang]['All'], value: members.length }],
+                        actionsColumnIndex: -1,
+                        filtering: filter
+                    }}
+                    actions={[
+                        {
+                            icon: TableIcons.Filter,
+                            tooltip: translations[lang]['Filter'],
+                            isFreeAction: true,
+                            onClick: e => setFilter(filter ? false: true)
                         },
+                        {
+                            icon: TableIcons.Message,
+                            tooltip: translations[lang]['Send'],
+                            isFreeAction: true,
+                            onClick: e => sendBulkMessages()
+                        },
+                        {
+                            icon: TableIcons.Cancel,
+                            tooltip: translations[lang]['Cancel'],
+                            isFreeAction: true,
+                            onClick: e => cancelSelection()
+                        }
+                    ]}
 
-                        editTooltip: 'تعديل',
-                        deleteTooltip: 'مسح'
-                    },
-                    grouping: {
-                        placeholder: 'اسحب العناوين هنا للتجميع',
-                        groupedBy: 'مجموعة من'
-                    },
-                    header: {
-                        actions: ''
-                    },
-                    toolbar: {
-                        exportTitle: 'تحميل',
-                        exportAriaLabel: 'تحميل',
-                        searchTooltip: 'بحث',
-                        searchPlaceholder: 'بحث',
-                        exportCSVName: 'تحميل البينات'
-                    },
-                    pagination: {
-                        labelRowsSelect: 'سجلات',
-                        labelRowsPerPage: 'سجل للصفحة',
-                        firstAriaLabel: 'الصفحة الاولة',
-                        firstTooltip: 'الصفحة الاولة',
-                        previousAriaLabel: 'الصفحة السابقة',
-                        previousTooltip: 'الصفحة السابقة',
-                        nextAriaLabel: 'الصفحة التالية',
-                        nextTooltip: 'الصفحة التالية',
-                        lastAriaLabel: 'الصفحة الاخيرة',
-                        lastTooltip: 'الصفحة الاخيرة',
+                    localization={ lang === 'ar' ? {
+                        body: {
+                            emptyDataSourceMessage: 'لا يوجد سجلات',
+                            editRow: {
+                                deleteText: 'هل انت متاكد من المسح',
+                                cancelTooltip: 'الغاء',
+                                saveTooltip: 'احفظ'
+                            },
+
+                            editTooltip: 'تعديل',
+                            deleteTooltip: 'مسح'
+                        },
+                        grouping: {
+                            placeholder: 'اسحب العناوين هنا للتجميع',
+                            groupedBy: 'مجموعة من'
+                        },
+                        header: {
+                            actions: ''
+                        },
+                        toolbar: {
+                            exportTitle: 'تحميل',
+                            exportAriaLabel: 'تحميل',
+                            searchTooltip: 'بحث',
+                            searchPlaceholder: 'بحث',
+                            exportCSVName: 'تحميل البينات'
+                        },
+                        pagination: {
+                            labelRowsSelect: 'سجلات',
+                            labelRowsPerPage: 'سجل للصفحة',
+                            firstAriaLabel: 'الصفحة الاولة',
+                            firstTooltip: 'الصفحة الاولة',
+                            previousAriaLabel: 'الصفحة السابقة',
+                            previousTooltip: 'الصفحة السابقة',
+                            nextAriaLabel: 'الصفحة التالية',
+                            nextTooltip: 'الصفحة التالية',
+                            lastAriaLabel: 'الصفحة الاخيرة',
+                            lastTooltip: 'الصفحة الاخيرة',
+                        }
+
                     }
-
-                }
-                 : {}
-                }
-            />
-        </div>
+                    : {}
+                    }
+                />
+            
+            </div>
+        </>
     )
 
 }

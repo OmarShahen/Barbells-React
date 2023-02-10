@@ -1,0 +1,18 @@
+.reload-icon {
+    background-color: dodgerblue;
+    color: #FFF;
+    border-radius: .25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .3rem !important;
+}
+
+.reload-icon a {
+    color: #FFF !important;
+    padding: 0 !important;
+}
+
+.reload-icon:hover {
+    cursor: pointer;
+}

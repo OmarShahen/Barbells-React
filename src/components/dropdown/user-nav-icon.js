@@ -2,12 +2,16 @@ import React from 'react'
 import './dropdown.css'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
+import { useDispatch } from 'react-redux'
+import { setIsLogged } from '../../redux/slices/userSlice'
+import { localStorageSecured } from '../../security/localStorage'
 
 const UserNavIcon = ({ user }) => {
 
     const navigate = useNavigate()
 
     const lang = localStorage.getItem('lang')
+    const dispatch = useDispatch()
 
     return (
         <ul id='user-info' className='dropdown-content user-info-dropdown'>
@@ -35,11 +39,12 @@ const UserNavIcon = ({ user }) => {
             </li>
             <li className="divider" tabindex="-1"></li>
             <li className="logout" onClick={ e => {
-                    localStorage.setItem('user', null)
-                    localStorage.setItem('access-token', null)
-                    localStorage.setItem('club', null)
+                    sessionStorage.setItem('user', null)
+                    sessionStorage.setItem('access-token', null)
+                    sessionStorage.setItem('club', null)
 
-                    user.role !== 'OWNER' ? navigate('/clubs-admins/login') : navigate('/chains-owners/login')
+                    dispatch(setIsLogged(false))
+
                 }}>
                 {translations[lang]['Logout']}
             </li>

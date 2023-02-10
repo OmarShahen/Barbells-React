@@ -7,7 +7,7 @@ import M from 'materialize-css'
 import translations from '../../i18n'
 import { localStorageSecured } from '../../security/localStorage'
 import { config } from '../../config/config'
-import LocalOfferIcon from '@mui/icons-material/LocalOffer'
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined'
 
 const ClubOfferMessageForm = ({ member }) => {
 
@@ -51,7 +51,7 @@ const ClubOfferMessageForm = ({ member }) => {
         }
 
         setIsSubmitting(true)
-        serverRequest.post(`/offers-messages/members/${member._id}/send`, newOfferMessage, requestHeader)
+        serverRequest.post(`/v1/offers-messages/members/${member._id}/send`, newOfferMessage, requestHeader)
         .then(response => {
             setIsSubmitting(false)
             resetForm()
@@ -74,7 +74,7 @@ const ClubOfferMessageForm = ({ member }) => {
                         </span>
                         <div className="stat-icon">
                             <span>
-                                <LocalOfferIcon />
+                                <SendOutlinedIcon />
                             </span>
                         </div>
                     </h3>
@@ -82,12 +82,13 @@ const ClubOfferMessageForm = ({ member }) => {
                 </div>
                 <form className="row" name="offer-message-form" onSubmit={submitForm} id="offer-message-form" autocomplete="off">
                     <div className="col s12 row">
-                        <div className="input-field input-field-container col s12 m10">
-                            <textarea className="materialize-textarea"
+                        <div className="input-field input-field-container col s12 table-form-input">
+                            <input
+                            type="text"
                             onChange={e => setMessage(e.target.value)}
                             onClick={e => setMessageError()}
-                            style={messageError ? { borderBottom: '1px solid #f44336 ', boxShadow: '0 1px 0 0 #f44336 ' } : null } 
-                            ></textarea>
+                            style={messageError ? { borderBottom: '1px solid #f44336 !important', boxShadow: '0 1px 0 0 #f44336 !important' } : null } 
+                            />
 
                             { messageError ? 
                             <label for="offer-message-message" style={{ color: '#f44336' }}>{messageError}</label> 
@@ -95,7 +96,7 @@ const ClubOfferMessageForm = ({ member }) => {
                             <label for="offer-message-message">{translations[lang]['Message']}*</label>
                             }
                         </div>
-                        <div className="input-field input-field-container col s12 m2">
+                        <div className="input-field input-field-container col s12 table-form-input">
                             <select onChange={e => setLanguage(e.target.value)}>
                                 <option value="ar" selected>عربي</option>
                                 <option value="en">English</option>
@@ -103,9 +104,10 @@ const ClubOfferMessageForm = ({ member }) => {
                             <label>{translations[lang]['Choose Language']}</label>
                         </div>    
                     </div>
+                    
                     <div className="col s12 m6">
                         <div className="row form-buttons-container" style={{ paddingLeft: '1rem' }}>
-                            <div className="col s12 m3">
+                            <div className="col s12 m4">
                             { isSubmitting ? 
                                 <div className="center">
                                     <CircularLoadingButton />
@@ -116,7 +118,7 @@ const ClubOfferMessageForm = ({ member }) => {
                                 </button> 
                                 }
                             </div>
-                            <div className="col s12 m3">
+                            <div className="col s12 m4">
                                 <button className="btn grey modal-close" onClick={e => {
                                     resetForm()
                                     e.preventDefault()

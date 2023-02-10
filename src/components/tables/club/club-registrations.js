@@ -6,6 +6,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit'
 import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n/index'
 import DropdownAttendancesTable from './dropdown/attendances'
+import { formateMoney, formateNumber } from '../../../utils/money'
 
 
 const ClubRegistrationsTable = ({ data, statsQuery, isClub, isAttendance, isRefreshAdded, isLoading, reload, setReload }) => {
@@ -65,83 +66,35 @@ const ClubRegistrationsTable = ({ data, statsQuery, isClub, isAttendance, isRefr
     }*/
 
     const columns = () => {
-
-        if(isClub) {
-            return [
-                { title: translations[lang]['New'], filtering: false, field: 'isNew', editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">{translations[lang]['new']}</span>
-                    :
-                    <span className="app-badge grey white-text">{translations[lang]['old']}</span>
-                } },
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Paid'], field: 'paid' },
-                { title: translations[lang]['Attended'], field: 'attendances' },
-                { title: translations[lang]['Status'], editable: true, field: 'status' },
-                { title: translations[lang]['Activity'], filtering: false, grouping: false, field: 'isActive', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isActive
-                       ? 
-                       <input type="checkbox" onChange={(e) => e.preventDefault()} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={(e) => e.preventDefault()} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Freezed'],  filtering: false, grouping: false, field: 'isFreezed', render: rowData => {
-                    return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
-                }  },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate' },
-                { title: translations[lang]['Expiration Date'], field: 'expirationDate' }
-        
-            ]
-        } else {
-            return [
-                { title: translations[lang]['New'],  filtering: false, field: 'isNew', editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">{translations[lang]['new']}</span>
-                    :
-                    <span className="app-badge grey white-text">{translations[lang]['old']}</span>
-                } },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Paid'], field: 'paid' },
-                { title: translations[lang]['Attended'], field: 'attendances' },
-                { title: translations[lang]['Status'], editable: true, field: 'status' },
-                { title: translations[lang]['Activity'],  filtering: false, grouping: false, field: 'isActive', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isActive
-                       ? 
-                       <input type="checkbox" onChange={(e) => e.preventDefault()} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={(e) => e.preventDefault()} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Freezed'],  filtering: false, grouping: false, field: 'isFreezed', render: rowData => {
-                    return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
-                }  },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate' },
-                { title: translations[lang]['Expiration Date'], field: 'expirationDate' }
-        
-            ]
-        }
+        return [
+            { title: translations[lang]['New'],  filtering: false, field: 'isNew', editable: 'never', render: rowData => {
+                return rowData.isNew ?
+                <span className="app-badge blue white-text">{translations[lang]['new']}</span>
+                :
+                <span className="app-badge grey white-text">{translations[lang]['old']}</span>
+            }},
+            { title: translations[lang]['Activity'],  filtering: false, grouping: false, field: 'isActive', render: rowData => {
+                return rowData.isActive ? <span className="status-btn done">{translations[lang]['Active']}</span> : <span className="status-btn declined">{translations[lang]['Expired']}</span>
+            }},
+            { title: translations[lang]['Package'], field: 'package.title', cellStyle: { whiteSpace: 'nowrap' }  },
+            { title: translations[lang]['Member'], field: 'member.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Member Phone'], field: 'member.phone' },
+            { title: translations[lang]['Staff'], field: 'staff.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Paid'], field: 'paid', render: rowData => <span>{formateMoney(rowData.paid, lang)}</span> },
+            { title: translations[lang]['Attended'], field: 'attendances' },
+            { title: translations[lang]['Freezed'],  filtering: false, grouping: false, field: 'isFreezed', render: rowData => {
+                return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
+            }  },
+            { title: translations[lang]['Registration Date'], field: 'registrationDate', cellStyle: { whiteSpace: 'nowrap' }  },
+            { title: translations[lang]['Expiration Date'], field: 'expirationDate', cellStyle: { whiteSpace: 'nowrap' }  }
+    
+        ]
     }
 
     return (
         <div className="table-container">
             <MaterialTable 
-                title={`# ${data.length}`}
+                title={`# ${formateNumber(registrations.length)}`}
                 isLoading={isLoading}
                 columns={columns()}
                 data={registrations}
@@ -156,7 +109,10 @@ const ClubRegistrationsTable = ({ data, statsQuery, isClub, isAttendance, isRefr
                     }, 
                     exportFileName: translations[lang]['Registrations'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 actions={[
                     isRefreshAdded ? 
@@ -169,6 +125,30 @@ const ClubRegistrationsTable = ({ data, statsQuery, isClub, isAttendance, isRefr
                     :
                     null
                     ,
+                    {
+                        icon:TableIcons.InAndOut,
+                        tooltip: translations[lang]['All'],
+                        isFreeAction: true,
+                        onClick: e => setUpdatedRegistrations(data)
+                    },
+                    {
+                        icon:TableIcons.ActiveRegistrations,
+                        tooltip: translations[lang]['Active'],
+                        isFreeAction: true,
+                        onClick: e => setUpdatedRegistrations(data.filter(registration => registration.isActive))
+                    },
+                    {
+                        icon:TableIcons.ExpiredRegistrations,
+                        tooltip: translations[lang]['Expired'],
+                        isFreeAction: true,
+                        onClick: e => setUpdatedRegistrations(data.filter(registration => !registration.isActive))
+                    },
+                    {
+                        icon: TableIcons.FreezedRegitrations,
+                        tooltip: translations[lang]['Freezed'],
+                        isFreeAction: true,
+                        onClick: e => setUpdatedRegistrations(data.filter(registration => registration.isFreezed))
+                    },
                     {
                         icon: TableIcons.Filter,
                         tooltip: translations[lang]['Filter'],

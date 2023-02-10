@@ -55,7 +55,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
             newPackage.expiresIn = `${expirationNumber} ${translations[lang][expirationPeriod]}`
         }
                 
-        serverRequest.put(`/packages/${newPackage._id}`, newPackage, { headers, params: { lang } })
+        serverRequest.put(`/v1/packages/${newPackage._id}`, newPackage, { headers, params: { lang } })
         .then(response => {
 
             const packageData = response.data.package
@@ -82,7 +82,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         const packageTableId = packageData.tableData.id
         const packagesData = [...packages]
 
-        serverRequest.patch(`/packages/${packageData._id}`, { isOpen: !packageData.isOpen }, { headers })
+        serverRequest.patch(`/v1/packages/${packageData._id}`, { isOpen: !packageData.isOpen }, { headers })
         .then(response => {
 
             let updatedPackage = response.data.package
@@ -110,7 +110,7 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         const packagesData = [...packages]  
         const packageTableId = packageData.tableData.id
                 
-        serverRequest.delete(`/packages/${packageData._id}`, { headers, params: { lang } })
+        serverRequest.delete(`/v1/packages/${packageData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredPackages = packagesData.filter((packageObj, index) => packageTableId !== index)
@@ -129,74 +129,39 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
         })
     }
 
-
     const columns = () => {
 
-        if(isClub) {
-            return [
-                { title: translations[lang]['Branch'], editable: false, field: 'club.clubCode' },
-                { title: translations[lang]['Title'], field: 'title' },
-                { title: translations[lang]['Attendance'], field: 'attendance' },
-                { title: translations[lang]['Price'], field: 'price' },
-                { title: translations[lang]['Duration'], field: 'expiresIn' },
-                {
-                    title: translations[lang]['Statistics'], grouping: false, filtering: false, render: rowData => {
-                        return <div className="app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/packages/${rowData._id}/stats`)}>
-                            <i className="material-icons blue white-text"
-                            >equalizer
-                            </i>
-                        </div>
-                    }
-                },
-                { title: translations[lang]['Package Status'], grouping: false, filtering: false, field: 'isOpen', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isOpen
-                       ? 
-                       <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                }},
-                { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
-        
-            ]
-        } else {
-            return [
-                { title: translations[lang]['Title'], field: 'title' },
-                { title: translations[lang]['Attendance'], field: 'attendance' },
-                { title: translations[lang]['Price'], field: 'price' },
-                { title: translations[lang]['Duration'], field: 'expiresIn' },
-                {
-                    title: translations[lang]['Statistics'], grouping: false, filtering: false, render: rowData => {
-                        return <div className="app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/packages/${rowData._id}/stats`)}>
-                            <i className="material-icons blue white-text"
-                            >equalizer
-                            </i>
-                        </div>
-                    }
-                },
-                { title: translations[lang]['Package Status'], grouping: false, filtering: false, field: 'isOpen', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isOpen
-                       ? 
-                       <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                }},
-                { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
+        return [
+            { title: translations[lang]['Title'], field: 'title', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Attendance'], field: 'attendance', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Price'], field: 'price', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Duration'], field: 'expiresIn', cellStyle: { whiteSpace: 'nowrap' } },
+            {
+                title: translations[lang]['Statistics'], grouping: false, filtering: false, render: rowData => {
+                    return <div className="app-table-stats-icon" onClick={ e => navigate(`/app/clubs/${clubId}/packages/${rowData._id}/stats`)}>
+                        <i className="material-icons blue white-text"
+                        >equalizer
+                        </i>
+                    </div>
+                }
+            },
+            { title: translations[lang]['Package Status'], grouping: false, filtering: false, field: 'isOpen', editable: 'never', render: rowData => {
+                return <div className="switch">
+                <label>
+                    { rowData.isOpen
+                    ? 
+                    <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={true} />
+                    : 
+                    <input type="checkbox" onChange={() => updatePackageStatus(rowData)} checked={false} />
+                }
+                    <span className="lever" ></span>
+                </label>
+                </div>
+            }},
+            { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never', cellStyle: { whiteSpace: 'nowrap' } },
 
-        
-            ]
-        }
+    
+        ]
     }
     
 
@@ -219,7 +184,10 @@ const ClubPackagesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, se
                     }, 
                     exportFileName: translations[lang]['Packages'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 editable={{
                     onRowUpdate: updatePackage,

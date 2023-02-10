@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ClubAdminNavbar from '../../../components/navigation/nav-bar'
 import ChainOwnerNavbar from '../../../components/navigation/chain-owner-nav-bar'
-import ClubSideBar from '../../../components/navigation/club-admin-side-bar'
 import ChainOwnerSideBar from '../../../components/navigation/chain-owner-side-bar'
 import Card from '../../../components/cards/card'
 import ClubRegistrationTable from '../../../components/tables/club/club-registrations'
@@ -19,10 +18,14 @@ import { iconPicker } from '../../../utils/icon-finder'
 import { to12 } from '../../../utils/hours'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import BasicStatTable from '../../../components/tables/basic-stat'
-import CachedIcon from '@mui/icons-material/Cached'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import MemberInfoCard from '../../../components/cards/member-info-card'
+import NotesTable from '../../../components/tables/club/dropdown/notes'
+import PageHeader from '../../../components/sections/headers/page-header'
+import { useSelector } from 'react-redux'
+
 
 const ClubMemberPage = ({ roles }) => {
 
@@ -32,7 +35,7 @@ const ClubMemberPage = ({ roles }) => {
     const pagePath = window.location.pathname
     const memberId = pagePath.split('/')[5]
 
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
     const lang = localStorage.getItem('lang')
 
@@ -104,7 +107,7 @@ const ClubMemberPage = ({ roles }) => {
     useEffect(() => {
 
         toast.promise(
-            serverRequest.get(`members/${memberId}/stats`, {
+            serverRequest.get(`/v1/members/${memberId}/stats`, {
                 params: statQuery,
                 headers
             })
@@ -187,9 +190,7 @@ const ClubMemberPage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            { user.role === 'OWNER' ? <ChainOwnerSideBar /> : <ClubSideBar /> }
             <Toaster />
-            <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
             <div className="page">
                 <div className="row">
@@ -200,96 +201,111 @@ const ClubMemberPage = ({ roles }) => {
                     <ClubAdminNavbar pageName={translations[lang]["Member Stats"]} statsQuery={statQuery} /> 
                 }
                     <div className="page-main">
-                    <div className="page-body-header">
-                            <h5>
-                                {member.name}
-                            </h5>
-                            <div className="reload-icon" onClick={e => setReload(reload + 1)}>
-                                <CachedIcon /> 
+                    <PageHeader pageName={member.name} reload={reload} setReload={setReload} statsQuery={statQuery} />
+
+                        <div className="row">
+                            <div className="col s12 m7">
+                            <div className="row">
+                            <div className="col s12 m6">
+                                <Card title={translations[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalRegistrations} color={'dodgerblue'}/>
+                            </div>
+                            <div className="col s12 m6">
+                                <Card title={translations[lang]["Attendances"]} icon={iconPicker('attendances')} number={totalAttendances} color={'#00e676'}/>
                             </div>
                         </div>
-                            <div className="row">
-                                    <div className="col s12 m6">
-                                        <Card title={translations[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalRegistrations} color={'dodgerblue'}/>
-                                    </div>
-                                    <div className="col s12 m6">
-                                        <Card title={translations[lang]["Attendances"]} icon={iconPicker('attendances')} number={totalAttendances} color={'#00e676'}/>
-                                    </div>
-                            </div>  
-                        <div className="white my-container card-effect">
-                                <h5 className="left">
-                                    {translations[lang]['Attendances Growth']}
-                                </h5>
+                        <div className="white my-container-padding card-effect">
+                        <h5 className="left">
+                            {translations[lang]['Attendances Growth']}
+                        </h5>
+                        
+                            <a className="modal-trigger" href="#month-line-chart-modal">
+                                <LineChart title={translations[lang]['Registrations Growth']} labels={growthLabels} data={growthData} color={'dodgerblue'} />
+                            </a>
+                            <ChartModal id="month-line-chart-modal">
+                                <LineChart 
+                                title={translations[lang]['Registrations Growth']} 
+                                labels={growthData} 
+                                data={growthLabels} 
+                                color={'dodgerblue'} 
+                                />
+                            </ChartModal>
+                        </div>
+                            </div>
+                            <div className="col s12 m5">
+                                <div className="member-details-card-container">
+                                    { member ? <MemberInfoCard memberData={member} /> : null  } 
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            member.notes ?
+                            <div className="notes-table-container">
+                                <h6>
+                                    {translations[lang]['Notes']}
+                                </h6>
+                                <NotesTable notes={member.notes} />
+                            </div>   
+                            :
+                            null
+                        }
+                        
+                        <div className="card-effect white my-container">
+                        <h5>
+                            {translations[lang]['Attendances Days']}
+                        </h5>
+                        <div className="row">
+                            <div className="col s12 m6 chart-table-container">
+                                <PercentagesCard 
+                                category={translations[lang]['Days']}
+                                dataOf={translations[lang]['Attendances']}
+                                percentOf={'Attendance'}
+                                percentages={collectPackagesData(daysLabels, daysData, config.colors)}
+                                total={totalAttendances}
                                 
-                                    <a className="modal-trigger" href="#month-line-chart-modal">
-                                        <LineChart title={translations[lang]['Registrations Growth']} labels={growthLabels} data={growthData} color={'dodgerblue'} />
-                                    </a>
-                                    <ChartModal id="month-line-chart-modal">
-                                        <LineChart 
-                                        title={translations[lang]['Registrations Growth']} 
-                                        labels={growthData} 
-                                        data={growthLabels} 
-                                        color={'dodgerblue'} 
-                                        />
-                                    </ChartModal>
-                                </div>
-                                <div className="card-effect white my-container">
-                                <h5>
-                                    {translations[lang]['Attendances Days']}
-                                </h5>
-                                <div className="row">
-                                    <div className="col s12 m6 chart-table-container">
-                                        <PercentagesCard 
-                                        category={translations[lang]['Days']}
-                                        dataOf={translations[lang]['Attendances']}
-                                        percentOf={'Attendance'}
-                                        percentages={collectPackagesData(daysLabels, daysData, config.colors)}
-                                        total={totalAttendances}
-                                        
-                                        />
-                                    </div>
-                                    <div className="col s12 m6">
-                                        <BarChart 
-                                        title={''}
-                                        labels={daysLabels}
-                                        data={daysData}
-                                        color={'dodgerblue'}
-                                        />
-                                    </div>
-                                </div>
-                            <div>
-
+                                />
                             </div>
-                                </div>
-                                <div className="card-effect white my-container">
-                                <h5>
-                                    {translations[lang]['Attendances Hours']}
-                                </h5>
-                                <div className="row">
-                                    <div className="col s12 m6 chart-table-container">
-                                        <PercentagesCard 
-                                        category={translations[lang]['Times']}
-                                        dataOf={translations[lang]['Attendances']}
-                                        percentOf={'Attendance'}
-                                        percentages={collectPackagesData(hoursLabels, hoursData, config.colors)}
-                                        total={totalAttendances}
-                                        
-                                        />
-                                    </div>
-                                    <div className="col s12 m6">
-                                        <BarChart 
-                                        title={''}
-                                        labels={hoursLabels}
-                                        data={hoursData}
-                                        color={'dodgerblue'}
-                                        />
-                                    </div>
-                                </div>
-                            <div>
-
+                            <div className="col s12 m6">
+                                <BarChart 
+                                title={''}
+                                labels={daysLabels}
+                                data={daysData}
+                                color={'dodgerblue'}
+                                />
                             </div>
-                                </div>
-                                <div className="white card-effect my-container">
+                        </div>
+                    <div>
+
+                    </div>
+                        </div>
+                        <div className="card-effect white my-container">
+                        <h5>
+                            {translations[lang]['Attendances Hours']}
+                        </h5>
+                        <div className="row">
+                            <div className="col s12 m6 chart-table-container">
+                                <PercentagesCard 
+                                category={translations[lang]['Times']}
+                                dataOf={translations[lang]['Attendances']}
+                                percentOf={'Attendance'}
+                                percentages={collectPackagesData(hoursLabels, hoursData, config.colors)}
+                                total={totalAttendances}
+                                
+                                />
+                            </div>
+                            <div className="col s12 m6">
+                                <BarChart 
+                                title={''}
+                                labels={hoursLabels}
+                                data={hoursData}
+                                color={'dodgerblue'}
+                                />
+                            </div>
+                        </div>
+                    <div>
+
+                    </div>
+                        </div>
+                        <div className="white card-effect my-container">
                             <h5>
                                 {translations[lang]['Registrations Completion']}
                             </h5>
@@ -323,46 +339,49 @@ const ClubMemberPage = ({ roles }) => {
                                     />
                                 </div>
                             </div>
-                            
-                                </div>
-                                <div className="card-effect white my-container">
-                                <h5>
-                                    {translations[lang]['Member Packages']}
-                                </h5>
-                                <div className="row">
-                                    <div className="col s12 m6 chart-table-container">
-                                        <PercentagesCard 
-                                        category={translations[lang]['Packages']}
-                                        dataOf={translations[lang]['Registrations']}
-                                        percentOf={'Registration'}
-                                        percentages={collectPackagesData(packagesRegistrationsLabels, packagesRegistrationsData, config.colors)}
-                                        total={totalPackagesRegistrations}
-                                        
-                                        />
-                                    </div>
-                                    <div className="col s12 m6">
-                                        <BarChart 
-                                        title={''}
-                                        labels={packagesRegistrationsLabels}
-                                        data={packagesRegistrationsData}
-                                        color={'dodgerblue'}
-                                        />
-                                    </div>
-                                </div>
-                            <div>
-
+                    
+                        </div>
+                        <div className="card-effect white my-container">
+                        <h5>
+                            {translations[lang]['Member Packages']}
+                        </h5>
+                        <div className="row">
+                            <div className="col s12 m6 chart-table-container">
+                                <PercentagesCard 
+                                category={translations[lang]['Packages']}
+                                dataOf={translations[lang]['Registrations']}
+                                percentOf={'Registration'}
+                                percentages={collectPackagesData(packagesRegistrationsLabels, packagesRegistrationsData, config.colors)}
+                                total={totalPackagesRegistrations}
+                                
+                                />
                             </div>
-                                </div>
+                            <div className="col s12 m6">
+                                <BarChart 
+                                title={''}
+                                labels={packagesRegistrationsLabels}
+                                data={packagesRegistrationsData}
+                                color={'dodgerblue'}
+                                />
+                            </div>
+                        </div>
+                    <div>
+
+                    </div>
+                        </div>
                         <div className="row">
                             <div className="col s12">
                                 <ClubRegistrationTable data={registrations} />
                             </div>
                         </div>
-                    </div>        
+
+                        </div>
+                            
+                        </div>
+                                    
                     </div>
                     </div>                
                 </div>
-        </div>
         }
         </>
     )

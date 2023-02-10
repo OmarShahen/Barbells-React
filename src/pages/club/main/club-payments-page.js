@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar'
 import ClubPaymentsTable from '../../../components/tables/club/club-payments'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
-import FloatingFormButton from '../../../components/buttons/floating-button'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import { config } from '../../../config/config'
 import { format } from 'date-fns'
@@ -12,7 +10,10 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
-
+import ClubPaymentForm from '../../../components/forms/payment-form'
+import { useSelector } from 'react-redux'
+import PageHeader from '../../../components/sections/headers/page-header'
+import FloatingFormButton from '../../../components/buttons/forms-floating-button'
 
 const MainClubPaymentsPage = ({ roles }) => {
 
@@ -21,19 +22,43 @@ const MainClubPaymentsPage = ({ roles }) => {
     const headers = { 'x-access-token': localStorageSecured.get('access-token') }
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
+    const category = pagePath.split('/')[5]
 
     const lang = localStorage.getItem('lang')
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
-    const todayDate = new Date()
-
+    
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    const [statQuery, setStatQuery] = useState({ specific: format(todayDate, 'yyyy-MM-dd') })
 
-    const [totalPayments, setTotalPayments] = useState([])
+    const todayDate = new Date()
+    const monthDate = new Date()
+    monthDate.setDate(monthDate.getDate() - 30)
+    todayDate.setDate(todayDate.getDate() + 1)
+
+    const [statsQuery, setStatsQuery] = useState({ 
+        from: format(monthDate, 'yyyy-MM-dd'), 
+        to: format(todayDate, 'yyyy-MM-dd'),
+    })
+
+    const [totalPayments, setTotalPayments] = useState(0)
     const [payments, setPayments] = useState([])
+    const [deductionPayments, setDeductionPayments] = useState([])
+    const [earningsPayments, setEarningsPayments] = useState([])
+
+    const getPageName = (category) => {
+
+        if(category === 'inventory') {
+            return 'Inventory'
+        } else if(category === 'payroll') {
+            return 'Payrolls'
+        } else if(category === 'maintenance') {
+            return 'Maintenance'
+        } else if(category === 'bill') {
+            return 'Bills'
+        }
+    }
 
     useEffect(() => {
 
@@ -49,16 +74,19 @@ const MainClubPaymentsPage = ({ roles }) => {
 
         setIsLoading(true)
 
-        serverRequest.get(`/registrations/clubs/${clubId}/staffs/payments`, {
-            params: statQuery,
+        statsQuery.category = category.toUpperCase()
+
+        serverRequest.get(`/v1/payments/clubs/${clubId}`, {
+            params: statsQuery,
             headers
         })
         .then(response => {
             setIsLoading(false)
 
             const data = response.data
-            setTotalPayments(data.totalEarnings)
-            setPayments(data.staffPayments) 
+            setPayments(data.payments) 
+            setDeductionPayments(data.payments.filter(payment => payment.type === 'DEDUCT'))
+            setEarningsPayments(data.payments.filter(payment => payment.type === 'EARN'))
             
         })
         .catch(errorResponse => {
@@ -67,7 +95,7 @@ const MainClubPaymentsPage = ({ roles }) => {
             toast.error(translations[lang]['user-error'], { position: 'top-right', duration: config.TOAST_ERROR_TIME })
         })
 
-    }, [reload, statQuery])
+    }, [reload, statsQuery, category])
 
 
 
@@ -77,20 +105,24 @@ const MainClubPaymentsPage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            <ClubAdminSideBar />
             <Toaster />
-            <FloatingFormButton />
-            <StatDatePicker setStatQuery={setStatQuery} />
+            <FloatingFormButton modalId={'payment-form-modal'}/>
+            <ClubPaymentForm reload={reload} setReload={setReload} category={category} />
+            <StatDatePicker setStatQuery={setStatsQuery} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translations[lang]["Payments"]} statsQuery={statQuery} />
+                        <NavBar pageName={translations[lang][getPageName(category)]} statsQuery={statsQuery} />
                         <div className="page-main">
+                        <PageHeader pageName={getPageName(category)} reload={reload} setReload={setReload} />
                             <div className="row">
                                 <div className="col s12">
                                     <ClubPaymentsTable 
                                     data={payments} 
-                                    statsQuery={statQuery}
+                                    category={category}
+                                    deductionPayments={deductionPayments}
+                                    earningsPayments={earningsPayments}
+                                    statsQuery={statsQuery}
                                     currency={'EGP'}
                                     totalPayments={totalPayments} 
                                     isRegistrationAdded={true}

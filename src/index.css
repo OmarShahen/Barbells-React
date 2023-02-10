@@ -7,6 +7,10 @@ body {
     background-color: #F5F5F5;
 }   
 
+.page-main-body {
+    min-height: 100vh;
+}
+
 .page {
     margin-left: 17vw;
 }
@@ -49,20 +53,6 @@ body {
 .basic-color {
     background-color: #293042;
     color: #ADB5BD;
-}
-
-.reload-icon {
-    background-color: dodgerblue;
-    color: #FFF;
-    border-radius: .25rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: .3rem;
-}
-
-.reload-icon:hover {
-    cursor: pointer;
 }
 
 .graph-container {
@@ -133,12 +123,20 @@ button:focus {
     .page {
         margin-left: 10vw;
     }
+
+    .padding-top-1 {
+        padding-top: 1rem !important;
+    }
 }
 
 
 @media screen and (max-width: 800px) {
     .page {
         margin-left: 0;
+    }
+
+    .member-details-card-container {
+        margin: 1rem 0;
     }
 
     .page-main {
@@ -264,6 +262,10 @@ background-color: #a8bbbf;
     font-family: 'Noto Sans', 'Cairo', sans-serif !important;
 }
 
+table {
+    font-family: 'Noto Sans', 'Cairo', sans-serif;
+}
+
 .table-container input[type="text"],
 .table-container input[type="text"]:focus,
 .table-container input[type="search"],
@@ -284,6 +286,10 @@ background-color: #a8bbbf;
     margin: 1rem 0;
 }
 
+.my-container-padding {
+    padding: .2rem .7rem;
+}
+
 .character-counter {
     display: none !important;
 }
@@ -301,24 +307,127 @@ background-color: #a8bbbf;
     flex-direction: column;
 }
 
-.send-offer-message-row {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    background-color: #FFF;
-    border-radius: .25rem;
-    padding: 1rem 1.2rem;
-    margin: .5rem 0;
-}
-
-.send-offer-message-row .row-info {
-    display: flex;
-    justify-content: center;
-}
-
 .send-offer-icon-table {
     display: flex;
     justify-content: center;
     align-items: center;
     color: grey !important;
+}
+
+
+.table-form-input input[type="text"]:focus
+{
+    border-bottom: 1px solid #03a9f4!important;
+    box-shadow: 0 1px 0 0 #03a9f4!important;
+    padding-bottom: 0 !important;
+}
+
+.table-form-input input[type="text"].valid
+ {
+    border-bottom: 1px solid #03a9f4;
+    box-shadow: 0 1px 0 0 #03a9f4;
+}
+
+.table-form-input input[type="text"]
+{
+    border-bottom: 1px solid #9E9E9E !important;
+}
+
+.table-form-input input[type="text"]:focus + label,
+.table-form-input select + label
+{
+    color: #03a9f4 !important;
+    padding: 0;
+}
+
+.payment-section {
+    background-color: #FFF;
+    border-radius: .25rem;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    margin: 1rem 0;
+    padding: 1rem;
+}
+
+.payment-section-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #F2F2F2;
+    padding-bottom: .5rem;
+    border-radius: .25rem;
+}
+
+.limit-table {
+    max-height: 30rem;
+    overflow-y: scroll;
+}
+
+.member-detail-panel {
+    font-family: 'Noto Sans', 'Cairo', sans-serif !important;
+}
+
+.member-detail-panel ul li {
+    padding: .5rem 1rem;
+    border-bottom: 1px solid #F2F2F2;
+}
+
+.member-detail-panel ul li strong {
+    font-weight: bold;
+    padding-right: 1rem;
+}
+
+.notes-container li {
+    padding-left: 1rem;
+}
+
+.member-notes-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.notes-table-container {
+    background-color: #FFF;
+    border-radius: .25rem;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    padding: 1rem;
+}
+
+.notes-table-container h6 {
+    font-weight: bold;
+    font-size: 1.3rem;
+    padding-bottom: 2rem;
+}
+
+.status-btn {
+    padding: 5px 7px;
+    border: none;
+    border-radius: 10px;
+}
+
+.done{
+    background-color: #e5faf2;
+    color: #3bb077;
+}
+
+.pending{
+    background-color: #ebf1fe;
+    color: #2a7ade;
+}
+
+.declined{
+    background-color: #fff0f1;
+    color: #d95087;
+}
+
+.mini-table-container {
+    padding: .3rem 1rem;
+    border-radius: .25rem;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+}
+
+.mini-table {
+    max-height: 20rem;
+    min-height: 20rem;
+    overflow: auto;
 }

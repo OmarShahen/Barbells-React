@@ -85,7 +85,7 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
         setIsSubmitting(true)
 
-        serverRequest.post('/packages', newPackage, requestHeader)
+        serverRequest.post('/v1/packages', newPackage, requestHeader)
         .then(response => {
 
             setIsSubmitting(false)
@@ -118,9 +118,6 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
 
         })
     }
-
-
-
 
     return (
         <div className="modal" id="package-form-modal">
@@ -224,11 +221,10 @@ const ClubPackageForm = ({ isChooseClub, reload, setReload }) => {
                                             <option value="day" selected>{translations[lang]['Dayl']}</option>    
                                             <option value="week">{translations[lang]['Weekl']}</option>
                                             <option value="month">{translations[lang]['Monthl']}</option>
-                                            <option value="year">{translations[lang]['Yearl']}</option>                                                                          
-                                                
+                                            <option value="year">{translations[lang]['Yearl']}</option>                                                                                                                       
                                         </select>
                                         <label>{translations[lang]['Duration Type']}</label>
-                                    </div>
+                                </div>
                                 {
                                     isChooseClub ?
                                     <div className="input-field col s12 m6">

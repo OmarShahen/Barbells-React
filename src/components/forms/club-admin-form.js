@@ -75,7 +75,7 @@ const ClubAdminForm = () => {
 
         setIsSubmitting(true)
 
-        serverRequest.post('/staffs/club-admin', newStaff, {
+        serverRequest.post('/v1/staffs/club-admin', newStaff, {
             headers: {
                 'x-access-token': JSON.parse(localStorage.getItem('access-token'))
             }

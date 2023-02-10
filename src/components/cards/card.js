@@ -1,15 +1,14 @@
 import React from 'react'
 import './card.css'
-import CountUp from 'react-countup'
+import { formateNumber, formateMoney } from '../../utils/money'
 
-
-const Card = ({ title, number, color, sign, currency, icon }) => {
+const Card = ({ title, number, currency, sign, isMoney, icon }) => {
 
     return (
         <div className="stat-card white">
             <div className="stat-info">
                 <div className="stat-number">
-                    <CountUp end={Number.parseInt(number)} duration={2} />
+                    { isMoney ? formateMoney(number, currency) : formateNumber(number) }
                 </div>
                 <div className="stat-title">
                     {title}

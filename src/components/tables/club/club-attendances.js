@@ -24,39 +24,20 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
 
 
     const columns = () => {
-
-        if(isClub) {
-            return [
-                { title: 'New', field: 'isNew', editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">new</span>
-                    :
-                    <span className="app-badge grey white-text">old</span>
-                } },
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Attendance Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Attendance Date'], field: 'registrationDate' },
-        
-            ]
-        } else {
-            return [
-                { title: translations[lang]['New'], field: 'isNew', editable: 'never', render: rowData => {
-                    return rowData.isNew ?
-                    <span className="app-badge blue white-text">{translations[lang]['new']}</span>
-                    :
-                    <span className="app-badge grey white-text">{translations[lang]['old']}</span>
-                } },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Attendance Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Attendance Date'], field: 'registrationDate' },
-        
-            ]
-        }
+        return [
+            { title: translations[lang]['New'], field: 'isNew', editable: 'never', render: rowData => {
+                return rowData.isNew ?
+                <span className="app-badge blue white-text">{translations[lang]['new']}</span>
+                :
+                <span className="app-badge grey white-text">{translations[lang]['old']}</span>
+            } },
+            { title: translations[lang]['Member'], field: 'member.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Package'], field: 'package.title', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Staff'], field: 'staff.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Attendance Time'], field: 'attendanceTime', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Attendance Date'], field: 'registrationDate', cellStyle: { whiteSpace: 'nowrap' } },
+    
+        ]
     }
 
     useEffect(() => {
@@ -82,7 +63,10 @@ const ClubAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload,
                     }, 
                     exportFileName: translations[lang]['Attendances'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 actions={[
                     isRefreshAdded ? 

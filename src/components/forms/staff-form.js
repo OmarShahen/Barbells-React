@@ -93,7 +93,7 @@ const ClubStaffForm = ({ isChooseClub, setReload, reload, addedStaffRole }) => {
 
         setIsSubmitting(true)
 
-        serverRequest.post(`/staffs/${addedStaffRole}`, newStaff, requestHeader)
+        serverRequest.post(`/v1/staffs/${addedStaffRole}`, newStaff, requestHeader)
         .then(response => {
 
             setIsSubmitting(false)

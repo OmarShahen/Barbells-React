@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar'
 import ClubRegistrationsTable from '../../../components/tables/club/club-registrations'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
@@ -12,6 +11,12 @@ import { localStorageSecured } from '../../../security/localStorage'
 import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import { format } from 'date-fns'
 import FloatingFormButton from '../../../components/buttons/floating-button'
+import Card from '../../../components/cards/card'
+import { iconPicker } from '../../../utils/icon-finder'
+import CachedIcon from '@mui/icons-material/Cached'
+import { useSelector } from 'react-redux'
+import PageHeader from '../../../components/sections/headers/page-header'
+
 
 const MainClubRegistrationsPage = ({ roles }) => {
 
@@ -21,13 +26,15 @@ const MainClubRegistrationsPage = ({ roles }) => {
     const pagePath = window.location.pathname
     const clubId = pagePath.split('/')[3]
     const lang = localStorage.getItem('lang')
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
     const [registrations, setRegistrations] = useState([])
+    const [totalActiveRegistrations, setTotalActiveRegistrations] = useState(0)
+    const [totalExpiredRegistrations, setTotalExpiredRegistrations] = useState(0)
 
     const todayDate = new Date()
     const monthDate = new Date()
@@ -54,7 +61,7 @@ const MainClubRegistrationsPage = ({ roles }) => {
 
         setIsLoading(true)
 
-        serverRequest.get(`/registrations/clubs/${clubId}`, {
+        serverRequest.get(`/v1/registrations/clubs/${clubId}`, {
             headers,
             params: statsQuery
         })
@@ -63,7 +70,9 @@ const MainClubRegistrationsPage = ({ roles }) => {
             setIsLoading(false)
 
             const data = response.data
-            setRegistrations(data.registrations)    
+            setRegistrations(data.registrations)
+            setTotalActiveRegistrations(data.registrations.filter(registration => registration.isActive).length)
+            setTotalExpiredRegistrations(data.registrations.filter(registration => !registration.isActive).length)
         })
         .catch(errorResponse => {
 
@@ -82,15 +91,26 @@ const MainClubRegistrationsPage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            <ClubAdminSideBar />
             <Toaster />
-            <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatsQuery} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                         <NavBar pageName={translations[lang]["Registrations"]} statsQuery={statsQuery} />
                         <div className="page-main">
+                        <PageHeader pageName="Registrations" reload={reload} setReload={setReload} />
+                            
+                        <div className="row">
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Registrations"]} number={registrations.length} icon={iconPicker('registrations')} color={'dodgerblue'}/>
+                                    </div>
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Active"]} number={totalActiveRegistrations} icon={iconPicker('active')} color={'red'}/>
+                                    </div>
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Expired"]} number={totalExpiredRegistrations} icon={iconPicker('expired')} color={'#aa00ff'}/>
+                                    </div>
+                            </div>
                             <div className="row">
                                 <div className="col s12">
                                     <ClubRegistrationsTable 

@@ -21,9 +21,10 @@ const ClubOffersMessagesTable = ({ data, isRefreshAdded, isLoading, reload, setR
     const columns = () => {
 
         return [
-            { title: 'Name', field: 'name' },
-            { title: 'Message', field: 'message', render: rowData => <p className="truncate">{rowData.message}</p> },
-            { title: 'Creation Date', field: 'creationDate', editable: false },
+            { title: translations[lang]['Name'], field: 'name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Message'], field: 'message', cellStyle: { whiteSpace: 'nowrap' }, render: rowData => <p className="truncate">{rowData.message}</p> },
+            { title: translations[lang]['Language'], field: 'language', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Creation Date'], field: 'creationDate', editable: false, cellStyle: { whiteSpace: 'nowrap' } },
         ]
     }
 
@@ -40,7 +41,7 @@ const ClubOffersMessagesTable = ({ data, isRefreshAdded, isLoading, reload, setR
         const offersMessagesData = [...offersMessages]  
         const offerMessageTableId = offerMessageData.tableData.id
                 
-        serverRequest.delete(`/offers-messages/${offerMessageData._id}`, { headers, params: { lang } })
+        serverRequest.delete(`/v1/offers-messages/${offerMessageData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredOffersMessages = offersMessagesData.filter((offerMessageObj, index) => offerMessageTableId !== index)
@@ -64,7 +65,7 @@ const ClubOffersMessagesTable = ({ data, isRefreshAdded, isLoading, reload, setR
         const offersMessagesData = [...offersMessages]  
         const offerMessageTableId = oldOfferMessage.tableData.id
                 
-        serverRequest.put(`/offers-messages/${newOfferMessage._id}`, newOfferMessage, { headers, params: { lang } })
+        serverRequest.put(`/v1/offers-messages/${newOfferMessage._id}`, newOfferMessage, { headers, params: { lang } })
         .then(response => {
 
             const offerMessageData = response.data.offerMessage
@@ -105,6 +106,10 @@ const ClubOffersMessagesTable = ({ data, isRefreshAdded, isLoading, reload, setR
                     }, 
                     exportFileName: translations[lang]['Attendances'],
                     grouping: true,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
+
                 }}
 
                 editable={{
@@ -124,7 +129,7 @@ const ClubOffersMessagesTable = ({ data, isRefreshAdded, isLoading, reload, setR
                     null,
                     {
                         icon: TableIcons.Message,
-                        tooltip: 'Send',
+                        tooltip: translations[lang]['Send'],
                         onClick: (e, rowData) => {
                             localStorageSecured.set('offer-message', rowData)
                             setMode('PICK')

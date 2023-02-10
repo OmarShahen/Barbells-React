@@ -1,6 +1,7 @@
 import React from 'react'
 import './card.css'
 import translations from '../../i18n'
+import { formateMoney, formateNumber } from '../../utils/money'
 
 const PercentagesCard = ({ category, dataOf, percentOf, percentages, total }) => {
 
@@ -20,8 +21,11 @@ const PercentagesCard = ({ category, dataOf, percentOf, percentages, total }) =>
                         return <tr> 
                                     <td>{percentage.label}</td>
                                         <td>
-                                            {percentage.data}
-                                                { percentage.data === 1 ?  ` ${translations[lang][percentOf]}` : ` ${translations[lang][percentOf + 's']}` }
+                                            {percentOf ? formateNumber(percentage.data) : formateMoney(percentage.data, lang)}
+                                                { percentage.data === 1 ?
+                                                ` ${percentOf ? translations[lang][percentOf] : ''}` 
+                                                : 
+                                                ` ${percentOf ? translations[lang][percentOf + 's'] : ''}` }
                                             </td>
                                             <td>
                                                 {

@@ -26,8 +26,6 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
 
 
     const columns = () => {
-
-        if(isClub) {
             return [
                 /*{ title: 'Image', field: 'imageURL', render: rowData => {
                     return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
@@ -35,39 +33,16 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                 { title: translations[lang]['Freezing Status'], grouping: false, filtering: false, field: 'isFreezed', render: rowData => {
                     return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
                 } },
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Activator'], field: 'activator.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Freeze Duration'], field: 'freezePeriod' },
-                { title: translations[lang]['Freezing Date'], field: 'freezedDate' },
-                { title: translations[lang]['Registration Expiration Date'], field: 'originalRegistrationNewExpirationDate' },
-                { title: translations[lang]['Reactivation Date'], field: 'registrationReactivationDate' },
+                { title: translations[lang]['Member'], field: 'member.name', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Staff'], field: 'staff.name', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Activator'], field: 'activator.name', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Package'], field: 'package.title', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Freeze Duration'], field: 'freezePeriod', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Freezing Date'], field: 'freezedDate', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Registration Expiration Date'], field: 'originalRegistrationNewExpirationDate', cellStyle: { whiteSpace: 'nowrap' } },
+                { title: translations[lang]['Reactivation Date'], field: 'registrationReactivationDate', cellStyle: { whiteSpace: 'nowrap' } },
                 //{ title: translations[lang]['Registration Date'], field: 'registrationDate' },
-        
             ]
-        } else {
-
-            return [
-                /*{ title: 'Image', field: 'imageURL', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%' }} alt="club avatar" />
-                } },*/
-                { title: translations[lang]['Freezing Status'], grouping: false, filtering: false, field: 'isFreezed', render: rowData => {
-                    return rowData.isFreezed ? <AcUnitIcon style={{ color: 'dodgerblue' }} /> : <AcUnitIcon />
-                } },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Activator'], field: 'activator.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Freeze Duration'], field: 'freezePeriod' },
-                { title: translations[lang]['Freezing Date'], field: 'freezedDate' },
-                { title: translations[lang]['Registration Expiration Date'], field: 'originalRegistrationNewExpirationDate' },
-                { title: translations[lang]['Reactivation Date'], field: 'registrationReactivationDate' },
-                //{ title: translations[lang]['Registration Date'], field: 'registrationDate' },
-        
-            ]
-        }
     }
 
     return (
@@ -88,7 +63,10 @@ const ClubFreezedRegistrationsTable = ({ data, isClub, isRefreshAdded, isLoading
                     }, 
                     exportFileName: translations[lang]['Freezed-Registrations'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 actions={[
                     {

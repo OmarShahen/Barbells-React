@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import SideBar from '../../../components/navigation/club-admin-side-bar'
 import Card from '../../../components/cards/card'
-import ClubRegistrationTable from '../../../components/tables/club/club-registrations'
 import BarChart from '../../../components/charts/bar-chart'
 import LineChart from '../../../components/charts/line-chart'
 import { serverRequest } from '../../../API/request'
@@ -12,14 +10,18 @@ import StatDatePicker from '../../../components/forms/stats-date-picker-form'
 import ChartModal from '../../../components/modals/chart-modal'
 import { config } from '../../../config/config'
 import { format } from 'date-fns'
-import translation from '../../../i18n/index'
+import translations from '../../../i18n/index'
 import { iconPicker } from '../../../utils/icon-finder'
 import { to12 } from '../../../utils/hours'
-import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
+import ClubPaymentsTable from '../../../components/tables/club/club-payments'
+import PageHeader from '../../../components/sections/headers/page-header'
+import { useSelector } from 'react-redux'
 
 const ClubDashboardPage = ({ roles }) => {
 
@@ -33,19 +35,21 @@ const ClubDashboardPage = ({ roles }) => {
 
     const todayDate = new Date()
 
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
     const [reload, setReload] = useState(0)
     const [isLoading, setIsLoading] = useState(true)
-    const [statQuery, setStatQuery] = useState({ specific: format(todayDate, 'yyyy-MM-dd') })
+    const [statsQuery, setStatsQuery] = useState({ specific: format(todayDate, 'yyyy-MM-dd') })
 
     const [totalRegistrations, setTotalRegistrations] = useState(0)
     const [totalEarnings, setTotalEarnings] = useState(0)
+    const [totalDeductions, setTotalDeductions] = useState(0)
+    const [netProfit, setNetProfit] = useState(0)
     const [totalAttendances, setTotalAttendances] = useState(0)
     const [totalMembers, setTotalMembers] = useState(0)
-    const [registrations, setRegistrations] = useState([])
+    const [payments, setPayments] = useState([])
 
     const [growthLabels, setGrowthLabels] = useState([])
     const [growthData, setGrowthData] = useState([])
@@ -67,8 +71,8 @@ const ClubDashboardPage = ({ roles }) => {
 
         setIsLoading(true)
         toast.promise(
-            serverRequest.get(`clubs/${clubId}/stats`, {
-                params: statQuery,
+            serverRequest.get(`/v2/clubs/${clubId}/stats`, {
+                params: statsQuery,
                 headers
             })
             .then(response => {
@@ -78,9 +82,11 @@ const ClubDashboardPage = ({ roles }) => {
     
                 setTotalRegistrations(data.totalRegistrations)
                 setTotalEarnings(data.totalEarnings)
+                setTotalDeductions(data.totalDeductions)
+                setNetProfit(data.netProfit)
                 setTotalAttendances(data.totalAttendances)
-                setRegistrations(data.registrations)
                 setTotalMembers(data.totalMembers)
+                setPayments(data.payments)
     
                 const growthStats = data.registrationsGrowthStats
                 
@@ -105,9 +111,9 @@ const ClubDashboardPage = ({ roles }) => {
                 throw errorResponse
             }),
             {
-                loading: <strong>{translation[lang]['dashboard-loading']}</strong>,
-                success: <strong>{translation[lang]['dashboard-success']}</strong>,
-                error: <strong>{translation[lang]['dashboard-error']}</strong>
+                loading: <strong>{translations[lang]['dashboard-loading']}</strong>,
+                success: <strong>{translations[lang]['dashboard-success']}</strong>,
+                error: <strong>{translations[lang]['dashboard-error']}</strong>
             },
             {
                 position: 'top-right',
@@ -116,7 +122,7 @@ const ClubDashboardPage = ({ roles }) => {
         )
         
 
-    }, [statQuery, reload])
+    }, [statsQuery, reload])
 
     const collectClubData = (labels, data, colors) => {
 
@@ -137,71 +143,90 @@ const ClubDashboardPage = ({ roles }) => {
         { authorized
         &&
         <div className="blue-grey lighten-5">
-            <SideBar />
             <Toaster />
-            <FloatingFormButton />
-            <StatDatePicker setStatQuery={setStatQuery} loading={isLoading} />
+            <StatDatePicker setStatQuery={setStatsQuery} loading={isLoading} />
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
-                        <NavBar pageName={translation[lang]["Dashboard"]} statsQuery={statQuery} />
+                        <NavBar pageName={translations[lang]["Dashboard"]} statsQuery={statsQuery} />
                         <div className="page-main">
-                        <div className="page-body-header">
-                                <h5>
-                                    {translation[lang]['Dashboard']}
-                                </h5>
-                                <div className="header-icon-container">
-                                    
-                                    <div className="reload-icon" onClick={e => setReload(reload + 1)}>
-                                        <CachedIcon /> 
-                                    </div>
-                                </div>
-                            </div>
-                            
+                            <PageHeader pageName={'Dashboard'} reload={reload} setReload={setReload} statsQuery={statsQuery} />
                             <div className="row">
-                                <div className="col s12 m3">
-                                    <Card title={translation[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalRegistrations} color={config.color.blue} />
+                                <div className="col s12 m4">
+                                    <Card 
+                                    title={translations[lang]["Net Profit"]} 
+                                    icon={iconPicker('earnings')} 
+                                    number={netProfit} 
+                                    color={config.color.purple} 
+                                    isMoney={true}
+                                    currency={lang}
+                                    />
                                 </div>
-                                <div className="col s12 m3">
-                                    <Card title={translation[lang]["Earnings"]} icon={iconPicker('earnings')} number={totalEarnings} color={config.color.purple} />
+                                <div className="col s12 m4">
+                                    <Card 
+                                    title={translations[lang]["Earnings"]} 
+                                    icon={<LoginIcon />} 
+                                    number={totalEarnings} 
+                                    color={config.color.cyan} 
+                                    isMoney={true}
+                                    currency={lang}
+                                    />
                                 </div>
-                                <div className="col s12 m3">
-                                    <Card title={translation[lang]["Attendances"]} icon={iconPicker('attendances')} number={totalAttendances} color={config.color.cyan} />
+                                <div className="col s12 m4">
+                                    <Card 
+                                    title={translations[lang]["Deductions"]} 
+                                    icon={<LogoutIcon />} 
+                                    number={totalDeductions} 
+                                    color={config.color.cyan}
+                                    isMoney={true}
+                                    currency={lang}
+                                    />
                                 </div>
-                                <div className="col s12 m3">
-                                    <Card title={translation[lang]["Members"]} icon={iconPicker('members')} number={totalMembers} color={config.color.cyan} />
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Registrations"]} icon={iconPicker('registrations')} number={totalRegistrations} color={config.color.blue} />
+                                    </div> 
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Attendances"]} icon={iconPicker('attendances')} number={totalAttendances} color={config.color.cyan} />
+                                    </div>
+                                    <div className="col s12 m4">
+                                        <Card title={translations[lang]["Members"]} icon={iconPicker('members')} number={totalMembers} color={config.color.cyan} />
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="white my-container card-effect">
-                                    <h5 className="left">
-                                    {translation[lang]['Registrations Growth']}
-                                    </h5>
-                                    <div className="row">
-                                        <div className="col s12">
-                                        <a className="modal-trigger" href="#month-line-chart-modal">
-                                            <LineChart title={translation[lang]['Registrations Growth']} labels={growthLabels} data={growthData} color={'dodgerblue'} />
-                                        </a>
-                                        <ChartModal id="month-line-chart-modal">
-                                            <LineChart 
-                                            title={translation[lang]['Registrations Growth']}
-                                            labels={growthLabels} 
-                                            data={growthData} 
-                                            color={'dodgerblue'} 
-                                            />
-                                        </ChartModal>
+                                <div className="row">
+                                <div className="col s12">
+                                    <div className="white my-container-padding card-effect">
+                                        <h5 className="left">
+                                        {translations[lang]['Registrations Growth']}
+                                        </h5>
+                                        <div className="row">
+                                            <div className="col s12">
+                                            <a className="modal-trigger" href="#month-line-chart-modal">
+                                                <LineChart title={translations[lang]['Registrations Growth']} labels={growthLabels} data={growthData} color={'dodgerblue'} />
+                                            </a>
+                                            <ChartModal id="month-line-chart-modal">
+                                                <LineChart 
+                                                title={translations[lang]['Registrations Growth']}
+                                                labels={growthLabels} 
+                                                data={growthData} 
+                                                color={'dodgerblue'} 
+                                                />
+                                            </ChartModal>
+                                            </div>
                                         </div>
-                                    </div>
-                                    </div>
+                                </div>
+                                </div>
+                                </div>
+                                
 
                                     <div className="card-effect white my-container">
                                     <h5>
-                                        {translation[lang]['Attendances']} {translation[lang]['Times']} 
+                                        {translations[lang]['Attendances']} {translations[lang]['Times']} 
                                     </h5>
                                     <div className="row">
                                         <div className="col s12 m6 chart-table-container">
                                             <PercentagesCard 
-                                            category={translation[lang]['Times']}
-                                            dataOf={translation[lang]['Attendances']}
+                                            category={translations[lang]['Times']}
+                                            dataOf={translations[lang]['Attendances']}
                                             percentOf={'Attendance'}
                                             percentages={collectClubData(hoursLabels, hoursData, config.colors)}
                                             total={totalAttendances}
@@ -223,7 +248,17 @@ const ClubDashboardPage = ({ roles }) => {
                                 </div>
                             <div className="row">
                                 <div className="col s12">
-                                    <ClubRegistrationTable data={registrations} statsQuery={statQuery} />
+                                <ClubPaymentsTable 
+                                    data={payments} 
+                                    view={'all'}
+                                    statsQuery={statsQuery}
+                                    currency={translations[lang]['EGP']}
+                                    isRegistrationAdded={true}
+                                    reload={reload}
+                                    setReload={setReload}
+                                    isLoading={isLoading} 
+                                    isRefreshAdded={true}
+                                    />
                                 </div>
                             </div>
                         </div>                        

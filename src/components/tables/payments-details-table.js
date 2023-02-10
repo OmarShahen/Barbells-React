@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { trimPaymentsDetails } from '../../utils/trimmers'
+import { trimPayments } from '../../utils/trimmers'
 import { serverRequest } from '../../API/request'
 import toast from 'react-hot-toast'
 import translations from '../../i18n'
 import { config } from '../../config/config'
 import CircularLoadingButton from '../buttons/loading-button'
 import { localStorageSecured } from '../../security/localStorage'
-
+import { formateMoney } from '../../utils/money'
 
 const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
 
@@ -16,7 +16,7 @@ const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
 
     useEffect(() => {
 
-        serverRequest.get(`/registrations/staffs/${staffId}`, { 
+        serverRequest.get(`/v1/staffs/${staffId}/all-payments`, { 
             params: statsQuery,
             headers: {
                 'x-access-token': localStorageSecured.get('access-token')
@@ -24,7 +24,7 @@ const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
         })
         .then(response => {
             setIsLoading(false)
-            setData(trimPaymentsDetails(response.data.registrations))
+            setData(trimPayments(response.data.payments))
         })
         .catch(error => {
             setIsLoading(false)
@@ -43,21 +43,17 @@ const PaymentsDetaisTable = ({ staffId, statsQuery, currency }) => {
             <table className="highlight centered">
             <thead>
                 <tr>
-                    <th>Member</th>
-                    <th>Paid</th>
-                    <th>Membership</th>
-                    <th>Package</th>
-                    <th>Payment Time</th>
-                    <th>Payment Date</th>
+                    <th>{translations[lang]['Category']}</th>
+                    <th>{translations[lang]['Paid']}</th>
+                    <th>{translations[lang]['Payment Time']}</th>
+                    <th>{translations[lang]['Payment Date']}</th>
                 </tr>
             </thead>
             <tbody>
                 {data.map(row => <tr>
-                    <td>{row.member.name}</td>
-                    <td>{`${row.paid} ${currency}`}</td>
-                    <td>{row.member.membership}</td>
-                    <td>{row.package.title}</td>
-                    <td>{row.registrationTime}</td>
+                    <td>{translations[lang][row.category]}</td>
+                    <td>{formateMoney(row.total, lang)}</td>
+                    <td>{row.paymentTime}</td>
                     <td>{row.registrationDate}</td>
                 </tr>)}
             </tbody>

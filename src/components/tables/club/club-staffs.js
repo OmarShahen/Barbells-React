@@ -7,12 +7,16 @@ import toast from 'react-hot-toast'
 import translations from '../../../i18n'
 import { localStorageSecured } from '../../../security/localStorage'
 import { config } from '../../../config/config'
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import ClubPayrollForm from '../../forms/payroll-form'
+import { formateNumber } from '../../../utils/money'
 
 const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
 
     const headers = { 'x-access-token': localStorageSecured.get('access-token') }
 
     const [staffs, setStaffs] = useState(trimStaffs(data))
+    const [staffPayroll, setStaffPayroll] = useState()
     const [updatedStaffs, setUpdatedStaffs] = useState([])
 
     const [filter, setFilter] = useState(false)
@@ -20,64 +24,36 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
     const lang = localStorage.getItem('lang')
 
     const columns = () => {
-
-        if(isClub) {
-
-            return [
-                { title: translations[lang]['Image'], grouping: false, filtering: false, field: 'imageURL', editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
-                } },
-                { title: translations[lang]['Name'], field: 'name' },
-                { title: translations[lang]['Phone Code'], field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
-                { title: translations[lang]['Phone'], field: 'phone' },
-                { title: translations[lang]['Mail'], field: 'email' },
-                { title: translations[lang]['Branch'], field: 'club.clubCode', editable: 'never' },
-                //{ title: translations[lang]['Role'], field: 'role', editable: 'never' },
-                { title: translations[lang]['Account Status'], grouping: false, filtering: false, field: 'isAccountActive', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isAccountActive
-                       ? 
-                       <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
-        
-            ]
-        
-        } else {
-            return [
-                { title: translations[lang]['Image'], field: 'imageURL', grouping: false, filtering: false, editable: 'never', render: rowData => {
-                    return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
-                } },
-                { title: translations[lang]['Name'], field: 'name' },
-                { title: translations[lang]['Phone Code'], field: 'countryCode', render: rowData => <div className="center">{rowData.countryCode}</div> },
-                { title: translations[lang]['Phone'], field: 'phone' },
-                { title: translations[lang]['Mail'], field: 'email' },
-                //{ title: translations[lang]['Role'], field: 'role', editable: 'never' },
-                { title: translations[lang]['Account Status'], grouping: false, filtering: false, field: 'isAccountActive', editable: 'never', render: rowData => {
-                    return <div className="switch">
-                    <label>
-                      { rowData.isAccountActive
-                       ? 
-                       <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={true} />
-                        : 
-                        <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={false} />
-                    }
-                      <span className="lever" ></span>
-                    </label>
-                  </div>
-                } },
-                { title: translations[lang]['Registration Date'], field: 'registrationDate', editable: 'never' },
-        
-            ]
-        
-        }
+        return [
+            { title: translations[lang]['Image'], field: 'imageURL', grouping: false, filtering: false, editable: 'never', render: rowData => {
+                return <img src={`https://avatars.dicebear.com/api/initials/${rowData.name}.svg`} style={{ width: '3rem', height: '3rem', borderRadius: '50%' }} alt="club avatar" />
+            } },
+            { title: translations[lang]['Name'], field: 'name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Phone Code'], field: 'countryCode', cellStyle: { whiteSpace: 'nowrap' }, render: rowData => <div className="center">{rowData.countryCode}</div> },
+            { title: translations[lang]['Phone'], field: 'phone', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Mail'], field: 'email', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Payroll'], field: '', cellStyle: { whiteSpace: 'nowrap' }, render: rowData => {
+                return <a href='#payroll-form-modal' onClick={e => setStaffPayroll(rowData)} className="modal-trigger send-offer-icon-table">
+                <PaymentsOutlinedIcon />
+            </a> 
+            }},
+            //{ title: translations[lang]['Role'], field: 'role', editable: 'never' },
+            { title: translations[lang]['Account Status'], grouping: false, filtering: false, field: 'isAccountActive', editable: 'never', render: rowData => {
+                return <div className="switch">
+                <label>
+                    { rowData.isAccountActive
+                    ? 
+                    <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={true} />
+                    : 
+                    <input type="checkbox" onChange={() => updateStaffStatus(rowData)} checked={false} />
+                }
+                    <span className="lever" ></span>
+                </label>
+                </div>
+            } },
+            { title: translations[lang]['Registration Date'], field: 'registrationDate', cellStyle: { whiteSpace: 'nowrap' }, editable: 'never' },
+    
+        ] 
     }
     
 
@@ -95,7 +71,7 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = oldStaff.tableData.id
 
                 
-        serverRequest.put(`/staffs/${newStaff._id}`, newStaff, { headers, params: { lang } })
+        serverRequest.put(`/v1/staffs/${newStaff._id}`, newStaff, { headers, params: { lang } })
         .then(response => {
 
             const staffData = response.data.staff
@@ -122,7 +98,7 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, { headers, params: { lang } })
+        serverRequest.patch(`/v1/staffs/${staffData._id}`, { isAccountActive: !staffData.isAccountActive }, { headers, params: { lang } })
         .then(response => {
 
             const updatedStaff = response.data.staff
@@ -150,7 +126,7 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffsData = [...staffs]  
         const staffTableId = staffData.tableData.id
                 
-        serverRequest.delete(`/staffs/${staffData._id}`, { headers, params: { lang } })
+        serverRequest.delete(`/v1/staffs/${staffData._id}`, { headers, params: { lang } })
         .then(response => {
 
             const filteredStaffs = staffsData.filter((staff, index) => staffTableId !== index)
@@ -174,7 +150,7 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
         const staffTableId = staffData.tableData.id
         const staffsData = [...staffs]
 
-        serverRequest.patch(`/staffs/${staffData._id}/role`, { role }, { headers, params: { lang } })
+        serverRequest.patch(`/v1/staffs/${staffData._id}/role`, { role }, { headers, params: { lang } })
         .then(response => {
 
             const filteredStaffs = staffsData.filter((staff, index) => staffTableId !== index)
@@ -196,8 +172,9 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
 
     return (
         <div className="table-container">
+            <ClubPayrollForm staff={staffPayroll} />
             <MaterialTable 
-                title={`# ${data.length}`}
+                title={formateNumber(data.length)}
                 isLoading={isLoading}
                 columns={columns()}
                 data={staffs}
@@ -212,7 +189,10 @@ const ClubStaffsTable = ({ title, data, staffRole, isClub, isRefreshAdded, isLoa
                     }, 
                     exportFileName: translations[lang][title] || translations[lang]['Staffs'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 editable={{
                     onRowUpdate: updateStaff,

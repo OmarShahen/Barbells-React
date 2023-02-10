@@ -1,5 +1,5 @@
-import React, { useEffect, Suspense } from 'react'
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import React, { useEffect, useState, Suspense } from 'react'
+import { BrowserRouter as Router, Routes, Route, useNavigate, redirect } from "react-router-dom"
 import LoadingPage from './components/loading/loading-page'
 import LoginForm from "./components/forms/club-admin-login"
 import ChainOwnerLoginForm from "./components/forms/chain-owner-login"
@@ -16,8 +16,14 @@ import MainClubAttendancesPage from "./pages/club/main/club-attendances-page"
 import MainClubCancelledAttendancesPage from "./pages/club/main/club-cancelled-attendances-page"
 import MainClubCancelledRegistrationsPage from "./pages/club/main/club-cancelled-registrations-page"
 import MainClubFreezedRegistrationsPage from "./pages/club/main/club-freezed-registrations-page"
-import MainClubPaymentsPagePage from "./pages/club/main/club-payments-page"
+import MainClubStaffPaymentsPage from './pages/club/main/club-staffs-payments-page'
+import MainClubPaymentsPage from "./pages/club/main/club-payments-page"
 import MainClubAdminsPage from "./pages/club/main/club-admins-page"
+import MainClubPayrollsPage from "./pages/club/main/club-payrolls-page"
+import MainClubInstallmentsPage from './pages/club/main/club-installments-page'
+import MainClubItemsPage from './pages/club/main/club-items-page'
+import MainClubSuppliersPage from './pages/club/main/club-suppliers-page'
+
 import ChainOwnerClubsPage from "./pages/chain-owners/main/chain-owner-clubs-page"
 
 import ClubDashboardPage from "./pages/club/stats/club-dashboard-page"
@@ -27,6 +33,16 @@ import ClubPackagesPage from "./pages/club/stats/club-packages-page"
 import ClubPackagePage from "./pages/club/stats/club-package-page"
 import ClubRegistrationsPage from "./pages/club/stats/club-registrations-page"
 import ClubAttendancesPage from "./pages/club/stats/club-attendances-page"
+import ClubPaymentsPage from './pages/club/stats/club-payments-page'
+import ClubPaymentsCategoryPage from "./pages/club/stats/club-payments-category-page"
+import ClubItemPage from './pages/club/stats/club-item-page'
+import ClubInventoryPage from './pages/club/stats/club-inventory-page'
+
+import ClubAdminSideBar from './components/navigation/club-admin-side-bar'
+
+import { useSelector } from 'react-redux'
+import { localStorageSecured } from './security/localStorage'
+
 
 /*const MainChainOwnersStaffsPage = React.lazy(() => import( './pages/chain-owners/main/chain-owners-staffs-page'))
 const MainChainOwnersClubsPaymentsPage = React.lazy(() => import( "./pages/chain-owners/main/chain-owners-clubs-payments-page"))
@@ -48,75 +64,100 @@ const ChainOwnersMembersPage = React.lazy(() => import( "./pages/chain-owners/st
 
 const App = () => {
 
+  const user = useSelector(state => state.user.user)
+
   useEffect(() => {
     const lang = localStorage.getItem('lang')
     localStorage.setItem('lang', lang ? lang : 'en')
+
   }, [])
+
+  /*if(!user.isLogged) {
+    return <LoginForm />
+  }*/
 
   return <div>
     <Router>
+      { user.isLogged ? <ClubAdminSideBar /> : null }
+      
       <Routes>
         {/** Clubs Pages Section */}
-        <Route exact
+        <Route
         path="/app/clubs/:clubId/dashboard" 
-        
         element={
-          <Suspense fallback={<LoadingPage />}>
+          user.isLogged ?
             <ClubDashboardPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-          </Suspense>
-        }
-          />
-        <Route exact
+            :
+            <LoginForm />
+        }/>
+
+        <Route 
         path="/app/clubs/:clubId/members/stats" 
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubMembersPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-          </Suspense>
-        } />
+        }/>
+
+        <Route 
+        path="/app/clubs/:clubId/offers-messages" 
+        element={
+          <MainClubOffersMessagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+        } 
+        />
 
         <Route exact path="/app/clubs/:clubId/members/:memberId/stats" 
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubMemberPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-          </Suspense>
         } />
 
       <Route exact path="/app/clubs/:clubId/packages/:packageId/stats"  
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubPackagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
-          </Suspense>
         } />
 
         <Route exact path="/app/clubs/:clubId/packages/stats" 
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
-          </Suspense>
         } />
 
         <Route exact path="/app/clubs/:clubId/registrations/stats" 
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']}/>
-          </Suspense>
         } />
 
         <Route exact path="/app/clubs/:clubId/attendances/stats"   
         element={
-          <Suspense fallback={<LoadingPage />}>
             <ClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-          </Suspense>
           } />
 
+        <Route exact path="/app/clubs/:clubId/payments/stats"   
+        element={
+            <ClubPaymentsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+          } />
+
+        <Route exact path="/app/clubs/:clubId/payments/:category/stats"   
+        element={
+            <ClubPaymentsCategoryPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+          } />
+
+        <Route exact path="/app/clubs/:clubId/items/:itemId/stats"   
+            element={
+              <ClubItemPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+            } />
+
+          <Route exact path="/app/clubs/:clubId/inventory/stats"   
+            element={
+              <ClubInventoryPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+            } />
 
         {/** Main Club Pages Section */}
         <Route exact path="/app/clubs/:clubId/members/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
         <MainClubMembersPage roles={['ADMIN','CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
+
+        <Route path="/app/clubs/:clubId/payments/:category/main" 
+        element={<MainClubPaymentsPage roles={['ADMIN','CLUB-ADMIN', 'OWNER']} />
+        }/>
 
         <Route 
         path="/app/clubs/:clubId/offers-messages/main" 
@@ -125,36 +166,27 @@ const App = () => {
  
         <Route exact path="/app/clubs/:clubId/staffs/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
           <MainClubStaffsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
  
         <Route exact path="/app/clubs/:clubId/packages/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
         <MainClubPackagesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
 
         <Route exact path="/app/clubs/:clubId/registrations/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
         <MainClubRegistrationsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
+
         <Route exact path="/app/clubs/:clubId/attendances/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
         <MainClubAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
 
         <Route path="/app/clubs/:clubId/cancelled-attendances/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
         <MainClubCancelledAttendancesPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
         } />
 
         <Route exact path="/app/clubs/:clubId/cancelled-registrations/main" 
@@ -176,21 +208,40 @@ const App = () => {
         </Suspense> 
         } />
  
-        <Route exact path="/app/clubs/:clubId/payments/main" 
+        <Route exact path="/app/clubs/:clubId/staff-payments/main" 
         element={
-          <Suspense fallback={<LoadingPage />}>
-        <MainClubPaymentsPagePage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
-        </Suspense> 
+        <MainClubStaffPaymentsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
         } />
 
+        <Route exact path="/app/clubs/:clubId/payrolls/main" 
+        element={
+        <MainClubPayrollsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+        } />
+
+        <Route exact path="/app/clubs/:clubId/installments/main" 
+        element={
+        <MainClubInstallmentsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+        } />
+
+        <Route exact path="/app/clubs/:clubId/items/main" 
+        element={
+        <MainClubItemsPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+        } />
+
+      <Route exact path="/app/clubs/:clubId/suppliers/main" 
+        element={
+        <MainClubSuppliersPage roles={['ADMIN', 'CLUB-ADMIN', 'OWNER']} />
+        } />
+        
+
         {/** Main Chain Owners Pages Section */}
-        <Route exact path="/app/chain-owners/:ownerId/clubs/main" 
+        {/*<Route exact path="/app/chain-owners/:ownerId/clubs/main" 
         element={
           <Suspense fallback={<LoadingPage />}>
         <ChainOwnerClubsPage roles={['ADMIN', 'OWNER']} />
         </Suspense> 
         } />
-        {/*<Route
+        <Route
         exact
          path="/app/chain-owners/:ownerId/payments/main" 
         element={

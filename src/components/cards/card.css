@@ -98,4 +98,25 @@
     margin: .5rem 0;
 }
 
+.member-info-card-container {
+    padding: 1rem;
+    box-shadow: 0 0 2rem 0 rgb(41 48 66 / 10%) !important;
+    border-radius: .25rem;
+}
+
+.member-info-card-container h6 {
+    padding-bottom: .5rem;
+}
+
+.member-info-card-container .image-container {
+    padding: .3rem 0;
+}
+
+.member-info-card-container ul li {
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem 0;
+    border-bottom: 1px solid #F2F2F2;
+}
+
 

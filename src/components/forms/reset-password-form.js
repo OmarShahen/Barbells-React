@@ -30,7 +30,7 @@ const ResetPasswordForm = () => {
 
     useEffect(() => {
 
-        serverRequest.post('/auth/verify-token', { token })
+        serverRequest.post('/v1/auth/verify-token', { token })
         .then(response => {
             return
         })
@@ -70,7 +70,7 @@ const ResetPasswordForm = () => {
         setIsLoading(true)
 
         const headers = { 'x-access-token': token }
-        serverRequest.patch('/auth/reset-password', { password }, { headers, params: { lang } })
+        serverRequest.patch('/v1/auth/reset-password', { password }, { headers, params: { lang } })
         .then(response => {
             setIsLoading(false)
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import SideBar from '../../../components/navigation/club-admin-side-bar'
 import Card from '../../../components/cards/card'
 import MembersTable from '../../../components/tables/club/club-members'
 import BarChart from '../../../components/charts/bar-chart'
@@ -14,11 +13,14 @@ import { config } from '../../../config/config'
 import { format } from 'date-fns'
 import translations from '../../../i18n'
 import { iconPicker } from '../../../utils/icon-finder'
-import CachedIcon from '@mui/icons-material/Cached'
 import PercentagesCard from '../../../components/cards/percentages-card'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import PageHeader from '../../../components/sections/headers/page-header'
+import { useSelector } from 'react-redux'
+
+
 
 const ClubMembersPage = ({ roles }) => {
 
@@ -29,7 +31,7 @@ const ClubMembersPage = ({ roles }) => {
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const todayDate = new Date()
@@ -73,7 +75,7 @@ const ClubMembersPage = ({ roles }) => {
     useEffect(() => {
 
         toast.promise(
-            serverRequest.get(`/members/clubs/${clubId}/stats`, {
+            serverRequest.get(`/v1/members/clubs/${clubId}/stats`, {
                 params: statQuery,
                 headers
             })
@@ -146,24 +148,14 @@ const ClubMembersPage = ({ roles }) => {
             authorized
             &&
             <div className="lighten-5 page-body">
-            <SideBar />
             <Toaster />
-            <FloatingFormButton />
             <StatDatePicker setStatQuery={setStatQuery} />
-
             <div className="page">
                 <div className="row">
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                         <NavBar pageName={translations[lang]['Members Stats']} statsQuery={statQuery} pageRoles={roles} />
                         <div className="page-main">
-                            <div className="page-body-header">
-                                <h5>
-                                    {translations[lang]['Members']}
-                                </h5>
-                                <div className="reload-icon" onClick={e => setReload(reload + 1)}>
-                                   <CachedIcon /> 
-                                </div>
-                            </div>
+                        <PageHeader pageName={'Members'} reload={reload} setReload={setReload} statsQuery={statQuery} />
                             <div className="row">
                                     <div className="col s12 m4">
                                         <Card title={translations[lang]["Members"]} number={totalMembers} icon={iconPicker('members')} color={'dodgerblue'}/>

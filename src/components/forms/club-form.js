@@ -97,7 +97,7 @@ const ClubForm = () => {
 
         setIsSubmitting(true)
 
-        serverRequest.post('/clubs', newClub, requestHeader)
+        serverRequest.post('/v1/clubs', newClub, requestHeader)
         .then(response => {
 
             setIsSubmitting(false)

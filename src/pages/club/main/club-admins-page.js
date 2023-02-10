@@ -11,7 +11,6 @@ const MainClubAdminsPage = () => {
 
     const headers = { 'x-access-token': localStorage.getItem('access-token') }
     const pagePath = window.location.pathname
-    const clubName = pagePath.split('/')[2]
     const clubId = pagePath.split('/')[3]
 
     const [staffs, setStaffs] = useState([])
@@ -20,7 +19,7 @@ const MainClubAdminsPage = () => {
     useEffect(() => {
 
         toast.promise(
-            serverRequest.get(`/staffs/clubs/${clubId}/roles/club-admin`, {
+            serverRequest.get(`/v1/staffs/clubs/${clubId}/roles/club-admin`, {
                 headers
             })
             .then(response => {

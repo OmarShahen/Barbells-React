@@ -16,7 +16,7 @@ const DropdownAttendancesTable = ({ registrationId, statsQuery }) => {
 
     useEffect(() => {
 
-        serverRequest.get(`/attendances/registrations/${registrationId}`, { 
+        serverRequest.get(`/v1/attendances/registrations/${registrationId}`, { 
             params: statsQuery,
             headers: {
                 'x-access-token': localStorageSecured.get('access-token')

@@ -1,6 +1,7 @@
 import { format } from 'date-fns'
 import { translatePackageDuration } from './dates'
 import translations from '../i18n'
+import { formateNumber, formateMoney } from './money'
 
 const lang = localStorage.getItem('lang')
 
@@ -56,6 +57,22 @@ export const trimPaymentsDetails = (payments) => {
     return payments
 }
 
+export const trimPayrolls = payrolls => {
+
+    payrolls.forEach(payroll => {
+
+        payroll.paid = payroll.price
+
+        lang === 'en' ? 
+        payroll.paymentDate = format(new Date(payroll.createdAt), 'dd MMM yyyy')
+        :
+        payroll.paymentDate = format(new Date(payroll.createdAt), 'dd-MM-yyyy')
+
+    })
+
+    return payrolls
+}
+
 export const trimStaffs = (staffs) => {
 
     staffs.forEach(staff => {
@@ -75,6 +92,134 @@ export const trimStaffPayments = (staffPayments) => {
     })
 
     return staffPayments
+}
+
+export const trimPayments = (payments) => {
+
+    let dateFormate
+    lang === 'en' ? dateFormate = 'dd MMM yyyy' : dateFormate = 'dd-MM-yyyy'
+
+    payments.forEach(payment => {
+
+        payment.registrationDate = format(new Date(payment.createdAt), dateFormate)
+        payment.paymentTime = new Date(payment.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
+        payment.total = payment.amount * payment.price
+        payment.typeName = translations[lang][payment.type]
+        payment.categoryName = translations[lang][payment.category]
+
+        const paymentDate = new Date(payment.createdAt)
+        const yesterdayDate = new Date()
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+
+        if(paymentDate > yesterdayDate) {
+            payment.isNew = true
+        } else {
+            payment.isNew = false
+        }
+    })
+
+    return payments
+}
+
+export const trimItems = (items) => {
+
+    let dateFormate
+    lang === 'en' ? dateFormate = 'dd MMM yyyy' : dateFormate = 'dd-MM-yyyy'
+
+    items.forEach(item => {
+
+        item.registrationDate = format(new Date(item.createdAt), dateFormate)
+        item.itemAmount = formateNumber(item.inStock)
+        item.itemPrice = formateMoney(item.price, lang)
+        item.itemInitialStock = formateNumber(item.initialStock)
+
+        const itemDate = new Date(item.createdAt)
+        const yesterdayDate = new Date()
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+
+        if(itemDate > yesterdayDate) {
+            item.isNew = true
+        } else {
+            item.isNew = false
+        }
+    })
+
+    return items
+}
+
+export const trimInventoryPayments = (payments) => {
+
+    let dateFormate
+    lang === 'en' ? dateFormate = 'dd MMM yyyy' : dateFormate = 'dd-MM-yyyy'
+
+    payments.forEach(payment => {
+
+        payment.paymentDate = format(new Date(payment.createdAt), dateFormate)
+        payment.paymentTime = new Date(payment.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
+        payment.typeName = translations[lang][payment.type]
+
+        const itemDate = new Date(payment.createdAt)
+        const yesterdayDate = new Date()
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+
+        if(itemDate > yesterdayDate) {
+            payment.isNew = true
+        } else {
+            payment.isNew = false
+        }
+    })
+
+    return payments
+}
+
+export const trimSuppliers = (suppliers) => {
+
+    let dateFormate
+    lang === 'en' ? dateFormate = 'dd MMM yyyy' : dateFormate = 'dd-MM-yyyy'
+
+    suppliers.forEach(supplier => {
+
+        supplier.registrationDate = format(new Date(supplier.createdAt), dateFormate)
+
+        const supplierDate = new Date(supplier.createdAt)
+        const yesterdayDate = new Date()
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+
+        if(supplierDate > yesterdayDate) {
+            supplier.isNew = true
+        } else {
+            supplier.isNew = false
+        }
+    })
+
+    return suppliers
+}
+
+export const trimInstallments = (installments) => {
+
+    let dateFormate
+    lang === 'en' ? dateFormate = 'dd MMM yyyy' : dateFormate = 'dd-MM-yyyy'
+
+    installments.forEach(installment => {
+
+        installment.paymentDate = format(new Date(installment.createdAt), dateFormate)
+        installment.paymentTime = new Date(installment.createdAt)
+        .toLocaleTimeString('en', { timeZone: getTimeZone() })
+
+        const paymentDate = new Date(installment.createdAt)
+        const yesterdayDate = new Date()
+        yesterdayDate.setDate(yesterdayDate.getDate() - 1)
+
+        if(paymentDate > yesterdayDate) {
+            installment.isNew = true
+        } else {
+            installment.isNew = false
+        }
+    })
+
+    return installments
 }
 
 export const trimClubPayments = (clubPayments) => {

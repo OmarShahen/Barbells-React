@@ -28,7 +28,7 @@ const ForgotPasswordForm = () => {
 
         setIsLoading(true)
 
-        let url = params[1] === 'STAFF' ? '/auth/reset-password/mail/staff' : '/auth/reset-password/mail/chain-owner'
+        let url = params[1] === 'STAFF' ? '/v1/auth/reset-password/mail/staff' : '/v1/auth/reset-password/mail/chain-owner'
         serverRequest.post(url, { email }, { params: { lang }})
         .then(response => {
             setIsLoading(false)

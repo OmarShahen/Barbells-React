@@ -15,8 +15,7 @@ const LineChart = ({ title, labels, data, color, hideCard }) => {
                     borderColor: color,
                     tension: 0.0,
                     fill: false,
-                    fillColor: 'blue',
-                    label: title || ''
+                    label: title || '',
                 }],
                 transitions: {
                     zoom: {

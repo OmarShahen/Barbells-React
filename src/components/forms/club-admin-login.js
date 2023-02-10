@@ -1,16 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import './login.css'
 import './form.css'
 import { serverRequest } from '../../API/request'
 import CircularLoadingButton from '../buttons/loading-button'
-import { useNavigate } from 'react-router-dom'
 import translations from '../../i18n'
 import Logo from '../logo/logo'
 import { localStorageSecured } from '../../security/localStorage'
-import { NavLink } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { setUser, setIsLogged } from '../../redux/slices/userSlice'
+import { setClub } from '../../redux/slices/clubSlice'
+
 
 const LoginForm = () => {
 
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const lang = localStorage.getItem('lang') || 'en'
@@ -24,6 +28,11 @@ const LoginForm = () => {
 
     const [isLoading, setIsLoading] = useState(false)
 
+    useEffect(() => {
+        dispatch(setIsLogged(false))
+        sessionStorage.setItem('user', null)
+        sessionStorage.setItem('club', null)
+    }, [])
 
     const submit = (e) => {
 
@@ -51,7 +60,7 @@ const LoginForm = () => {
 
         const loginData = { countryCode, phone: cleanPhone, password }
 
-        const clubsAdminsURL = `/auth/clubs-admins/login`
+        const clubsAdminsURL = `/v1/auth/clubs-admins/login`
 
         setIsLoading(true)
         serverRequest.post(clubsAdminsURL, loginData, { params: { lang }})
@@ -67,11 +76,15 @@ const LoginForm = () => {
             const user = data.clubAdmin
             const club = data.club
 
-            localStorageSecured.set('user', user)
-            localStorageSecured.set('club', club)
+            user.isLogged = true
 
-            return navigate(`/app/clubs/${club._id}/dashboard`)
+            sessionStorage.setItem('user', JSON.stringify(user))
+            sessionStorage.setItem('club', JSON.stringify(club))
 
+            dispatch(setUser(user))
+            dispatch(setClub(club))
+
+            navigate(`/app/clubs/${club._id}/dashboard`)
         })
         .catch(error => {
 
@@ -144,7 +157,7 @@ const LoginForm = () => {
                         </div>
                         <div className="col s12">
                                <div className="right">
-                                    <span style={{ cursor: 'pointer' }} onClick={e => navigate('/forgot-password?role=STAFF')}>{translations[lang]['Forgot Password']}?</span>
+                                    <span style={{ cursor: 'pointer' }}>{translations[lang]['Forgot Password']}?</span>
                                </div>
                         </div>
                         {/*<div className="col s12">

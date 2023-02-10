@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../../components/navigation/nav-bar'
-import ClubAdminSideBar from '../../../components/navigation/club-admin-side-bar'
 import ClubStaffsTable from '../../../components/tables/club/club-staffs'
 import { serverRequest } from '../../../API/request'
 import toast, { Toaster } from 'react-hot-toast'
@@ -11,6 +10,9 @@ import translations from '../../../i18n'
 import { useNavigate } from 'react-router-dom'
 import { isUserValid } from '../../../utils/security'
 import { localStorageSecured } from '../../../security/localStorage'
+import { useSelector } from 'react-redux'
+import PageHeader from '../../../components/sections/headers/page-header'
+
 
 
 const MainClubStaffsPage = ({ roles }) => {
@@ -22,7 +24,7 @@ const MainClubStaffsPage = ({ roles }) => {
     const clubId = pagePath.split('/')[3]
 
     const lang = localStorage.getItem('lang')
-    const user = localStorageSecured.get('user')
+    const user = useSelector(state => state.user.user)
     const accessToken = localStorageSecured.get('access-token')
 
     const [authorized, setAuthorized] = useState(false)
@@ -44,7 +46,7 @@ const MainClubStaffsPage = ({ roles }) => {
     useEffect(() => {
 
         setIsLoading(true)
-        serverRequest.get(`/staffs/clubs/${clubId}/roles/staff`, {
+        serverRequest.get(`/v1/staffs/clubs/${clubId}/roles/staff`, {
             headers
         })
         .then(response => {
@@ -68,7 +70,6 @@ const MainClubStaffsPage = ({ roles }) => {
             authorized
             &&
             <div className="blue-grey lighten-5">
-            <ClubAdminSideBar />
             <Toaster />
             <FloatingFormButton modalId={"staff-form-modal"}/>
             <div className="page">
@@ -76,6 +77,7 @@ const MainClubStaffsPage = ({ roles }) => {
                     <div className="col s12 m12 l12" style={{ paddingLeft: 0, paddingRight: 0 }}>
                         <NavBar pageName={translations[lang]["Staffs"]} />
                         <div className="page-main">
+                        <PageHeader pageName="Staffs" reload={reload} setReload={setReload} />
                             <div className="row">
                                 <div className="col s12">
                                     <ClubStaffsTable 

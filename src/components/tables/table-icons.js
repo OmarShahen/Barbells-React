@@ -21,6 +21,16 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined'
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined'
 import SendIcon from '@mui/icons-material/Send'
+import LoginIcon from '@mui/icons-material/Login'
+import LogoutIcon from '@mui/icons-material/Logout'
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows'
+import QueryStatsIcon from '@mui/icons-material/QueryStats'
+import CreditCardOffOutlinedIcon from '@mui/icons-material/CreditCardOffOutlined'
+import CreditScoreOutlinedIcon from '@mui/icons-material/CreditScoreOutlined'
+import ContentPasteOutlinedIcon from '@mui/icons-material/ContentPasteOutlined'
+import ContentPasteOffOutlinedIcon from '@mui/icons-material/ContentPasteOffOutlined'
+import AcUnitIcon from '@mui/icons-material/AcUnit'
+
 
 
 const tableIcons = {
@@ -47,6 +57,15 @@ const tableIcons = {
     Upgrade: forwardRef((props, ref) => <ManageAccountsOutlinedIcon {...props} ref={ref} />),
     Downgrade: forwardRef((props, ref) => <BadgeOutlinedIcon {...props} ref={ref} />),
     Message: forwardRef((props, ref) => <SendIcon {...props} ref={ref} />),
+    Earn: forwardRef((props, ref) => <LoginIcon {...props} ref={ref} />),
+    Deduct: forwardRef((props, ref) => <LogoutIcon {...props} ref={ref} />),
+    InAndOut: forwardRef((props, ref) => <CompareArrowsIcon {...props} ref={ref} />),
+    Stats: forwardRef((props, ref) => <QueryStatsIcon {...props} ref={ref} />),
+    Unpaid: forwardRef((props, ref) => <CreditCardOffOutlinedIcon {...props} ref={ref} />),
+    Paid: forwardRef((props, ref) => <CreditScoreOutlinedIcon {...props} ref={ref} />),
+    ActiveRegistrations: forwardRef((props, ref) => <ContentPasteOutlinedIcon {...props} ref={ref} />),
+    ExpiredRegistrations: forwardRef((props, ref) => <ContentPasteOffOutlinedIcon {...props} ref={ref} />),
+    FreezedRegitrations: forwardRef((props, ref) => <AcUnitIcon {...props} ref={ref} />),
 
   }
 

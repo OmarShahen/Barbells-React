@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import TableIcons from '../table-icons'
-import { serverRequest } from '../../../API/request'
-import { format } from 'date-fns'
 import { trimCancelledAttendances } from '../../../utils/trimmers'
 import { DataArrayTwoTone } from '@mui/icons-material'
-import { useNavigate } from 'react-router-dom'
 import translations from '../../../i18n'
 
 
 const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading, reload, setReload }) => {
-
-    const navigate = useNavigate()
 
     const [cancelledAttendances, setCancelledAttendances] = useState(trimCancelledAttendances(data))
 
@@ -29,28 +24,13 @@ const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading
 
 
     const columns = () => {
-
-        if(isClub) {
-            return [
-                { title: translations[lang]['Branch'], field: 'club.clubCode' },
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Cancellation Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Cancellation Date'], field: 'cancellationDate' },
-        
-            ]
-        } else {
-
-            return [
-                { title: translations[lang]['Member'], field: 'member.name' },
-                { title: translations[lang]['Package'], field: 'package.title' },
-                { title: translations[lang]['Staff'], field: 'staff.name' },
-                { title: translations[lang]['Cancellation Time'], field: 'attendanceTime' },
-                { title: translations[lang]['Cancellation Date'], field: 'cancellationDate' },
-        
-            ]
-        }
+        return [
+            { title: translations[lang]['Member'], field: 'member.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Package'], field: 'package.title', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Staff'], field: 'staff.name', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Cancellation Time'], field: 'attendanceTime', cellStyle: { whiteSpace: 'nowrap' } },
+            { title: translations[lang]['Cancellation Date'], field: 'cancellationDate', cellStyle: { whiteSpace: 'nowrap' } },
+        ]
     }
 
     return (
@@ -71,7 +51,10 @@ const ClubCancelledAttendancesTable = ({ data, isClub, isRefreshAdded, isLoading
                     }, 
                     exportFileName: translations[lang]['Cancelled-Attendances'],
                     grouping: true,
-                    filtering: filter
+                    filtering: filter,
+                    headerStyle: {
+                        whiteSpace: 'nowrap'
+                    }
                 }}
                 actions={[
                     {
